@@ -1,0 +1,11 @@
+body {
+	background: #34495e;
+}
+.navbar {
+  border-radius: 0 !important;
+}
+
+h1 {
+	color: white;
+}
+
