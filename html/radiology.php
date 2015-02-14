@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'header.php';?>
-
+<script src="upload-image.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <body>
 <?php include 'navbar.php';?>
 
@@ -36,11 +37,16 @@
 	<br>
 </div>
 <div class="col-sm-8 medical-image">
-	<form action="upload.php" method="post" enctype="multipart/form-data">
-		Upload Medical Images
-		<input class="btn btn-info" type="file" name="fileToUpload" id="fileToUpload">
-		<button type="submit" class="btn btn-block btn-info" name="submit"><h4>Upload Image</h4></button> 
-	</form>
+	<div class="col-sm-12 text-center">
+	<h2>Upload Medical Images</h2>
+	</div>
+	<div class="col-sm-12">
+		<form action="upload.php" method="post" enctype="multipart/form-data">
+			<button class="btn btn-info upload-images-btn" onclick="document.getElementById('image-upload').click(); return false;" ><strong>+</strong> Add Image</button>
+			<input class="btn btn-info" type="file" name="image-upload" id="image-upload" onchange="addImage()" ></input>
+			<img id="img-1" src="" alt="">
+		</form>
+	</div>
 </div>
 </body>
 </html>

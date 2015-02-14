@@ -28,3 +28,17 @@ body {
 	background: #95a5a6;
 }
 
+.upload-images-btn {
+	background: #2ecc71 !important;
+	border-color: #2ecc71 !important;
+}
+
+.upload-images-btn:hover {
+	background: #27ae60 !important;
+	border-color: #27ae60 !important;
+}
+
+#image-upload {
+	visibility: hidden;
+}
+
