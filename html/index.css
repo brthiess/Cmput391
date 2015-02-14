@@ -1,5 +1,6 @@
 body {
 	background: #34495e;
+	color:white;
 }
 .navbar {
   border-radius: 0 !important;
@@ -16,14 +17,14 @@ body {
 .navbar-default {
 	background: #16a085;
 	border-color: #16a085;
-	color: white;
-}
-
-h1 {
-	color: white;
 }
 
 .radiology-form {
-	background: #bdc3c7;
+	background: #7f8c8d;
+	padding-bottom:0.5em;
+}
+
+.medical-image {
+	background: #95a5a6;
 }
 
