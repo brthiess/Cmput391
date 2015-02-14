@@ -1,24 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>The Radiology Clinic</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="index.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-</head>
+<?php include 'header.php';?>
 <body>
-	<nav class="navbar navbar-default">
-	  <div class="container-fluid">
-		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">
-			The Radiology Clinic
-		  </a>
-		</div>
-	  </div>
-	</nav>
+<?php include 'navbar.php';?>
 
 	<div class="container-fluid">
 		<div class="row">

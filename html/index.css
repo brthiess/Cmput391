@@ -5,7 +5,25 @@ body {
   border-radius: 0 !important;
 }
 
+.navbar-brand {
+	color: white !important;
+}
+
+.navbar-brand:hover {
+	color: #bdc3c7 !important;
+}
+
+.navbar-default {
+	background: #16a085;
+	border-color: #16a085;
+	color: white;
+}
+
 h1 {
 	color: white;
+}
+
+.radiology-form {
+	background: #bdc3c7;
 }
 
