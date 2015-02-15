@@ -40,12 +40,16 @@
 	<div class="col-sm-12 text-center">
 	<h2>Upload Medical Images</h2>
 	</div>
-	<div class="col-sm-12">
+	<div class="col-sm-12" id="upload-images-div">
 		<form action="upload.php" method="post" enctype="multipart/form-data">
-			<button class="btn btn-info upload-images-btn" onclick="document.getElementById('image-upload').click(); return false;" ><strong>+</strong> Add Image</button>
-			<input class="btn btn-info" type="file" name="image-upload" id="image-upload" onchange="addImage()" ></input>
-			<img id="img-1" src="" alt="">
-		</form>
+			<div class="row">
+				<div class="col-sm-12">
+					<button class="btn btn-info upload-images-btn" onclick="document.getElementById('image-upload').click(); return false;" ><strong>+</strong> Add Image</button>
+					<input class="btn btn-info" type="file" name="image-upload" id="image-upload" onchange="addImage()" ></input>
+				</div>
+			</div>
+		</form>			
+
 	</div>
 </div>
 </body>

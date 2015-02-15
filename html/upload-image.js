@@ -1,8 +1,13 @@
-var numberOfImages = 1;
+
 
 //Adds medical image to database and displays it to Radiologist
 function addImage() {
-       var file    = document.querySelector('input[type=file]').files[0];
+	
+	if (typeof imageNumber == "undefined") {
+		imageNumber = 1;
+	}
+	
+    var file    = document.querySelector('input[type=file]').files[0];
 
 	//Check if file is image
 	var re = /(?:\.([^.]+))?$/;	
@@ -19,14 +24,27 @@ function addImage() {
       
 	  var reader  = new FileReader();
 
-       reader.onloadend = function () {
-           $("#img-" + numberOfImages).attr("src", reader.result);
-		   numberOfImages += 1;		   
+       reader.onloadend = function () {	   
+		   //Append New Image
+		   $("#upload-images-div").append("<div class='row image-row' id='image-row-" + imageNumber + "'>\
+												<div class='col-sm-4'>\
+													<img id='img-" + imageNumber + "'  height='100' src='" + reader.result + "' alt=''>\
+												</div>\
+												<div class='col-sm-8'>\
+													<button class='btn btn-info delete-images-btn' id='delete-image-" + imageNumber + "' onclick='deleteImage(" + imageNumber + ")'><strong>X</strong> Delete Image</button>\
+												</div>\
+											</div>");
+			imageNumber += 1;
        }
 
        if (file) {
            reader.readAsDataURL(file); //reads the data as a URL
        } else {
-           $("#img-" + numberOfImages).attr("src", "");
+           $("#img-" + imageNumber).attr("src", "");
        }
+}
+
+//Delete specified image
+function deleteImage(imageNumber) {
+	$("#image-row-" + imageNumber).remove();
 }

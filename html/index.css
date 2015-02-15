@@ -1,3 +1,6 @@
+/***********************************
+Header and Navigational Bar
+*************************************/
 body {
 	background: #34495e;
 	color:white;
@@ -19,6 +22,10 @@ body {
 	border-color: #16a085;
 }
 
+
+/********************************
+Radiologist Page
+*********************************/
 .radiology-form {
 	background: #7f8c8d;
 	padding-bottom:0.5em;
@@ -26,6 +33,7 @@ body {
 
 .medical-image {
 	background: #95a5a6;
+	padding-bottom:0.5em;
 }
 
 .upload-images-btn {
@@ -38,7 +46,39 @@ body {
 	border-color: #27ae60 !important;
 }
 
+.delete-images-btn {
+	background: #e74c3c;
+	border-color: #e74c3c;
+}
+
+.delete-images-btn:hover {
+	background: #c0392b;
+	border-color: #c0392b;
+}
+
 #image-upload {
 	visibility: hidden;
 }
 
+.image-row {
+	margin-top: 1em;
+}
+
+.image-row button {
+	margin-top:2.4em;
+}
+
+.image-row img {
+	max-width: 100%;
+}
+
+.delete-image {
+	height: 2em;
+	width: 2em;
+	opacity: 0.7;
+}
+
+.delete-image:hover {
+	opacity: 1;
+	cursor: pointer;
+}
