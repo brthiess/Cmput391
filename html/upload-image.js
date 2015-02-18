@@ -1,4 +1,6 @@
-
+$( document ).ready(function() {
+    $(".medical-image").css("min-height", $(".radiology-form").height());
+});
 
 //Adds medical image to database and displays it to Radiologist
 function addImage() {
@@ -26,13 +28,11 @@ function addImage() {
 
        reader.onloadend = function () {	   
 		   //Append New Image
-		   $("#upload-images-div").append("<div class='row image-row' id='image-row-" + imageNumber + "'>\
-												<div class='col-sm-4'>\
-													<img id='img-" + imageNumber + "'  height='100' src='" + reader.result + "' alt=''>\
-												</div>\
-												<div class='col-sm-8'>\
-													<button class='btn btn-info delete-images-btn' id='delete-image-" + imageNumber + "' onclick='deleteImage(" + imageNumber + ")'><strong>X</strong> Delete Image</button>\
-												</div>\
+		   $("#upload-images-div").append("<div class='col-sm-4 image-row' id='image-row-" + imageNumber + "'>\
+													<div class='image-holder'>\
+														<div class='delete-image-caption' onclick='deleteImage(" + imageNumber + ")'></div>\
+														<img id='img-" + imageNumber + "'  height='100' src='" + reader.result + "' alt=''>\
+													</div>\
 											</div>");
 			imageNumber += 1;
        }
