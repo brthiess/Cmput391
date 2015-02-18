@@ -122,7 +122,7 @@ Radiologist Page
 .image-holder .delete-image-caption {
 	position: absolute;
 	opacity: 0.8;
-	background-image: url("images/delete-image.png");
+	background-image: url("../images/delete-image.png");
 	background-size: cover;
 	top: 0%;
 	left: 0%;
@@ -135,5 +135,5 @@ Radiologist Page
 .image-holder .delete-image-caption:hover {
 	opacity: 1;
 	cursor: pointer;
-	background-image: url("images/delete-image-hover.png");
+	background-image: url("../images/delete-image-hover.png");
 }

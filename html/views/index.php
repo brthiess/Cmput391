@@ -11,17 +11,18 @@
 		<div class="row">
 			<div class="col-sm-4" id="patient-login-form"> 
 				<div class="col-sm-8 login-form col-sm-offset-2">
-					<div class="form-group">
+					<form class="form-group" action="profile.php" method="post">
 						<div class="row top-buffer">
-							<input type="text" class="form-control" id="patient-user-name" placeholder="Patient Username">
+							<input type="text" class="form-control" id="patient-user-name" name="username" placeholder="Patient Username">
 						</div>
 						<div class="row top-buffer">
-							<input type="password" class="form-control" id="patient-password" placeholder="Password">
+							<input type="password" class="form-control" id="patient-password" name="password" placeholder="Password">
 						</div>
+						<input type="hidden" name="type" value="patient"/>
 						<div class="row top-buffer">
-							<button type="button" class="btn btn-block btn-info"><h4>Patient Login</h4></button> 
+							<button type="submit" class="btn btn-block btn-info"><h4>Patient Login</h4></button> 
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 			<div class="col-sm-4" id="radiologist-login-form"> 
