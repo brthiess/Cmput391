@@ -4,6 +4,8 @@
  *              Winter Term, 2015
  *  Author:     Prof. Li-Yan Yuan
  */
+DROP SEQUENCE records_seq;
+DROP SEQUENCE persons_seq;
 DROP TABLE family_doctor;
 DROP TABLE pacs_images;
 DROP TABLE radiology_record;
@@ -83,3 +85,34 @@ CREATE TABLE pacs_images (
    FOREIGN KEY(record_id) REFERENCES radiology_record
 );
 
+/***********************************************************************
+ * From here and below, are custom SQL statements. Freely append yours.*
+ **********************************************************************/
+
+/**
+ * person_seq
+ *
+ * Used to automate ids for persons relation. 
+ * e.g. person_seq.nextval to access next value.
+ *
+ * Note: Values 1-100 are used for testing purposes.
+ */
+CREATE SEQUENCE persons_seq
+       MINVALUE 1
+       START WITH 101
+       INCREMENT BY 1
+       CACHE 10;
+
+/**
+ * records_seq
+ *
+ * Used to automate ids for records relation.
+ * e.g. records_seq.nextval to access next value.
+ *
+ * Note: Values 1-100 are used for testing purposes.
+ */
+CREATE SEQUENCE records_seq
+       MINVALUE 1
+       START WITH 101
+       INCREMENT BY 1
+       CACHE 10;

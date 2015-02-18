@@ -5,13 +5,87 @@
  */
 
 
-include '../Search.php';
-include '../Database.php';
+include_once '../Search.php';
+include_once '../Database.php';
 
 /*!@class SearchTest
  * @brief Test module for Search module.
  */
 class SearchTest extends PHPUnit_Framework_TestCase{
+    private $PEOPLE = array();
+    private $USERS = array(); 
+    private $FAMILY_DOCTORS = array();
+    private $RECORDS = array();
+    
+    protected function setUp(){
+        $db = Database::instance();  // Acquire database instance.
+        
+        // Add Person objects.
+        $this->PEOPLE[] = new Person("1", "Joe", 'Shmoe', '666 Helldrive, Hell Prairie', 'shmoe@hell.h', '677-8081', '02-FEB-2015');
+        $this->PEOPLE[] = new Person("2", "Sterling", 'Archer', 'CIA branch', 'casablumpkin@archer.com', '345-344', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person("3", "Cyril", 'Figgis', 'CIA branch', 'chetmanly@yahoo.com', '345-344', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person("4", "Borat", 'Borat', 'Kazak', 'borat@yahoo.kz', '123-432', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person("5", "Larry", 'David', 'LA', 'larry@david.com', '123-432', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person("6", "Jerry", 'Seinfeld', 'New York', 'jerry@seinfeld.com', '123-432', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person("7", "Bill", 'Burr', 'New York', 'bill@burr.com', '123-432', 'CURRENT_DATE');        
+        
+        foreach ($this->PEOPLE as $person){
+            $db->addPerson($person);
+        }
+
+        // Add User objects.
+        $this->USERS[] = new User("joeShmoe", '1234', 'a', "1", '02-FEB-15');
+        $this->USERS[] = new User("bertReynolds", '1234', 'd', "2", '02-FEB-15');
+        $this->USERS[] = new User("chetManly", '1234', 'p', "3", '02-FEB-15');
+        $this->USERS[] = new User("Ilike", '1234', 'p', "4", '02-FEB-15');
+        $this->USERS[] = new User("purtygood", '1234', 'p', "5", '02-FEB-15');
+        $this->USERS[] = new User("billionaireCommedian", '1234', 'r', "6", '02-FEB-15');
+        $this->USERS[] = new User("irishNonDrunk", '1234', 'r', "7", '02-FEB-15');
+
+        foreach ($this->USERS as $user){
+            $db->addUser($user);
+        }
+
+        // Add Family doctors.
+        $this->FAMILY_DOCTORS[] = new FamilyDoctor(2, 3);
+        $this->FAMILY_DOCTORS[] = new FamilyDoctor(2, 4);
+        $this->FAMILY_DOCTORS[] = new FamilyDoctor(2, 5);       
+        
+        foreach ($this->FAMILY_DOCTORS as $fd){
+            $db->addFamilyDoctor($fd);
+        }
+
+        $this->RECORDS[] = new RadiologyRecord(1, 3, 2, 7, 'aids', '02-FEB-15', '07-FEB-15', 'positive', 'not hiv but full blown aids.');
+        $this->RECORDS[] = new RadiologyRecord(2, 4, 2, 6, 'hiv', '05-FEB-15', '21-FEB-15', 'negative', 'brought to you buy durex.');
+        $this->RECORDS[] = new RadiologyRecord(3, 5, 2, 6, 'statically discharge', '10-FEB-15', '21-APR-15', 'positive', 'you have been statically discharge of service.');
+
+        foreach ($this->RECORDS as $r){
+            $db->addRadiologyRecord($r);
+        }
+    }
+
+    protected function tearDown(){
+        $db = Database::instance();  // Acquire database instance.
+        
+        // Deallocate database on reverse order of intialization.        
+
+        foreach ($this->RECORDS as $r){
+            $db->removeRadiologyRecord($r->recordID);
+        }
+
+        foreach ($this->FAMILY_DOCTORS as $fd){
+            $db->removeFamilyDoctor($fd);
+        }
+
+        foreach ($this->USERS as $user){
+            $db->removeUser($user->userName);
+        }
+        
+        foreach ($this->PEOPLE as $person){
+            $db->removePerson($person->personID);
+        }
+    }
+
     /**
      * @class Search
      * @test Given user u, 
@@ -28,7 +102,8 @@ class SearchTest extends PHPUnit_Framework_TestCase{
      *       Select[*](Radiology_Record)
      */
     public function securityModuleFilterTest(){
-        connect();
+        $db = Database::instance();        
+        $this->assertEquals($db->getRadiologyRecords($this->USERS[0]), $this->RECORDS);
     }
 
     /**
