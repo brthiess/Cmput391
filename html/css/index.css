@@ -22,18 +22,60 @@ body {
 	border-color: #16a085;
 }
 
+/**********************************
+Login Page
+***********************************/
+
+.login-form{
+	border-radius: 0.5em;
+	background: #95a5a6;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-top: 1em;
+	padding-bottom:1em;
+	margin-bottom: 1em;
+}
+
+.top-buffer {
+	margin-top: 1em;
+}
+
+
+.admin-login-btn {
+	background: #9b59b6 !important;
+	border-color: #9b59b6 !important;
+}
+
+.admin-login-btn:hover {
+	background: #8e44ad !important;
+	border-color: #8e44ad !important;
+}
+
+.radiologist-login-btn {
+	background: #2ecc71 !important;
+	border-color: #2ecc71 !important;
+}
+
+.radiologist-login-btn:hover {
+	background: #27ae60 !important;
+	border-color: #27ae60 !important;
+}
 
 /********************************
 Radiologist Page
 *********************************/
 .radiology-form {
 	background: #7f8c8d;
-	padding-bottom:0.5em;
+	padding-right: 1em;
 }
 
 .medical-image {
 	background: #95a5a6;
-	padding-bottom:0.5em;
+	padding-bottom:0.5em;	
+}
+
+.input-description {
+	margin-bottom: 1.0em;
 }
 
 .upload-images-btn {
@@ -72,13 +114,26 @@ Radiologist Page
 	max-width: 100%;
 }
 
-.delete-image {
-	height: 2em;
-	width: 2em;
-	opacity: 0.7;
+
+.image-holder {
+	position: relative;
 }
 
-.delete-image:hover {
+.image-holder .delete-image-caption {
+	position: absolute;
+	opacity: 0.8;
+	background-image: url("../images/delete-image.png");
+	background-size: cover;
+	top: 0%;
+	left: 0%;
+	height: 2em;
+	width: 2em;
+}
+
+
+
+.image-holder .delete-image-caption:hover {
 	opacity: 1;
 	cursor: pointer;
+	background-image: url("../images/delete-image-hover.png");
 }

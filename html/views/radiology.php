@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'header.php';?>
-<script src="upload-image.js"></script>
+<script src="../js/upload-image.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <body>
 <?php include 'navbar.php';?>
@@ -31,7 +31,7 @@
 		</div>
 		<div class="col-sm-12">
 			<label class="control-label" for="description">Description</label>
-			<textarea type="text" class="form-control" id="description" rows="2"></textarea>
+			<textarea type="text" class="form-control input-description" id="description" rows="3"></textarea>
 		</div>		
 	</div>
 	<br>
@@ -52,5 +52,9 @@
 
 	</div>
 </div>
+	<div class="row top-buffer"></div>
+	<div class="col-sm-2 col-sm-offset-5 top-buffer">
+		<button class="btn btn-info"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>
+	</div>
 </body>
 </html>
