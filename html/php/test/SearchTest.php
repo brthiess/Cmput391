@@ -7,6 +7,7 @@
 
 include_once '../Search.php';
 include_once '../Database.php';
+include_once '../Date.php';
 
 /*!@class SearchTest
  * @brief Test module for Search module.
@@ -22,43 +23,43 @@ class SearchTest extends PHPUnit_Framework_TestCase{
         
         // Add Person objects.
         $this->PEOPLE[] = new Person(
-            "1", 
+            1, 
             "Joe", 
             'Shmoe', 
             '666 Helldrive, Hell Prairie', 
             'shmoe@hell.h', '677-8081', '02-FEB-2015');
         $this->PEOPLE[] = new Person(
-            "2", 
+            2, 
             "Sterling", 
             'Archer', 
             'CIA branch', 
             'casablumpkin@archer.com', '345-344', 'CURRENT_DATE');
         $this->PEOPLE[] = new Person(
-            "3", 
+            3, 
             "Cyril", 
             'Figgis', 
             'CIA branch', 
             'chetmanly@yahoo.com', '345-344', 'CURRENT_DATE');
         $this->PEOPLE[] = new Person(
-            "4", 
+            4, 
             "Borat", 
             'Borat', 
             'Kazak', 
             'borat@yahoo.kz', '123-432', 'CURRENT_DATE');
         $this->PEOPLE[] = new Person(
-            "5", 
+            5, 
             "Larry", 
             'David', 
             'LA', 
             'larry@david.com', '123-432', 'CURRENT_DATE');
         $this->PEOPLE[] = new Person(
-            "6", 
+            6, 
             "Jerry", 
             'Seinfeld', 
             'New York', 
             'jerry@seinfeld.com', '123-432', 'CURRENT_DATE');
         $this->PEOPLE[] = new Person(
-            "7", 
+            7, 
             "Bill", 
             'Burr', 
             'New York', 
@@ -70,19 +71,19 @@ class SearchTest extends PHPUnit_Framework_TestCase{
 
         // Add User objects.
         $this->USERS["joeShmoe"] = new User(
-            "joeShmoe", '1234', 'a', "1", '02-FEB-15');
+            "joeShmoe", '1234', 'a', 1, new Date(Month::February, 2, 2015));
         $this->USERS["bertReynolds"] = new User(
-            "bertReynolds", '1234', 'd', "2", '02-FEB-15');
+            "bertReynolds", '1234', 'd', 2, new Date(Month::February, 2, 2015));
         $this->USERS["chetManly"] = new User(
-            "chetManly", '1234', 'p', "3", '02-FEB-15');
+            "chetManly", '1234', 'p', 3, new Date(Month::February, 2, 2015));
         $this->USERS["Ilike"] = new User(
-            "Ilike", '1234', 'p', "4", '02-FEB-15');
+            "Ilike", '1234', 'p', 4, new Date(Month::February, 2, 2015));
         $this->USERS["purtygood"] = new User(
-            "purtygood", '1234', 'p', "5", '02-FEB-15');
+            "purtygood", '1234', 'p', 5, new Date(Month::February, 2, 2015));
         $this->USERS["billionaireCommedian"] = new User(
-            "billionaireCommedian", '1234', 'r', "6", '02-FEB-15');
+            "billionaireCommedian", '1234', 'r', 6, new Date(Month::February, 2, 2015));
         $this->USERS["irishNonDrunk"] = new User(
-            "irishNonDrunk", '1234', 'r', "7", '02-FEB-15');
+            "irishNonDrunk", '1234', 'r', 7, new Date(Month::February, 2, 15));
 
         foreach ($this->USERS as $user){
             $db->addUser($user);
@@ -99,28 +100,30 @@ class SearchTest extends PHPUnit_Framework_TestCase{
 
         $this->RECORDS[] = new RadiologyRecord(
             1, 
-            3, 
+            3,
             2, 
             7, 
             'aids', 
-            '02-FEB-15', 
-            '07-FEB-15', 'positive', 'not hiv but full blown aids.');
+            new Date(Month::February, 2, 2015),
+            new Date(Month::February, 7, 2015), 'positive', 
+            'not hiv but full blown aids.');
         $this->RECORDS[] = new RadiologyRecord(
             2, 
             4, 
             2, 
             6, 
             'hiv', 
-            '05-FEB-15', 
-            '21-FEB-15', 'negative', 'brought to you buy durex.');
+            new Date(Month::February, 5, 2015), 
+            new Date(Month::February, 21, 2015), 'negative', 
+            'brought to you buy durex.');
         $this->RECORDS[] = new RadiologyRecord(
             3, 
             5, 
             2, 
             6, 
             'statically discharge', 
-            '10-FEB-15', 
-            '21-APR-15', 
+            new Date(Month::February, 10, 2015), 
+            new Date(Month::April, 21, 2015), 
             'positive', 'you have been statically discharge of service.');
 
         foreach ($this->RECORDS as $r){
@@ -165,43 +168,50 @@ class SearchTest extends PHPUnit_Framework_TestCase{
      *       If u.class is admin
      *       Select[*](Radiology_Record)
      */
-    public function securityModuleFilterTest(){
-        $db = Database::instance();
-
+    public function securityModuleFilterTest(){        
         // Ensure that the admin record, $this->USERS[0], can access all the recordsd, 
         // $this->RECORDS.
+        $search = new Search('joeShmoe', '1234');
+        $this->assertEquals(
+            True, arraysetCompare($this->RECORDS, 
+            $search->searchWithSecurityFilter()));
                 
-        $this->assertEquals(
-            True, arraySetCompare(
-                $db->getRadiologyRecords($this->USERS["joeShmoe"]), 
-                $this->RECORDS));
 
-        // Ensure that each patients can only access records they are in.
+        // Ensure that each patients can only access records they are in.       
+        $search = new Search('chetManly', '1234');
         $this->assertEquals(
             True, arraySetCompare(
-                $db->getRadiologyRecords($this->USERS["chetManly"]), 
+                $search->searchWithSecurityFilter(), 
                 array($this->RECORDS[0])));
-        $this->assertEquals(
-            True, arraySetCompare(
-                $db->getRadiologyRecords($this->USERS["Ilike"]), 
-                array($this->RECORDS[1])));
-        $this->assertEquals(
-            True, arraySetCompare(
-                $db->getRadiologyRecords($this->USERS["purtygood"]), 
-                array($this->RECORDS[2])));
 
-        // Ensure that each doctor can only access records of their patients.
+        $search = new Search('Ilike', '1234');
         $this->assertEquals(
             True, arraySetCompare(
-                $db->getRadiologyRecords($this->USERS["bertReynolds"]), 
+                $search->searchWithSecurityFilter(),
+                array($this->RECORDS[1])));
+
+        $search = new Search('purtygood', '1234');
+        $this->assertEquals(
+            True, arraySetCompare(
+                $search->searchWithSecurityFilter(),                
+                array($this->RECORDS[2])));
+        
+        // Ensure that each doctor can only access records of their patients.
+        $search = new Search('bertReynolds', '1234');
+        $this->assertEquals(
+            True, arraySetCompare(
+                $search->searchWithSecurityFilter(),
                 array($this->RECORDS[0], $this->RECORDS[1], $this->RECORDS[2])));
 
         // Ensure that each that radiologist can access the records they took.
+        $search = new Search('billionaireCommedian', '1234');
         $this->assertEquals(
-            True, arraySetCompare($db->getRadiologyRecords($this->USERS["billionaireCommedian"]), 
+            True, arraySetCompare($search->searchWithSecurityFilter(),
             array($this->RECORDS[1], $this->RECORDS[2])));
+
+        $search = new Search('irishNonDrunk', '1234');
         $this->assertEquals(
-            True, arraySetCompare($db->getRadiologyRecords($this->USERS["irishNonDrunk"]), 
+            True, arraySetCompare($search->searchWithSecurityFilter(), 
             array($this->RECORDS[0])));
     }
 
@@ -211,17 +221,23 @@ class SearchTest extends PHPUnit_Framework_TestCase{
      *       that contains all keywords in K. i.e.
      *       For all k in K, x in R, there exist a column j in x, s.t. x[j] = k.
      *       
-     *       Note that x[j] = k, is actually EditDistance[x[j], k] <= 2. This is 
+     *       Note that x[j] = k, is actually EditDistance[x[j], k] <= 1. This is 
      *       to allow some mistakes.
      */
-    public function searchConditionFilterTest(){
-
+    public function searchWithKeywordFilter(){
+        $search = new Search('joeShmoe', '1234');
+        $this->assertEquals(
+            True, 
+            arraySetCompare(
+                $search->searchWithKeywordFilter(array('durex')), array($this->RECORDS[1])));
     }
     
     /**
      * @class Search
      * @test Ensure that the ranking is:
-     *       Rank(record_id) = 6*frequency(patient_name) + 3*frequency(diagnosis) + frequency(description)
+     *       Rank(record_id) = 6*frequency(patient_name) + 
+     *                         3*frequency(diagnosis) + 
+     *                         frequency(description)
      */
     public function searchDefaultRankingTest(){
     }

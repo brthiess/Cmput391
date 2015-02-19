@@ -161,7 +161,7 @@ class Database {
             return False;
         }        
         return new User($row['USER_NAME'], $row['PASSWORD'], $row['CLASS'], 
-                        $row['PERSON_ID'], $row['DATE_REGISTERED']);
+                        $row['PERSON_ID'], new Date($row['DATE_REGISTERED']));
     }
     
     /**
@@ -183,7 +183,7 @@ class Database {
 
     public function removeFamilyDoctor(FamilyDoctor $fd){
         $sqlstmt = 'DELETE FROM family_doctor WHERE doctor_id='.$fd->doctorID.' and '.
-            'patient_id='.$fd->patientID.'';
+            'patient_id='.$fd->patientID;
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -275,7 +275,7 @@ class Database {
         }catch(Exception $e){
             throw $e;
         }
-
+        
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
             $rv[] = 
@@ -285,8 +285,8 @@ class Database {
                     $row['DOCTOR_ID'],
                     $row['RADIOLOGIST_ID'],
                     $row['TEST_TYPE'],
-                    $row['PRESCRIBING_DATE'],
-                    $row['TEST_DATE'],
+                    new Date($row['PRESCRIBING_DATE']),
+                    new Date($row['TEST_DATE']),
                     $row['DIAGNOSIS'],
                     $row['DESCRIPTION']
                 );

@@ -3,6 +3,8 @@
  * RadiologyRecord.php
  */
 
+include_once 'Date.php';
+
 /*!@class RadiologyRecord
  * @brief PHP representation of radiology_record schema.
  */
@@ -19,7 +21,7 @@ class RadiologyRecord{
 
     public function __construct(
         $recordID, $patientID, $doctorID, $radiologistID,
-        $testType, $prescribingDate, $testDate, $diagnosis, $description){
+        $testType, Date $prescribingDate, Date $testDate, $diagnosis, $description){
         $this->recordID = $recordID;
         $this->patientID = $patientID;
         $this->doctorID = $doctorID;

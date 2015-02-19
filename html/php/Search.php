@@ -30,8 +30,7 @@ class Search{
         // Verify the user, else throw an Exception.
         // TODO: When the login module is established, use that instead.
         $user = $this->_db->getUser($username, $password);
-        if($user != False){
-            print "Access Granted.";
+        if($user != False){        
             $this->_user = $user;
         }else{
             throw new Exception('username or password is wrong.');
@@ -39,19 +38,78 @@ class Search{
     }
 
     /**
-     * @return Tuple(s) of RadiologyRecord
+     * @return Tuple(s) of RadiologyRecord that is accessible to current user.
      * @throws Exception, indicating that user class of this object is not recognized.
      *                    Such exception is fatal, review schema design and 
      *                    code consistency in Business Tier.
      */
     final public function searchWithSecurityFilter(){
-        return getRadiologyRecords($this->_user);
+        return $this->_db->getRadiologyRecords($this->_user);
     }
 
-    public function searchConditionFilter(){
+    /**
+     * @param keywords array of string.
+     * @return Tuple(s) of RadiologyRecord that is accessible to current user and match
+     *         keywords.
+     * 
+     */
+    public function searchWithKeywordFilter(array $keywords){
+        // Acquire records.
+        $records = $this->searchWithSecurityFilter();
+
+        // For each keywords, see if a match in keywords.
+        // Note that for each word, see if Edit Distance is within 1, to accomodate
+        // some mistype.
+        $rv = array();  // This will contain the matched tuples.
+        foreach($keywords as $w){
+            foreach($records as $r){
+                $match = False;
+
+                // Check test type attribute of r.
+                $testTypeStrings = 
+                    preg_split("/[\.,-\/#!$%\^&\*;:{}=\-_`~() ]/", $r->testType);
+                foreach($testTypeStrings as $tts){
+                    if($tts == $w){
+                        $match = True;
+                        $rv[] = $r;
+                        break;
+                    }
+                }
+
+                if($match) break;
+
+                // Check diagnosis attritube of r.
+                $diagnosisStrings = 
+                    preg_split("/[\.,-\/#!$%\^&\*;:{}=\-_`~() ]/", $r->diagnosis);
+                foreach($diagnosisStrings as $ds){
+                    if($ds == $w){
+                        $match = True;
+                        $rv[] = $r;
+                        break;
+                    }
+                }
+                
+                if($match) break;
+                
+                // Check description attribute of r.
+                $descriptionStrings = 
+                    preg_split("/[\.,-\/#!$%\^&\*;:{}=\-_`~() ]/", $r->description);
+                foreach($descriptionStrings as $ds){
+                    if($ds == $w){
+                        $match = True;
+                        $rv[] = $r;
+                        break;
+                    }
+                }
+
+                if($match) break;
+            }
+        }
+
+        return $rv;
     }
 
-    public function sortByDefaultRankning(){        
+    public function sortByDefaultRankning(){
     }
 
     public function sortByTimingAscending(){
