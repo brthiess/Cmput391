@@ -11,7 +11,7 @@ https://phpunit.de/getting-started.html
 
 1. SearchTest: Testing module responsible for testing Search module.
 
-## Requirements
+## Requirements:
 
 ### Search Module:
     
@@ -25,16 +25,23 @@ https://phpunit.de/getting-started.html
 
 * For all relation, reserve id 0-100 for testing purposes. This is so testing won't interrupt relational instances. i.e.
   No need to do ```DROP``` operations.
+* To use Database.php, set the three constant variables above the file with your connection info, e.g.:
+```
+const USER_NAME = 'C##PRACTICE01';
+const PASS = '1234';
+const CONNECTION_STRING = "192.168.0.23:1521/orcl.localdomain";
+```
 
 ## TODO:
 
 1. ~~Discuss the use of Database module. Should it be here just for testing purposes, or make it a standard for
    encapsulating SQL Queries.~~ An agreement has been reached.
-2. Create a Date class that will contain month, day, and, year elements. This class will handle the responsibility of
+2. ~~Create a Date class that will contain month, day, and, year elements. This class will handle the responsibility of
    representing Dates so we don't have to worry about formats. for instance, by worrying only about Date class, 
-   we don't have to worry wether DD-MON-YY, DD-MM-YY, or DD-MM-YYYY, ... is the date format.
-3. Speaking of accessors, discuss wether we should encapsulate everything (get rid of all public data types) and access
-   everything through accessors. I personally want to be consistent, but I have worked with folks who hate this strict
-   OOP mentality. Anyway, this is a standard we can vote on.
+   we don't have to worry wether DD-MON-YY, DD-MM-YY, or DD-MM-YYYY, ... is the date format.~~ Done, see **Date.php**.
+3. ~~Since EditDistance is somewhat expensive O(n^2), and using it in keyword search means, it is an operation invoked
+   considerable amount of times, implement and test an Edit Distance implementation in C++ and delegate work there.~~
+   See *EditDistance* folder.
 4. Convert C++ MSD sort (Maximum Significant Digit) sort for sublinear string sorting.
 5. Ask TAs or Prof if keywords have to be concern with Person Schema and not just radiology_record sechema.
+6. Implement a const.php to place all constants like the oracle account.

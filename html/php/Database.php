@@ -9,6 +9,10 @@ include_once 'RadiologyRecord.php';
 include_once 'FamilyDoctor.php';
 include_once 'common.php';
 
+const USER_NAME = 'C##PRACTICE01';
+const PASS = '1234';
+const CONNECTION_STRING = "192.168.0.23:1521/orcl.localdomain";
+
 /*!@class Database
  * @brief Encapsulates the Database Tier of the 3-tier architecture.
  *
@@ -45,7 +49,7 @@ class Database {
         static $inst = NULL;        
         
         if($inst == NULL){
-            $inst = new Database("C##PRACTICE01", "1234", "192.168.0.23:1521/orcl.localdomain");
+            $inst = new Database(USER_NAME, PASS, CONNECTION_STRING);
         }
         
         return $inst;

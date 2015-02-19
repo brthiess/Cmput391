@@ -61,4 +61,15 @@ function arraySetCompare(array $array1, array $array2){
     return True;
 }
 
+/**
+ * @param str1
+ * @param str2
+ * @return edit distance of str1 and str2.
+ */
+function editDistance($str1, $str2){    
+    $out = NULL;
+    exec(dirname(__FILE__)."/EditDistance/editDistance ".$str1." ".$str2, $out);
+    return $out[0];
+}
+
 ?>

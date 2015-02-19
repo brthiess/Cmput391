@@ -5,6 +5,7 @@
 
 include_once 'Database.php';
 include_once 'RadiologyRecord.php';
+include_once 'common.php';
 
 /*!@class Search
  * @brief Encapsulates Search requirements of this project. This includes, 
@@ -67,9 +68,10 @@ class Search{
 
                 // Check test type attribute of r.
                 $testTypeStrings = 
-                    preg_split("/[\.,-\/#!$%\^&\*;:{}=\-_`~() ]/", $r->testType);
+                    preg_split("/(?<=\w)\b\s*[!?.]*/", $r->testType, -1,
+                               PREG_SPLIT_NO_EMPTY);
                 foreach($testTypeStrings as $tts){
-                    if($tts == $w){
+                    if(editDistance($tts, $w) <= 1){                    
                         $match = True;
                         $rv[] = $r;
                         break;
@@ -80,9 +82,10 @@ class Search{
 
                 // Check diagnosis attritube of r.
                 $diagnosisStrings = 
-                    preg_split("/[\.,-\/#!$%\^&\*;:{}=\-_`~() ]/", $r->diagnosis);
+                    preg_split("/(?<=\w)\b\s*[!?.]*/", $r->diagnosis, -1,
+                               PREG_SPLIT_NO_EMPTY);
                 foreach($diagnosisStrings as $ds){
-                    if($ds == $w){
+                    if(editDistance($ds, $w) <= 1){
                         $match = True;
                         $rv[] = $r;
                         break;
@@ -93,9 +96,10 @@ class Search{
                 
                 // Check description attribute of r.
                 $descriptionStrings = 
-                    preg_split("/[\.,-\/#!$%\^&\*;:{}=\-_`~() ]/", $r->description);
+                    preg_split("/(?<=\w)\b\s*[!?.]*/", $r->description, -1,
+                               PREG_SPLIT_NO_EMPTY);
                 foreach($descriptionStrings as $ds){
-                    if($ds == $w){
+                    if(editDistance($ds, $w) <= 1){
                         $match = True;
                         $rv[] = $r;
                         break;

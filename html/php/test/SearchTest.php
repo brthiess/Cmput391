@@ -19,7 +19,7 @@ class SearchTest extends PHPUnit_Framework_TestCase{
     private $RECORDS = array();
     
     protected function setUp(){
-        $db = Database::instance();  // Acquire database instance.
+        $db = Database::instance();  // Acquire database instance
         
         // Add Person objects.
         $this->PEOPLE[] = new Person(
@@ -226,10 +226,24 @@ class SearchTest extends PHPUnit_Framework_TestCase{
      */
     public function searchWithKeywordFilter(){
         $search = new Search('joeShmoe', '1234');
+        
+        // Single Word match.
         $this->assertEquals(
             True, 
             arraySetCompare(
                 $search->searchWithKeywordFilter(array('durex')), array($this->RECORDS[1])));
+
+        // Single word match with 1 character mistype.
+        $this->assertEquals(
+            True, 
+            arraySetCompare(
+                $search->searchWithKeywordFilter(array('durek')), array($this->RECORDS[1])));
+
+        // Nno matche due to editDistance >= 2.
+        $this->assertEquals(
+            False, 
+            arraySetCompare(
+                $search->searchWithKeywordFilter(array('durik')), array($this->RECORDS[1])));
     }
     
     /**
