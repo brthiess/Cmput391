@@ -23,7 +23,6 @@ size_t editDistance(const string& str1, const string& str2){
     dist[0][i] = i;
   }
 
-  cout << endl;
   for(size_t i = 1; i < str1.size()+1; i++){
     for(size_t j = 1; j < str2.size()+1; j++){
       dist[i][j] =
