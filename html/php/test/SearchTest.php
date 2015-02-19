@@ -21,26 +21,68 @@ class SearchTest extends PHPUnit_Framework_TestCase{
         $db = Database::instance();  // Acquire database instance.
         
         // Add Person objects.
-        $this->PEOPLE[] = new Person("1", "Joe", 'Shmoe', '666 Helldrive, Hell Prairie', 'shmoe@hell.h', '677-8081', '02-FEB-2015');
-        $this->PEOPLE[] = new Person("2", "Sterling", 'Archer', 'CIA branch', 'casablumpkin@archer.com', '345-344', 'CURRENT_DATE');
-        $this->PEOPLE[] = new Person("3", "Cyril", 'Figgis', 'CIA branch', 'chetmanly@yahoo.com', '345-344', 'CURRENT_DATE');
-        $this->PEOPLE[] = new Person("4", "Borat", 'Borat', 'Kazak', 'borat@yahoo.kz', '123-432', 'CURRENT_DATE');
-        $this->PEOPLE[] = new Person("5", "Larry", 'David', 'LA', 'larry@david.com', '123-432', 'CURRENT_DATE');
-        $this->PEOPLE[] = new Person("6", "Jerry", 'Seinfeld', 'New York', 'jerry@seinfeld.com', '123-432', 'CURRENT_DATE');
-        $this->PEOPLE[] = new Person("7", "Bill", 'Burr', 'New York', 'bill@burr.com', '123-432', 'CURRENT_DATE');        
+        $this->PEOPLE[] = new Person(
+            "1", 
+            "Joe", 
+            'Shmoe', 
+            '666 Helldrive, Hell Prairie', 
+            'shmoe@hell.h', '677-8081', '02-FEB-2015');
+        $this->PEOPLE[] = new Person(
+            "2", 
+            "Sterling", 
+            'Archer', 
+            'CIA branch', 
+            'casablumpkin@archer.com', '345-344', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person(
+            "3", 
+            "Cyril", 
+            'Figgis', 
+            'CIA branch', 
+            'chetmanly@yahoo.com', '345-344', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person(
+            "4", 
+            "Borat", 
+            'Borat', 
+            'Kazak', 
+            'borat@yahoo.kz', '123-432', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person(
+            "5", 
+            "Larry", 
+            'David', 
+            'LA', 
+            'larry@david.com', '123-432', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person(
+            "6", 
+            "Jerry", 
+            'Seinfeld', 
+            'New York', 
+            'jerry@seinfeld.com', '123-432', 'CURRENT_DATE');
+        $this->PEOPLE[] = new Person(
+            "7", 
+            "Bill", 
+            'Burr', 
+            'New York', 
+            'bill@burr.com', '123-432', 'CURRENT_DATE');        
         
         foreach ($this->PEOPLE as $person){
             $db->addPerson($person);
         }
 
         // Add User objects.
-        $this->USERS[] = new User("joeShmoe", '1234', 'a', "1", '02-FEB-15');
-        $this->USERS[] = new User("bertReynolds", '1234', 'd', "2", '02-FEB-15');
-        $this->USERS[] = new User("chetManly", '1234', 'p', "3", '02-FEB-15');
-        $this->USERS[] = new User("Ilike", '1234', 'p', "4", '02-FEB-15');
-        $this->USERS[] = new User("purtygood", '1234', 'p', "5", '02-FEB-15');
-        $this->USERS[] = new User("billionaireCommedian", '1234', 'r', "6", '02-FEB-15');
-        $this->USERS[] = new User("irishNonDrunk", '1234', 'r', "7", '02-FEB-15');
+        $this->USERS["joeShmoe"] = new User(
+            "joeShmoe", '1234', 'a', "1", '02-FEB-15');
+        $this->USERS["bertReynolds"] = new User(
+            "bertReynolds", '1234', 'd', "2", '02-FEB-15');
+        $this->USERS["chetManly"] = new User(
+            "chetManly", '1234', 'p', "3", '02-FEB-15');
+        $this->USERS["Ilike"] = new User(
+            "Ilike", '1234', 'p', "4", '02-FEB-15');
+        $this->USERS["purtygood"] = new User(
+            "purtygood", '1234', 'p', "5", '02-FEB-15');
+        $this->USERS["billionaireCommedian"] = new User(
+            "billionaireCommedian", '1234', 'r', "6", '02-FEB-15');
+        $this->USERS["irishNonDrunk"] = new User(
+            "irishNonDrunk", '1234', 'r', "7", '02-FEB-15');
 
         foreach ($this->USERS as $user){
             $db->addUser($user);
@@ -55,9 +97,31 @@ class SearchTest extends PHPUnit_Framework_TestCase{
             $db->addFamilyDoctor($fd);
         }
 
-        $this->RECORDS[] = new RadiologyRecord(1, 3, 2, 7, 'aids', '02-FEB-15', '07-FEB-15', 'positive', 'not hiv but full blown aids.');
-        $this->RECORDS[] = new RadiologyRecord(2, 4, 2, 6, 'hiv', '05-FEB-15', '21-FEB-15', 'negative', 'brought to you buy durex.');
-        $this->RECORDS[] = new RadiologyRecord(3, 5, 2, 6, 'statically discharge', '10-FEB-15', '21-APR-15', 'positive', 'you have been statically discharge of service.');
+        $this->RECORDS[] = new RadiologyRecord(
+            1, 
+            3, 
+            2, 
+            7, 
+            'aids', 
+            '02-FEB-15', 
+            '07-FEB-15', 'positive', 'not hiv but full blown aids.');
+        $this->RECORDS[] = new RadiologyRecord(
+            2, 
+            4, 
+            2, 
+            6, 
+            'hiv', 
+            '05-FEB-15', 
+            '21-FEB-15', 'negative', 'brought to you buy durex.');
+        $this->RECORDS[] = new RadiologyRecord(
+            3, 
+            5, 
+            2, 
+            6, 
+            'statically discharge', 
+            '10-FEB-15', 
+            '21-APR-15', 
+            'positive', 'you have been statically discharge of service.');
 
         foreach ($this->RECORDS as $r){
             $db->addRadiologyRecord($r);
@@ -102,8 +166,43 @@ class SearchTest extends PHPUnit_Framework_TestCase{
      *       Select[*](Radiology_Record)
      */
     public function securityModuleFilterTest(){
-        $db = Database::instance();        
-        $this->assertEquals($db->getRadiologyRecords($this->USERS[0]), $this->RECORDS);
+        $db = Database::instance();
+
+        // Ensure that the admin record, $this->USERS[0], can access all the recordsd, 
+        // $this->RECORDS.
+                
+        $this->assertEquals(
+            True, arraySetCompare(
+                $db->getRadiologyRecords($this->USERS["joeShmoe"]), 
+                $this->RECORDS));
+
+        // Ensure that each patients can only access records they are in.
+        $this->assertEquals(
+            True, arraySetCompare(
+                $db->getRadiologyRecords($this->USERS["chetManly"]), 
+                array($this->RECORDS[0])));
+        $this->assertEquals(
+            True, arraySetCompare(
+                $db->getRadiologyRecords($this->USERS["Ilike"]), 
+                array($this->RECORDS[1])));
+        $this->assertEquals(
+            True, arraySetCompare(
+                $db->getRadiologyRecords($this->USERS["purtygood"]), 
+                array($this->RECORDS[2])));
+
+        // Ensure that each doctor can only access records of their patients.
+        $this->assertEquals(
+            True, arraySetCompare(
+                $db->getRadiologyRecords($this->USERS["bertReynolds"]), 
+                array($this->RECORDS[0], $this->RECORDS[1], $this->RECORDS[2])));
+
+        // Ensure that each that radiologist can access the records they took.
+        $this->assertEquals(
+            True, arraySetCompare($db->getRadiologyRecords($this->USERS["billionaireCommedian"]), 
+            array($this->RECORDS[1], $this->RECORDS[2])));
+        $this->assertEquals(
+            True, arraySetCompare($db->getRadiologyRecords($this->USERS["irishNonDrunk"]), 
+            array($this->RECORDS[0])));
     }
 
     /**

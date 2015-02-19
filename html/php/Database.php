@@ -69,12 +69,12 @@ class Database {
      */
     public function addPerson(Person $person){        
         $sqlstmt = 'INSERT INTO persons VALUES('.
-            ($person->personID == NULL? 'persons_seq.nextval' : $person->personID).', \''.
-            $person->firstName.'\', \''.
-            $person->lastName.'\', \''.
-            $person->address.'\', \''.
-            $person->email.'\', \''.
-            $person->phone.'\')';
+            ($person->personID == NULL? 'persons_seq.nextval' : $person->personID).', '.
+            Q($person->firstName).', '.
+            Q($person->lastName).', '.
+            Q($person->address).', '.
+            Q($person->email).', '.
+            Q($person->phone).')';
 
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -88,7 +88,7 @@ class Database {
      * @throws Exception, id doesn't exist.
      */
     public function removePerson($id){
-        $sqlstmt = 'DELETE FROM persons WHERE person_id='.$id.'';
+        $sqlstmt = 'DELETE FROM persons WHERE person_id='.$id;
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -104,12 +104,12 @@ class Database {
      * @see User
      */
     public function addUser(User $user){
-        $sqlstmt = 'INSERT INTO users VALUES(\''.
-            $user->userName.'\', \''.
-            $user->password.'\', \''.
-            $user->clss.'\', \''.
-            $user->personID.'\', \''.
-            $user->dateRegistered.'\')';
+        $sqlstmt = 'INSERT INTO users VALUES('.
+            Q($user->userName).', '.
+            Q($user->password).', '.
+            Q($user->clss).', '.
+            $user->personID.', '.
+            Q($user->dateRegistered).')';
 
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -123,7 +123,7 @@ class Database {
      * @throws Exception if user with a userName does not exist.
      */
     public function removeUser($userName){
-        $sqlstmt = 'DELETE FROM users WHERE user_name=\''.$userName.'\'';
+        $sqlstmt = 'DELETE FROM users WHERE user_name='.Q($userName).'';
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -243,21 +243,21 @@ class Database {
             break;
         case 'p':
             // Can view only records that belongs to his/her.
-            $sqlStmt = 'SELECT rr '.
+            $sqlStmt = 'SELECT rr.* '.
                 'FROM radiology_record rr JOIN users u ON rr.patient_id=u.person_id '.
-                'WHERE u.person_id='.$user->personID.'';
+                'WHERE u.person_id='.$user->personID;
             break;
         case 'd':
             // Can view records of his/her patients.
-            $sqlStmt = 'SELECT rr '.
+            $sqlStmt = 'SELECT rr.* '.
                 'FROM radiology_record rr JOIN users u ON rr.doctor_id=u.person_id '.
-                'WHERE u.person_id='.$user->personID.'';
+                'WHERE u.person_id='.$user->personID;
             break;
         case 'r':
             // Can view records that he/she took with a patient.
-            $sqlStmt = 'SELECT rr '.
+            $sqlStmt = 'SELECT rr.* '.
                 'FROM radiology_record rr JOIN users u ON rr.radiologist_id=u.person_id '.
-                'WHERE u.person_id='.$user->personID.'';
+                'WHERE u.person_id='.$user->personID;
             break;
         default:
             throw new Exception('Fatal Error: Check schema and php codes.');

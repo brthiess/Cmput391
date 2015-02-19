@@ -21,11 +21,15 @@ https://phpunit.de/getting-started.html
 4. Sort By Most Recently Last
 5. Sort By some specified rule.
 
+## Notes:
+
+* For all relation, reserve id 0-100 for testing purposes. This is so testing won't interrupt relational instances. i.e.
+  No need to do ```DROP``` operations.
 
 ## TODO:
 
-1. Discuss the use of Database module. Should it be here just for testing purposes, or make it a standard for
-   encapsulating SQL Queries.
+1. ~~Discuss the use of Database module. Should it be here just for testing purposes, or make it a standard for
+   encapsulating SQL Queries.~~ An agreement has been reached.
 2. Since equality of SQL and PHP data types are critical, create data converter behind the constructor. For instance,
    SQL Date standard is 'DD-MON-YY' which is kinda hard to remember. To truly encapsulate and forget about difference,
    create a Date object that will contain *Day, Month, Year* fields (one can easily extend this for timestamps), and
