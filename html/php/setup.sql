@@ -9,6 +9,7 @@ DROP FUNCTION searchWithKPByRank;
 DROP FUNCTION searchWithKeyWordsByRank;
 DROP FUNCTION searchWithKeyWordsByTime;
 DROP FUNCTION searchWithPeriodByTime;
+DROP FUNCTION getRadiologyRecords;
 DROP TYPE radiology_record_rt_t;
 DROP TYPE radiology_record_rt;
 DROP INDEX personsIndexLastName;
@@ -164,6 +165,71 @@ CREATE TYPE radiology_record_rt AS OBJECT(
  * the result for the query functions that returns radiology_record tuples.
  */
 CREATE TYPE radiology_record_rt_t IS TABLE OF radiology_record_rt;
+/
+
+/**
+ * @param userName
+ * @return table of radiology_records that the given user can access.
+ */
+CREATE FUNCTION getRadiologyRecords(userName IN VARCHAR2) return radiology_record_rt_t
+       IS
+       l_tab radiology_record_rt_t := radiology_record_rt_t();
+       userRow users%ROWTYPE := NULL;
+       BEGIN
+       
+       Select * INTO userRow
+       FROM users WHERE user_name=userName;
+       
+       CASE userRow.class
+       	    WHEN 'a' THEN
+       	    FOR t in
+       	    (SELECT rr.*
+             FROM radiology_record rr) LOOP
+	     	   l_tab.extend;
+	     	   l_tab(l_tab.last) := radiology_record_rt(
+	           		     t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
+		 		     t.prescribing_date, t.test_date, t.diagnosis, t.description);
+	    END LOOP;
+
+       	    WHEN 'p' THEN
+       	    FOR t in
+       	    (SELECT rr.*
+             FROM radiology_record rr JOIN users u ON rr.patient_id=u.person_id
+             WHERE u.person_id=userRow.person_id) LOOP
+	     	   l_tab.extend;
+	     	   l_tab(l_tab.last) := radiology_record_rt(
+	           		     t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
+		 		     t.prescribing_date, t.test_date, t.diagnosis, t.description);
+	    END LOOP;
+
+       	    WHEN 'd' THEN
+       	    FOR t in
+       	    (SELECT rr.*
+             FROM radiology_record rr JOIN users u ON rr.doctor_id=u.person_id
+             WHERE u.person_id=userRow.person_id) LOOP
+	     	   l_tab.extend;
+	     	   l_tab(l_tab.last) := radiology_record_rt(
+	           		     t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
+		 		     t.prescribing_date, t.test_date, t.diagnosis, t.description);
+	    END LOOP;
+
+       	    WHEN 'r' THEN
+       	    FOR t in
+       	    (SELECT rr.*
+             FROM radiology_record rr JOIN users u ON rr.radiologist_id=u.person_id
+             WHERE u.person_id=userRow.person_id) LOOP
+	     	   l_tab.extend;
+	     	   l_tab(l_tab.last) := radiology_record_rt(
+	           		     t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
+		 		     t.prescribing_date, t.test_date, t.diagnosis, t.description);
+	    END LOOP;
+	    
+       	    ELSE RAISE_APPLICATION_ERROR(-20000, 'user type not recognized.');
+       END CASE;
+
+       return l_tab;
+       
+       END;
 /
 
 /**

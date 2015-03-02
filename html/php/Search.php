@@ -6,6 +6,7 @@
 include_once 'Database.php';
 include_once 'RadiologyRecord.php';
 include_once 'common.php';
+include_once 'Date.php';
 
 /*!@class Search
  * @brief Encapsulates Search requirements of this project. This includes, 
@@ -37,27 +38,53 @@ class Search{
             throw new Exception('username or password is wrong.');
         }
     }
+
+    /**
+     * @param keywords string of keywords.
+     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     */
+    public function searchWithKeywordsByRank($keywords){
+        
+    }
     
     /**
-     * @param keywords separated by spaces or OR(|), AND(&).
-     * @param orderByTiming if true, results are ordered by timing, otherwise ordered by ranking.
-     * @return array of results.
+     * @param keywords string of keywords.
+     * @param true for descending ordering, false otherwise.
+     * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
-    public function searchWithKeywords($keywords, $orderByTiming=false){
-        if($orderByTiming==false){
-        }else{
-        }
+    public function searchWithKeywordsByTime($keywords, $descending=True){
+        
     }
 
     /**
-     * @param timePeriod array containing two Dates.
-     * @param orderByTiming if true, results are ordered by timing, otherwise ordered by ranking.
-     * @return array of results.
+     * @param d1 lowerbound of date to be included.
+     * @param d2 upperbound of date to be included.
+     * @param descending true for descending ordering, false otherwise.
+     * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
-    public function searchWithPeriod(array $timePeriod, $orderByTiming=false){
-        if($orderByTiming==false){
-        }else{
-        }
+    public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
+        
+    }
+
+    /**
+     * @param keywords string of keywords.
+     * @param d1 lowerbound of date to be included.
+     * @param d2 upperbound of date to be included.
+     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     */
+    public function searchWithKPByRank($keywords, Date $d1, Date $d2){
+        
+    }
+
+    /**
+     * @param keywords string of keywords.
+     * @param d1 lowerbound of date to be included.
+     * @param d2 upperbound of date to be included.
+     * @param desencending true for descending ordering, false otherwise.
+     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     */
+    public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
+        
     }
 }
 

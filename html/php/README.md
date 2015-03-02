@@ -34,13 +34,4 @@ const CONNECTION_STRING = "192.168.0.23:1521/orcl.localdomain";
 
 ## TODO:
 
-1. ~~Discuss the use of Database module. Should it be here just for testing purposes, or make it a standard for
-   encapsulating SQL Queries.~~ An agreement has been reached.
-2. ~~Create a Date class that will contain month, day, and, year elements. This class will handle the responsibility of
-   representing Dates so we don't have to worry about formats. for instance, by worrying only about Date class, 
-   we don't have to worry wether DD-MON-YY, DD-MM-YY, or DD-MM-YYYY, ... is the date format.~~ Done, see **Date.php**.
-3. ~~Since EditDistance is somewhat expensive O(n^2), and using it in keyword search means, it is an operation invoked
-   considerable amount of times, implement and test an Edit Distance implementation in C++ and delegate work there.~~
-   See *EditDistance* folder.
-4. Ask TAs or Prof if keywords have to be concern with Person Schema and not just radiology_record sechema.
-5. Implement a const.php to place all constants like the oracle account.
+1. For Search module, perform the intersect before ordering, not the other way around.

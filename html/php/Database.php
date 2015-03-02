@@ -143,9 +143,8 @@ class Database {
      *         False if user does not exist.
      * @see User
      */
-    public function getUser($userName, $password){
-        $sqlstmt = 'SELECT * FROM users WHERE user_name='.Q($userName).' and '.
-            'password='.Q($password).'';
+    public function getUser($userName){
+        $sqlstmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
 
         $stid = oci_parse($this->_connection, $sqlstmt);
         if (!$stid) {
@@ -222,51 +221,12 @@ class Database {
     }
     
     /**
-     * @param user User object.
-     * @return array of RadiologyRecords.
+     * @param userName
+     * @return array of RadiologyRecords that is accessible to the user.
      * @throws Exception user not recognized.
-     * @see User
-     * 
-     * This method first ensure that $user's password match for security reasons.
-     * This is because anyone can call this and without check password,
-     * security assumption failed.
      */
-    public function getRadiologyRecords($user){
-        // Validate user first. That is, ensure that all of User object
-        // attribute are legitimate.
-        if($user != $this->getUser($user->userName, $user->password)){
-            throw new Exception('User not recognized. Access Denied.');
-        }
-
-        // At this point, user is validated, perform the appropriate query.
-        $sqlStmt = NULL;
-        switch($user->clss){
-        case 'a':
-            // User is admin, user can select all records.
-            $sqlStmt = 'SELECT * FROM radiology_record';
-            break;
-        case 'p':
-            // Can view only records that belongs to his/her.
-            $sqlStmt = 'SELECT rr.* '.
-                'FROM radiology_record rr JOIN users u ON rr.patient_id=u.person_id '.
-                'WHERE u.person_id='.$user->personID;
-            break;
-        case 'd':
-            // Can view records of his/her patients.
-            $sqlStmt = 'SELECT rr.* '.
-                'FROM radiology_record rr JOIN users u ON rr.doctor_id=u.person_id '.
-                'WHERE u.person_id='.$user->personID;
-            break;
-        case 'r':
-            // Can view records that he/she took with a patient.
-            $sqlStmt = 'SELECT rr.* '.
-                'FROM radiology_record rr JOIN users u ON rr.radiologist_id=u.person_id '.
-                'WHERE u.person_id='.$user->personID;
-            break;
-        default:
-            throw new Exception('Fatal Error: Check schema and php codes.');
-            break;
-        }
+    public function getRadiologyRecords($userName){
+        $sqlStmt = 'SELECT * FROM TABLE(getRadiologyRecords('.Q($userNmae.'))';
         
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
@@ -301,31 +261,80 @@ class Database {
     }
     
     /**
-     * @param recordID id of the radiology_record instance that you want a ranking.
-     * @return rank of the record associated with the recordID
+     * @param keywords string of keywords.
+     * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
-    public function getRecordRank($recordID){
-        $sqlstmt = 'SELECT getRecordRank('.$recordID.','.'\'cyril|figgis\''.') as rank FROM dual';
-
-        $stid = oci_parse($this->_connection, $sqlstmt);
+    public function searchWithKeywordsByRank($keywords){
+        $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
             $e = oci_error($this->_connection);
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
-
-        // Perform the logic of the query
-        $r = oci_execute($stid);
-        if (!$r) {
-            $e = oci_error($stid);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+        
+        $rv = array();
+        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+            $rv[] = 
+                new RadiologyRecord(
+                    $row['RECORD_ID'],
+                    $row['PATIENT_ID'],
+                    $row['DOCTOR_ID'],
+                    $row['RADIOLOGIST_ID'],
+                    $row['TEST_TYPE'],
+                    new Date($row['PRESCRIBING_DATE']),
+                    new Date($row['TEST_DATE']),
+                    $row['DIAGNOSIS'],
+                    $row['DESCRIPTION']
+                );
         }
 
-        $row = oci_fetch_array($stid, OCI_ASSOC);
-        if ($row == False){
-            return -1;
-        }        
+        oci_free_statement($stid);        
+        return $rv;
+    }
+    
+    /**
+     * @param keywords string of keywords.
+     * @param true for descending ordering, false otherwise.
+     * @return table of radiology_records that matches the given keywords, ordered by test_date.
+     */
+    public function searchWithKeywordsByTime($keywords, $descending=True){
         
-        return $row["RANK"];
+    }
+
+    /**
+     * @param d1 lowerbound of date to be included.
+     * @param d2 upperbound of date to be included.
+     * @param descending true for descending ordering, false otherwise.
+     * @return table of radiology_records that matches the given keywords, ordered by test_date.
+     */
+    public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
+        
+    }
+
+    /**
+     * @param keywords string of keywords.
+     * @param d1 lowerbound of date to be included.
+     * @param d2 upperbound of date to be included.
+     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     */
+    public function searchWithKPByRank($keywords, Date $d1, Date $d2){
+        
+    }
+
+    /**
+     * @param keywords string of keywords.
+     * @param d1 lowerbound of date to be included.
+     * @param d2 upperbound of date to be included.
+     * @param desencending true for descending ordering, false otherwise.
+     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     */
+    public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
+        
     }
 }
 
