@@ -273,7 +273,7 @@ class Database {
             $e = oci_error($this->_connection);
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
-
+        
         try{
             $rv = oci_execute($stid);
         }catch(Exception $e){
@@ -295,8 +295,37 @@ class Database {
                     $row['DESCRIPTION']
                 );
         }
-        
+
+        oci_free_statement($stid);        
         return $rv;
+    }
+    
+    /**
+     * @param recordID id of the radiology_record instance that you want a ranking.
+     * @return rank of the record associated with the recordID
+     */
+    public function getRecordRank($recordID){
+        $sqlstmt = 'SELECT getRecordRank('.$recordID.','.'\'cyril|figgis\''.') as rank FROM dual';
+
+        $stid = oci_parse($this->_connection, $sqlstmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+
+        // Perform the logic of the query
+        $r = oci_execute($stid);
+        if (!$r) {
+            $e = oci_error($stid);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+
+        $row = oci_fetch_array($stid, OCI_ASSOC);
+        if ($row == False){
+            return -1;
+        }        
+        
+        return $row["RANK"];
     }
 }
 

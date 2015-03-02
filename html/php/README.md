@@ -42,6 +42,5 @@ const CONNECTION_STRING = "192.168.0.23:1521/orcl.localdomain";
 3. ~~Since EditDistance is somewhat expensive O(n^2), and using it in keyword search means, it is an operation invoked
    considerable amount of times, implement and test an Edit Distance implementation in C++ and delegate work there.~~
    See *EditDistance* folder.
-4. Convert C++ MSD sort (Maximum Significant Digit) sort for sublinear string sorting.
-5. Ask TAs or Prof if keywords have to be concern with Person Schema and not just radiology_record sechema.
-6. Implement a const.php to place all constants like the oracle account.
+4. Ask TAs or Prof if keywords have to be concern with Person Schema and not just radiology_record sechema.
+5. Implement a const.php to place all constants like the oracle account.

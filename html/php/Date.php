@@ -12,6 +12,9 @@
 class Month {
     private $_val = self::January;
     
+    /**
+     * @param m ORACLE MON format or Month::Janurary, Month::February, etc.     
+     */
     public function __construct($m){
         $type = gettype($m);
         
@@ -39,6 +42,9 @@ class Month {
     const November = 11;
     const December = 12;
 
+    /**
+     * @return MM string of the month.
+     */
     function toMM(){
         switch($this->_val){
         case Month::January:
@@ -68,6 +74,9 @@ class Month {
         }
     }
 
+    /**
+     * @return MON format string.
+     */
     function toMON(){
         switch($this->_val){
         case Month::January:
@@ -97,6 +106,11 @@ class Month {
         }
     }
 
+    /**
+     * @param $mm 
+     * @return MON version of MM format.
+     * @throw Exception if mm is not exactly of MON format.
+     */
     static function MONtoMM($mm){
         switch($mm){
         case 'JAN':
@@ -123,18 +137,29 @@ class Month {
             return Month::November;
         case 'DEC':
             return Month::December;
+        default:
+            throw new Exception('MON format string not recognized.');
         }
     }
 }
 
 
 /*!@class Date
+ * @brief Abstraction to Oracle Date data type.
  */
-class Date{
+class Date{    
     protected $_month = NULL;
     protected $_day = 1;
     protected $_year = 2015;
 
+    /**
+     * Two way to initialize. Provide ORACLE DATE format string or
+     * provide Month, Date, Year.
+     * @param ORACLE Date format string DD-MON-YY, e.g. 05-FEB-15
+     * @param Month
+     * @param Date
+     * @param Year
+     */
     public function __construct(){
         $a = func_get_args();
         $i = func_num_args();
@@ -162,6 +187,10 @@ class Date{
         $this->_year = intval($year)%100;  // Only keep 2 least significant digit.
     }
     
+    /**
+     * Overloaded toString so treating Date object as a string will dereference
+     * an Oracle Date formatted string.
+     */
     public function __toString(){
         $dayStr = ($this->_day < 10? '0'.$this->_day : (string)$this->_day);
         $yearStr = substr(sprintf('%08d', $this->_year), -2, 2);

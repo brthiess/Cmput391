@@ -37,89 +37,27 @@ class Search{
             throw new Exception('username or password is wrong.');
         }
     }
-
+    
     /**
-     * @return Tuple(s) of RadiologyRecord that is accessible to current user.
-     * @throws Exception, indicating that user class of this object is not recognized.
-     *                    Such exception is fatal, review schema design and 
-     *                    code consistency in Business Tier.
+     * @param keywords separated by spaces or OR(|), AND(&).
+     * @param orderByTiming if true, results are ordered by timing, otherwise ordered by ranking.
+     * @return array of results.
      */
-    final public function searchWithSecurityFilter(){
-        return $this->_db->getRadiologyRecords($this->_user);
-    }
-
-    /**
-     * @param keywords array of string.
-     * @return Tuple(s) of RadiologyRecord that is accessible to current user and match
-     *         keywords.
-     * 
-     */
-    public function searchWithKeywordFilter(array $keywords){
-        // Acquire records.
-        $records = $this->searchWithSecurityFilter();
-
-        // For each keywords, see if a match in keywords.
-        // Note that for each word, see if Edit Distance is within 1, to accomodate
-        // some mistype.
-        $rv = array();  // This will contain the matched tuples.
-        foreach($keywords as $w){
-            foreach($records as $r){
-                $match = False;
-
-                // Check test type attribute of r.
-                $testTypeStrings = 
-                    preg_split("/(?<=\w)\b\s*[!?.]*/", $r->testType, -1,
-                               PREG_SPLIT_NO_EMPTY);
-                foreach($testTypeStrings as $tts){
-                    if(editDistance($tts, $w) <= 1){                    
-                        $match = True;
-                        $rv[] = $r;
-                        break;
-                    }
-                }
-
-                if($match) break;
-
-                // Check diagnosis attritube of r.
-                $diagnosisStrings = 
-                    preg_split("/(?<=\w)\b\s*[!?.]*/", $r->diagnosis, -1,
-                               PREG_SPLIT_NO_EMPTY);
-                foreach($diagnosisStrings as $ds){
-                    if(editDistance($ds, $w) <= 1){
-                        $match = True;
-                        $rv[] = $r;
-                        break;
-                    }
-                }
-                
-                if($match) break;
-                
-                // Check description attribute of r.
-                $descriptionStrings = 
-                    preg_split("/(?<=\w)\b\s*[!?.]*/", $r->description, -1,
-                               PREG_SPLIT_NO_EMPTY);
-                foreach($descriptionStrings as $ds){
-                    if(editDistance($ds, $w) <= 1){
-                        $match = True;
-                        $rv[] = $r;
-                        break;
-                    }
-                }
-
-                if($match) break;
-            }
+    public function searchWithKeywords($keywords, $orderByTiming=false){
+        if($orderByTiming==false){
+        }else{
         }
-
-        return $rv;
     }
 
-    public function sortByDefaultRankning(){
-    }
-
-    public function sortByTimingAscending(){
-    }
-
-    public function sortByTimingDescending(){
+    /**
+     * @param timePeriod array containing two Dates.
+     * @param orderByTiming if true, results are ordered by timing, otherwise ordered by ranking.
+     * @return array of results.
+     */
+    public function searchWithPeriod(array $timePeriod, $orderByTiming=false){
+        if($orderByTiming==false){
+        }else{
+        }
     }
 }
 
