@@ -9,14 +9,18 @@ include_once 'RadiologyRecord.php';
 include_once 'FamilyDoctor.php';
 include_once 'common.php';
 
-const USER_NAME = 'C##PRACTICE01';
-const PASS = '1234';
-const CONNECTION_STRING = "192.168.0.23:1521/orcl.localdomain";
+/**
+ * The following are db credentials. If you want a quick db, I suggest looking into docker and use the 
+ * following docker file: https://github.com/wnameless/docker-oracle-xe-11g
+ */
+const USER_NAME = 'system';
+const PASS = 'oracle';
+const CONNECTION_STRING = "localhost:49161/xe";
 
 /*!@class Database
  * @brief Encapsulates the Database Tier of the 3-tier architecture.
  *
- * Note that this assumes that the schemas are already created. 
+ * Note that this assumes that the schemas are already created.
  */
 class Database {
     private $_username = NULL;
@@ -71,14 +75,14 @@ class Database {
      * @throws Exception, something about the Person properties is wrong.
      * @see Person
      */
-    public function addPerson(Person $person){        
+    public function addPerson(Person $person){ 
         $sqlstmt = 'INSERT INTO persons VALUES('.
-            ($person->personID == NULL? 'persons_seq.nextval' : $person->personID).', '.
-            Q($person->firstName).', '.
-            Q($person->lastName).', '.
-            Q($person->address).', '.
-            Q($person->email).', '.
-            Q($person->phone).')';
+                 ($person->personID == NULL? 'persons_seq.nextval' : $person->personID).', '.
+                 Q($person->firstName).', '.
+                 Q($person->lastName).', '.
+                 Q($person->address).', '.
+                 Q($person->email).', '.
+                 Q($person->phone).')';
 
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -109,11 +113,11 @@ class Database {
      */
     public function addUser(User $user){
         $sqlstmt = 'INSERT INTO users VALUES('.
-            Q($user->userName).', '.
-            Q($user->password).', '.
-            Q($user->clss).', '.
-            $user->personID.', '.
-            Q($user->dateRegistered).')';
+                 Q($user->userName).', '.
+                 Q($user->password).', '.
+                 Q($user->clss).', '.
+                 $user->personID.', '.
+                 Q($user->dateRegistered).')';
 
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -174,8 +178,8 @@ class Database {
      */
     public function addFamilyDoctor(FamilyDoctor $fd){
         $sqlstmt = 'INSERT INTO family_doctor VALUES('.
-            $fd->doctorID.', '.
-            $fd->patientID.')';
+                 $fd->doctorID.', '.
+                 $fd->patientID.')';
 
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -186,7 +190,7 @@ class Database {
 
     public function removeFamilyDoctor(FamilyDoctor $fd){
         $sqlstmt = 'DELETE FROM family_doctor WHERE doctor_id='.$fd->doctorID.' and '.
-            'patient_id='.$fd->patientID;
+                 'patient_id='.$fd->patientID;
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -197,11 +201,11 @@ class Database {
 
     public function addRadiologyRecord(RadiologyRecord $rr){
         $sqlstmt = 'INSERT INTO radiology_record VALUES('.
-            commaSeparatedString(
-                array(($rr->recordID==NULL? 'records_seq.nextval' : $rr->recordID),
-                $rr->patientID, $rr->doctorID, 
-                $rr->radiologistID, Q($rr->testType), Q($rr->prescribingDate), 
-                Q($rr->testDate), Q($rr->diagnosis), Q($rr->description))).')';
+                 commaSeparatedString(
+                     array(($rr->recordID==NULL? 'records_seq.nextval' : $rr->recordID),
+                           $rr->patientID, $rr->doctorID, 
+                           $rr->radiologistID, Q($rr->testType), Q($rr->prescribingDate), 
+                           Q($rr->testDate), Q($rr->diagnosis), Q($rr->description))).')';
             
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -226,8 +230,8 @@ class Database {
      * @throws Exception user not recognized.
      */
     public function getRadiologyRecords($userName){
-        $sqlStmt = 'SELECT * FROM TABLE(getRadiologyRecords('.Q($userNmae.'))';
-        
+        $sqlStmt = "SELECT * FROM TABLE(getRadiologyRecords('".$userName."'))";
+                                                                
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
             $e = oci_error($this->_connection);
@@ -243,17 +247,17 @@ class Database {
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
             $rv[] = 
-                new RadiologyRecord(
-                    $row['RECORD_ID'],
-                    $row['PATIENT_ID'],
-                    $row['DOCTOR_ID'],
-                    $row['RADIOLOGIST_ID'],
-                    $row['TEST_TYPE'],
-                    new Date($row['PRESCRIBING_DATE']),
-                    new Date($row['TEST_DATE']),
-                    $row['DIAGNOSIS'],
-                    $row['DESCRIPTION']
-                );
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
         }
 
         oci_free_statement($stid);        
@@ -265,6 +269,7 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKeywordsByRank($keywords){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByRank('".$keywords."'))";
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
             $e = oci_error($this->_connection);
@@ -280,17 +285,17 @@ class Database {
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
             $rv[] = 
-                new RadiologyRecord(
-                    $row['RECORD_ID'],
-                    $row['PATIENT_ID'],
-                    $row['DOCTOR_ID'],
-                    $row['RADIOLOGIST_ID'],
-                    $row['TEST_TYPE'],
-                    new Date($row['PRESCRIBING_DATE']),
-                    new Date($row['TEST_DATE']),
-                    $row['DIAGNOSIS'],
-                    $row['DESCRIPTION']
-                );
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
         }
 
         oci_free_statement($stid);        
@@ -303,6 +308,39 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithKeywordsByTime($keywords, $descending=True){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByTime('".$keywords."','".
+                 ($descending? "TRUE" : "FALSE" )."'))";
+        
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+        
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+        
+        $rv = array();
+        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+            $rv[] = 
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
+        }
+
+        oci_free_statement($stid);        
+        return $rv;
         
     }
 
@@ -313,17 +351,82 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithPeriodByTime('".$d1."','".$d2.
+                 "','".($descending? "TRUE" : "FALSE" )."'))";
         
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+        
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+        
+        $rv = array();
+        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+            $rv[] = 
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
+        }
+
+        oci_free_statement($stid);        
+        return $rv;        
     }
 
     /**
      * @param keywords string of keywords.
      * @param d1 lowerbound of date to be included.
      * @param d2 upperbound of date to be included.
-     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     * @return table of radiology_records that matches the given keywords, 
+     *         and test taken within d1 and d2, ordered by rank.
      */
     public function searchWithKPByRank($keywords, Date $d1, Date $d2){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByRank('".$keywords."','".
+                 $d1."','".$d2."'))";
         
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+        
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+        
+        $rv = array();
+        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+            $rv[] = 
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
+        }
+
+        oci_free_statement($stid);  
+        return $rv;
     }
 
     /**
@@ -334,7 +437,39 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$keywords."','".
+                 $d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
         
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+        
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+        
+        $rv = array();
+        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+            $rv[] = 
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
+        }
+
+        oci_free_statement($stid);  
+        return $rv;
     }
 }
 

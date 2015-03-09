@@ -21,17 +21,18 @@ https://phpunit.de/getting-started.html
 4. Sort By Most Recently Last
 5. Sort By some specified rule.
 
-## Notes:
+### Data Analysis Module:
 
+## Notes:
 * For all relation, reserve id 0-100 for testing purposes. This is so testing won't interrupt relational instances. i.e.
   No need to do ```DROP``` operations.
 * To use Database.php, set the three constant variables above the file with your connection info, e.g.:
 ```
-const USER_NAME = 'C##PRACTICE01';
-const PASS = '1234';
-const CONNECTION_STRING = "192.168.0.23:1521/orcl.localdomain";
+const USER_NAME = 'system';
+const PASS = 'oracle';
+const CONNECTION_STRING = "localhost:49161/xe";
 ```
 
 ## TODO:
 
-1. For Search module, perform the intersect before ordering, not the other way around.
+1. ~~For Search module, perform the intersect before ordering, not the other way around.~~

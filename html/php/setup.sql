@@ -47,7 +47,7 @@ CREATE TABLE persons (
 CREATE TABLE users (
    user_name varchar(24),
    password  varchar(24),
-   class     char(1),
+v   class     char(1),
    person_id int,
    date_registered date,
    CHECK (class in ('a','p','d','r')),
@@ -273,7 +273,7 @@ CREATE FUNCTION searchWithKeywordsByTime(keywords IN VARCHAR2, descending IN VAR
        IF descending='TRUE' THEN
        	  FOR t in
        	  (SELECT *
-           FROM TABLE(searchWithKeywordsOrderByRank(keywords)) rr
+           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
            ORDER BY rr.test_date DESC) LOOP
        	      	 l_tab.extend;
 	      	 l_tab(l_tab.last) := radiology_record_rt(
@@ -283,7 +283,7 @@ CREATE FUNCTION searchWithKeywordsByTime(keywords IN VARCHAR2, descending IN VAR
        ELSE
           FOR t in
        	  (SELECT *
-           FROM TABLE(searchWithKeywordsOrderByRank(keywords)) rr
+           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
            ORDER BY rr.test_date ASC) LOOP
        	      	 l_tab.extend;
 	      	 l_tab(l_tab.last) := radiology_record_rt(
@@ -350,7 +350,7 @@ CREATE FUNCTION searchWithKPByRank(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE)
        
        FOR t in
        	   (SELECT *
-       	    FROM TABLE(searchWithKeywordsOrderByRank(keywords)) rr
+       	    FROM TABLE(searchWithKeywordsByRank(keywords)) rr
        	    WHERE rr.test_date BETWEEN d1 AND d2) LOOP
        	    	  l_tab.extend;
        		  l_tab(l_tab.last) := radiology_record_rt(
@@ -379,7 +379,7 @@ CREATE FUNCTION searchWithKPByTime(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE,
        IF descending='TRUE' THEN
        	  FOR t in
        	  (SELECT *
-           FROM TABLE(searchWithKeywordsOrderByRank(keywords)) rr
+           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
 	   WHERE rr.test_date BETWEEN d1 AND d2
            ORDER BY rr.test_date DESC) LOOP
        	      	 l_tab.extend;
@@ -390,7 +390,7 @@ CREATE FUNCTION searchWithKPByTime(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE,
        ELSE
           FOR t in
        	  (SELECT *
-           FROM TABLE(searchWithKeywordsOrderByRank(keywords)) rr
+           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
 	   WHERE rr.test_date BETWEEN d1 AND d2
            ORDER BY rr.test_date ASC) LOOP
        	      	 l_tab.extend;

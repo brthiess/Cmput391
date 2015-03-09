@@ -26,12 +26,12 @@ class Search{
      * @throws Exception Due to security concerns, the assumption prior to instantiation
      *                   is that <userName, password> is not valid.
      */
-    public function __construct($username, $password){
+    public function __construct($username){
         $this->_db = Database::instance();
 
         // Verify the user, else throw an Exception.
         // TODO: When the login module is established, use that instead.
-        $user = $this->_db->getUser($username, $password);
+        $user = $this->_db->getUser($username);
         if($user != False){        
             $this->_user = $user;
         }else{
@@ -40,11 +40,18 @@ class Search{
     }
 
     /**
+     * @return table of radiology_records that is accessible from user.
+     */
+    public function getRadiologyRecords(){
+        return $this->_db->getRadiologyRecords($this->_user->userName);
+    }
+
+    /**
      * @param keywords string of keywords.
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKeywordsByRank($keywords){
-        
+        return $this->_db->searchWithKeywordsByRank($keywords);
     }
     
     /**
@@ -53,7 +60,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithKeywordsByTime($keywords, $descending=True){
-        
+        return $this->_db->searchWithKeywordsByTime($keywords, $descending);
     }
 
     /**
@@ -63,7 +70,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
-        
+        return $this->_db->searchWithPeriodByTime($d1, $d2, $descending);
     }
 
     /**
@@ -73,7 +80,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByRank($keywords, Date $d1, Date $d2){
-        
+        return $this->_db->searchWithKPByRank($keywords, $d1, $d2);
     }
 
     /**
@@ -84,7 +91,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
-        
+        return $this->_db->searchWithKPByTime($keywords, $d1, $d2, $descending);
     }
 }
 

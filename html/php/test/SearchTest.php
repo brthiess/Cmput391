@@ -4,129 +4,47 @@
  * SearchTest.php
  */
 
+include_once 'TestConstants.php';
 
 include_once '../Search.php';
 include_once '../Database.php';
 include_once '../Date.php';
 
-/*!@class SearchTest
- * @brief Test module for Search module.
+/*!@class Search
+ * @test Unit tests for the Search module. @see Search
  */
 class SearchTest extends PHPUnit_Framework_TestCase{
-    private $PEOPLE = array();
-    private $USERS = array(); 
-    private $FAMILY_DOCTORS = array();
-    private $RECORDS = array();
+    private $_people = null;
+    private $_users = null;
+    private $_familyDoctors = null;
+    private $_records = null;
     
-    protected function setUp(){
+    protected function setUp(){                
         $db = Database::instance();  // Acquire database instance
+
+        global $PEOPLE, $USERS, $FAMILY_DOCTORS, $RECORDS;
+        $this->_people = $PEOPLE;
+        $this->_users = $USERS;
+        $this->_familyDoctors = $FAMILY_DOCTORS;
+        $this->_records = $RECORDS;
         
         // Add Person objects.
-        $this->PEOPLE[] = new Person(
-            1, 
-            "Joe", 
-            'Shmoe', 
-            '666 Helldrive, Hell Prairie', 
-            'shmoe@hell.h', '677-8081');
-        $this->PEOPLE[] = new Person(
-            2, 
-            "Sterling", 
-            'Archer', 
-            'CIA branch', 
-            'casablumpkin@archer.com', '345-344');
-        $this->PEOPLE[] = new Person(
-            3, 
-            "Cyril", 
-            'Figgis', 
-            'CIA branch', 
-            'chetmanly@yahoo.com', '345-344');
-        $this->PEOPLE[] = new Person(
-            4, 
-            "Borat", 
-            'Borat', 
-            'Kazak', 
-            'borat@yahoo.kz', '123-432');
-        $this->PEOPLE[] = new Person(
-            5, 
-            "Larry", 
-            'David', 
-            'LA', 
-            'larry@david.com', '123-432');
-        $this->PEOPLE[] = new Person(
-            6, 
-            "Jerry", 
-            'Seinfeld', 
-            'New York', 
-            'jerry@seinfeld.com', '123-432');
-        $this->PEOPLE[] = new Person(
-            7, 
-            "Bill", 
-            'Burr', 
-            'New York', 
-            'bill@burr.com', '123-432');
-        
-        foreach ($this->PEOPLE as $person){
+        foreach ($this->_people as $person){
             $db->addPerson($person);
         }
 
         // Add User objects.
-        $this->USERS["joeShmoe"] = new User(
-            "joeShmoe", '1234', 'a', 1, new Date(Month::February, 3, 2015));
-        $this->USERS["bertReynolds"] = new User(
-            "bertReynolds", '1234', 'd', 2, new Date(Month::February, 2, 2015));
-        $this->USERS["chetManly"] = new User(
-            "chetManly", '1234', 'p', 3, new Date(Month::February, 2, 2015));
-        $this->USERS["Ilike"] = new User(
-            "Ilike", '1234', 'p', 4, new Date(Month::February, 2, 2015));
-        $this->USERS["purtygood"] = new User(
-            "purtygood", '1234', 'p', 5, new Date(Month::February, 2, 2015));
-        $this->USERS["billionaireCommedian"] = new User(
-            "billionaireCommedian", '1234', 'r', 6, new Date(Month::February, 2, 2015));
-        $this->USERS["irishNonDrunk"] = new User(
-            "irishNonDrunk", '1234', 'r', 7, new Date(Month::February, 2, 15));
-
-        foreach ($this->USERS as $user){
+        foreach ($this->_users as $user){
             $db->addUser($user);
         }
 
         // Add Family doctors.
-        $this->FAMILY_DOCTORS[] = new FamilyDoctor(2, 3);
-        $this->FAMILY_DOCTORS[] = new FamilyDoctor(2, 4);
-        $this->FAMILY_DOCTORS[] = new FamilyDoctor(2, 5);       
-        
-        foreach ($this->FAMILY_DOCTORS as $fd){
+        foreach ($this->_familyDoctors as $fd){
             $db->addFamilyDoctor($fd);
         }
 
-        $this->RECORDS[] = new RadiologyRecord(
-            1, 
-            3,
-            2, 
-            7, 
-            'aids', 
-            new Date(Month::February, 2, 2015),
-            new Date(Month::February, 7, 2015), 'positive', 
-            'not hiv but full blown aids.');
-        $this->RECORDS[] = new RadiologyRecord(
-            2, 
-            4, 
-            2, 
-            6, 
-            'hiv', 
-            new Date(Month::February, 5, 2015), 
-            new Date(Month::February, 21, 2015), 'negative', 
-            'brought to you buy durex.');
-        $this->RECORDS[] = new RadiologyRecord(
-            3, 
-            5, 
-            2, 
-            6, 
-            'statically discharge', 
-            new Date(Month::February, 10, 2015), 
-            new Date(Month::April, 21, 2015), 
-            'positive', 'you have been statically discharge of service.');
-
-        foreach ($this->RECORDS as $r){
+        // Add records.
+        foreach ($this->_records as $r){
             $db->addRadiologyRecord($r);
         }
     }
@@ -136,24 +54,161 @@ class SearchTest extends PHPUnit_Framework_TestCase{
         
         // Deallocate database on reverse order of intialization.        
         
-        /*foreach ($this->RECORDS as $r){
+        foreach ($this->_records as $r){
             $db->removeRadiologyRecord($r->recordID);
         }
 
-        foreach ($this->FAMILY_DOCTORS as $fd){
+        foreach ($this->_familyDoctors as $fd){
             $db->removeFamilyDoctor($fd);
         }
-
-        foreach ($this->USERS as $user){
+        
+        foreach ($this->_users as $user){
             $db->removeUser($user->userName);
         }
-        
-        foreach ($this->PEOPLE as $person){
+
+        foreach ($this->_people as $person){
             $db->removePerson($person->personID);
-            }*/
+        }
     }
 
-    public function test01(){
+    public function testGetRadiologyRecords(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        $this->assertEquals(
+            arraySetCompare($adminSearch->getRadiologyRecords(),
+                            $this->_records), true);
+
+        // Doctor Test.
+        $doctorSearch = new Search("bertReynolds");
+        $this->assertEquals(
+            arraySetCompare($doctorSearch->getRadiologyRecords(),
+                            $this->_records), true);
+
+        // Radiologist Test
+        $radiologistSearch01 = new Search("billionaireCommedian");
+        $this->assertEquals(
+            arraySetCompare($radiologistSearch01->getRadiologyRecords(),
+                            array($this->_records[1], $this->_records[2])), true);        
+        $radiologistSearch02 = new Search("irishNonDrunk");
+        $this->assertEquals(
+            arraySetCompare($radiologistSearch02->getRadiologyRecords(),
+                            array($this->_records[0])), true);
+        
+        // Patient Test
+        $patientSearch = new Search("chetManly");
+        $this->assertEquals(array($this->_records[0]),
+                            $patientSearch->getRadiologyRecords());
+        $this->assertNotEquals(array($this->_records[0], $this->_records[1]),
+                               $patientSearch->getRadiologyRecords());
+        
+    }
+    
+    public function testSearchWithKeywordsByRankFullHit(){
+        $adminSearch = new Search("joeShmoe");
+        // All record hit.
+        $this->assertEquals(
+            arraySetCompare($adminSearch->searchWithKeywordsByRank("positive|negative|super"),
+                            $this->_records), true);
+    }
+
+    public function testSearchWithKeywordsByRankPatientNameHit(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        
+        // First record hit via patient name keyword.
+        $this->assertEquals($adminSearch->searchWithKeywordsByRank("Cyril|Figgis"),
+                            array($this->_records[0]));
+        // Second record hit via patient name keyword.
+        $this->assertEquals($adminSearch->searchWithKeywordsByRank("Borat"),
+                            array($this->_records[1]));
+        // Third record hit via patient name keyword.
+        $this->assertEquals($adminSearch->searchWithKeywordsByRank("Larry|David"),
+                            array($this->_records[2]));
+    }
+
+    public function testSearchWithKeywordsByRankDiagnosisHit(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        
+        // First record hit via diagnosis.
+        $this->assertEquals(
+            arraySetCompare(array($this->_records[2], $this->_records[0]), 
+                            $adminSearch->searchWithKeywordsByRank("positive")),
+            true);
+        // Second record hit via diagnosis.
+        $this->assertEquals(array($this->_records[1]),
+                            $adminSearch->searchWithKeywordsByRank("negative"));
+        // Third record hit via diagnosis.
+        $this->assertEquals(array($this->_records[2]),
+                            $adminSearch->searchWithKeywordsByRank("genius"));
+    }
+
+    public function testSearchWithKeywordsByTime(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        
+        // Ascending
+        $this->assertEquals($this->_records,
+                            $adminSearch->searchWithKeywordsByTime("positive|negative", false));
+        // Descending
+        $this->assertNotEquals($this->_records,
+                               $adminSearch->searchWithKeywordsByTime("positive|negative", true));
+        $this->assertEquals(array_reverse($this->_records),
+                            $adminSearch->searchWithKeywordsByTime("positive|negative", true));
+    }
+
+    public function testSearchWithPeriodByTime(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        $temp = $this->_records;
+        
+        // All hit.
+        // Ascending.
+        $this->assertEquals($this->_records,
+                            $adminSearch->searchWithPeriodByTime(
+                                new Date(Month::January, 2, 2015),
+                                new Date(Month::December, 31, 2015),
+                                false));
+        // Ascending restrict to first two records.
+        $this->assertEquals(array($temp[0], $temp[1]),
+                            $adminSearch->searchWithPeriodByTime(
+                                new Date(Month::January, 2, 2015),
+                                new Date(Month::March, 23, 2015),
+                                false));
+        // Descending.
+        $this->assertEquals(array_reverse($this->_records),
+                            $adminSearch->searchWithPeriodByTime(
+                                new Date(Month::January, 2, 2015),
+                                new Date(Month::December, 31, 2015),
+                                true));
+        // Descending restrict to first two records.
+        $this->assertEquals(array_reverse(array($temp[0], $temp[1])),
+                            $adminSearch->searchWithPeriodByTime(
+                                new Date(Month::January, 2, 2015),
+                                new Date(Month::March, 23, 2015),
+                                true));        
+    }
+    
+    public function testSearchWithKPByRank(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        $this->assertEquals(array($this->_records[0]),
+                            $adminSearch->searchWithKPByRank(
+                                "cyril|figgis",
+                                new Date(Month::January, 2, 2015),
+                                new Date(Month::December, 31, 2015)));
+    }
+
+    public function testSearchWithKPByTime(){
+        // Admin test.
+        $adminSearch = new Search("joeShmoe");
+        // Ascending.
+        $this->assertEquals(array($this->_records[0], $this->_records[1]),
+                            $adminSearch->searchWithKPByTime(
+                                "cyril|figgis|negative",
+                                new Date(Month::January, 2, 2015),
+                                new Date(Month::December, 31, 2015),
+                                false));
     }
 }
 
