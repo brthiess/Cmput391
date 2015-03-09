@@ -155,9 +155,10 @@ class Date{
     /**
      * Two way to initialize. Provide ORACLE DATE format string or
      * provide Month, Date, Year.
-     * @param ORACLE Date format string DD-MON-YY, e.g. 05-FEB-15
+     * @param ORACLE Date format string DD-MON-YY, e.g. 05-FEB-15 or
+     *
      * @param Month
-     * @param Date
+     * @param Day
      * @param Year
      */
     public function __construct(){
