@@ -43,6 +43,8 @@ const USER_NAME = 'system';
 const PASS = 'oracle';
 const CONNECTION_STRING = "localhost:49161/xe";
 ```
+**Since installing oracle is a pain and connecting to school oracle is not possible (as far as I know), I recommend
+using Docker (light vm) or a fully fledge vm.**
 
 ## TODO:
 
