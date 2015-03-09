@@ -2,26 +2,37 @@
 
 This folder contains the php modules (Business Tier of 3-Tier architecture).
 
-## Test
+## Modules:
+* setup.sql: Contains SQL schema and PL/SQL functions.
+* common.php: Functions that don't are small enough to not deserve their own specific module.
+* User.php: Encapsulate the SQL *users* schema.
+* Search.php: Search module.
+* RadiologyRecord.php: Encapsulate the SQL *radiology_record* schema.
+* Person.php: Encapsulate the SQL *persons* schema.
+* FamilyDoctor.php: Encapsulate the SQL *family_doctor* schema.
+* Date.php: Encapsulate the date object. This is so the user don't have to worry about date format between sql and php.
+* Database.php: A singleton that directly communicates with the Database tier, i.e. acts as a proxy to db.
 
-The *test* folder contains unit tests for the modules. If you are going to write unit tests,
-there's already a **phpunit.phar** in the test, to write and run tests, I recommend reading
+## Search Module Methods Notes:
+*(This is just a note so I have something to talk about my modules in demo.)*
 
-https://phpunit.de/getting-started.html
+Requirements:
+1. Search condition: (a) keywords, and/or (b) time periods.
+2. All records are accessible to a give user.
+3. If order is by timming, have an option of (a) descending or (b) ascending.
+4. If order is by ranking, only descending order.
 
-1. SearchTest: Testing module responsible for testing Search module.
+With these requirements, we can derive the methods needed by creating a dependency tree:
+*
 
-## Requirements:
+Methods that satisfy the requirements are the following:
+1. getRadiologyRecords: Get records that accessible to a user with respect to his/her user type.
+2. searchWithKeyWordsByRank: Search with key words by rank.
+3. searchWithKeyWordsByTime: Search with key words by time.
+4. searchWithPeriodByTime: Search with period by time.
+5. searchWithKPByTime: Search with keywords and period by time.
+6. searchWithKPByRank: Search with keywords and period by rank.
 
-### Search Module:
-    
-1. Search Filter By Security Rules.
-2. Search By Keywords.
-3. Sort By Most Recently First
-4. Sort By Most Recently Last
-5. Sort By some specified rule.
-
-### Data Analysis Module:
 
 ## Notes:
 * For all relation, reserve id 0-100 for testing purposes. This is so testing won't interrupt relational instances. i.e.

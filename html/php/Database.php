@@ -268,8 +268,9 @@ class Database {
      * @param keywords string of keywords.
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
-    public function searchWithKeywordsByRank($keywords){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByRank('".$keywords."'))";
+    public function searchWithKeywordsByRank($userName, $keywords){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByRank('".$userName."','".
+                 $keywords."'))";
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
             $e = oci_error($this->_connection);
@@ -307,9 +308,9 @@ class Database {
      * @param true for descending ordering, false otherwise.
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
-    public function searchWithKeywordsByTime($keywords, $descending=True){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByTime('".$keywords."','".
-                 ($descending? "TRUE" : "FALSE" )."'))";
+    public function searchWithKeywordsByTime($userName, $keywords, $descending=True){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByTime('".$userName."','".
+                 $keywords."','".($descending? "TRUE" : "FALSE" )."'))";
         
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
@@ -350,9 +351,9 @@ class Database {
      * @param descending true for descending ordering, false otherwise.
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
-    public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithPeriodByTime('".$d1."','".$d2.
-                 "','".($descending? "TRUE" : "FALSE" )."'))";
+    public function searchWithPeriodByTime($userName, Date $d1, Date $d2, $descending=True){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithPeriodByTime('".$userName."','".
+                 $d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
         
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
@@ -393,9 +394,9 @@ class Database {
      * @return table of radiology_records that matches the given keywords, 
      *         and test taken within d1 and d2, ordered by rank.
      */
-    public function searchWithKPByRank($keywords, Date $d1, Date $d2){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByRank('".$keywords."','".
-                 $d1."','".$d2."'))";
+    public function searchWithKPByRank($userName, $keywords, Date $d1, Date $d2){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByRank('".$userName."','".
+                 $keywords."','".$d1."','".$d2."'))";
         
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
@@ -436,9 +437,9 @@ class Database {
      * @param desencending true for descending ordering, false otherwise.
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
-    public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$keywords."','".
-                 $d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
+    public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=True){
+        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$userName."','".
+                 $keywords."','".$d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
         
         $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {

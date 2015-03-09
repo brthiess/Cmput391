@@ -47,7 +47,7 @@ CREATE TABLE persons (
 CREATE TABLE users (
    user_name varchar(24),
    password  varchar(24),
-v   class     char(1),
+   class     char(1),
    person_id int,
    date_registered date,
    CHECK (class in ('a','p','d','r')),
@@ -233,10 +233,11 @@ CREATE FUNCTION getRadiologyRecords(userName IN VARCHAR2) return radiology_recor
 /
 
 /**
+ * @param userName userName of the user using search module.
  * @param keywords string of keywords.
- * @return table of radiology_records that matches the given keywords, ordered by rank.
+ * @return table of radiology_records that matches the given keywords, ordered by rank and is accessible from user with corresponding userName.
  */
-CREATE FUNCTION searchWithKeywordsByRank(keywords IN VARCHAR2) return radiology_record_rt_t
+CREATE FUNCTION searchWithKeywordsByRank(userName IN VARCHAR2, keywords IN VARCHAR2) return radiology_record_rt_t
        IS
        l_tab radiology_record_rt_t := radiology_record_rt_t();
        BEGIN
@@ -244,11 +245,12 @@ CREATE FUNCTION searchWithKeywordsByRank(keywords IN VARCHAR2) return radiology_
        FOR t in 
        (SELECT rr.*
         FROM radiology_record rr JOIN persons p ON rr.patient_id=p.person_id
-        WHERE CONTAINS(p.first_name, keywords, 1) > 0 OR
-              CONTAINS(p.last_name, keywords, 2) > 0 OR
-      	      CONTAINS(rr.diagnosis, keywords, 3) > 0 OR
-      	      CONTAINS(rr.description, keywords, 4) > 0
-       ORDER BY 6*(SCORE(1) + SCORE(2))/2 + 3*SCORE(3) + SCORE(4) DESC) LOOP
+        WHERE (CONTAINS(p.first_name, keywords, 1) > 0 OR
+               CONTAINS(p.last_name, keywords, 2) > 0 OR
+      	       CONTAINS(rr.diagnosis, keywords, 3) > 0 OR
+      	       CONTAINS(rr.description, keywords, 4) > 0) AND
+	       rr.record_id IN (SELECT r2.record_id FROM TABLE(getRadiologyRecords(userName)) r2)
+        ORDER BY 6*(SCORE(1) + SCORE(2))/2 + 3*SCORE(3) + SCORE(4) DESC) LOOP
        	     l_tab.extend;
 	     l_tab(l_tab.last) := radiology_record_rt(
 	         t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
@@ -260,12 +262,15 @@ CREATE FUNCTION searchWithKeywordsByRank(keywords IN VARCHAR2) return radiology_
       END;
 /
 
+
 /**
+ * @param userName userName of the user using search module.
  * @param keywords string of keywords.
  * @param true for descending ordering, false otherwise.
- * @return table of radiology_records that matches the given keywords, ordered by test_date.
+ * @return table of radiology_records that matches the given keywords, ordered by test_date 
+ *         and is accessible from user with corresponding userName.
  */
-CREATE FUNCTION searchWithKeywordsByTime(keywords IN VARCHAR2, descending IN VARCHAR2)
+CREATE FUNCTION searchWithKeywordsByTime(userName IN VARCHAR2, keywords IN VARCHAR2, descending IN VARCHAR2)
        return radiology_record_rt_t IS
        l_tab radiology_record_rt_t := radiology_record_rt_t();
        BEGIN
@@ -273,7 +278,7 @@ CREATE FUNCTION searchWithKeywordsByTime(keywords IN VARCHAR2, descending IN VAR
        IF descending='TRUE' THEN
        	  FOR t in
        	  (SELECT *
-           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
+           FROM TABLE(searchWithKeywordsByRank(userName, keywords)) rr
            ORDER BY rr.test_date DESC) LOOP
        	      	 l_tab.extend;
 	      	 l_tab(l_tab.last) := radiology_record_rt(
@@ -283,7 +288,7 @@ CREATE FUNCTION searchWithKeywordsByTime(keywords IN VARCHAR2, descending IN VAR
        ELSE
           FOR t in
        	  (SELECT *
-           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
+           FROM TABLE(searchWithKeywordsByRank(userName, keywords)) rr
            ORDER BY rr.test_date ASC) LOOP
        	      	 l_tab.extend;
 	      	 l_tab(l_tab.last) := radiology_record_rt(
@@ -298,22 +303,24 @@ CREATE FUNCTION searchWithKeywordsByTime(keywords IN VARCHAR2, descending IN VAR
 /
 
 /**
+ * @param userName userName of the user using search module.
  * @param d1 lowerbound of date to be included.
  * @param d2 upperbound of date to be included.
  * @param descending true for descending ordering, false otherwise.
- * @return table of radiology_records that matches the given keywords, ordered by test_date.
+ * @return table of radiology_records that matches the given keywords, ordered by test_date
+ *         and is accessible from user with corresponding userName.
  */
-CREATE FUNCTION searchWithPeriodByTime(d1 IN DATE, d2 IN DATE, descending IN VARCHAR2) 
+CREATE FUNCTION searchWithPeriodByTime(userName IN VARCHAR2, d1 IN DATE, d2 IN DATE, descending IN VARCHAR2) 
        return radiology_record_rt_t IS
        l_tab radiology_record_rt_t := radiology_record_rt_t();
        BEGIN
        
        IF descending='TRUE' THEN
        	  FOR t in 
-       	  (SELECT rr.*
-           FROM radiology_record rr JOIN persons p ON rr.patient_id=p.person_id
-           WHERE rr.test_date BETWEEN d1 AND d2
-           ORDER BY rr.test_date DESC) LOOP
+       	   (SELECT rr.*
+            FROM TABLE(getRadiologyRecords(userName)) rr JOIN persons p ON rr.patient_id=p.person_id
+            WHERE rr.test_date BETWEEN d1 AND d2
+            ORDER BY rr.test_date DESC) LOOP
        	     	 l_tab.extend;
 	     	 l_tab(l_tab.last) := radiology_record_rt(
 	         		   t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
@@ -321,10 +328,10 @@ CREATE FUNCTION searchWithPeriodByTime(d1 IN DATE, d2 IN DATE, descending IN VAR
            END LOOP;
        ELSE
           FOR t in 
-       	  (SELECT rr.*
-           FROM radiology_record rr JOIN persons p ON rr.patient_id=p.person_id
-           WHERE rr.test_date BETWEEN d1 AND d2
-           ORDER BY rr.test_date ASC) LOOP
+       	   (SELECT rr.*
+            FROM TABLE(getRadiologyRecords(userName)) rr JOIN persons p ON rr.patient_id=p.person_id
+            WHERE rr.test_date BETWEEN d1 AND d2
+            ORDER BY rr.test_date ASC) LOOP
        	     	 l_tab.extend;
 	     	 l_tab(l_tab.last) := radiology_record_rt(
 	         		   t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
@@ -338,20 +345,22 @@ CREATE FUNCTION searchWithPeriodByTime(d1 IN DATE, d2 IN DATE, descending IN VAR
 /
 
 /**
+ * @param userName userName of the user using search module.
  * @param keywords string of keywords.
  * @param d1 lowerbound of date to be included.
  * @param d2 upperbound of date to be included.
- * @return table of radiology_records that matches the given keywords, ordered by rank.
+ * @return table of radiology_records that matches the given keywords, ordered by rank
+ *         and is accessible from user with corresponding userName.
  */
-CREATE FUNCTION searchWithKPByRank(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE)
+CREATE FUNCTION searchWithKPByRank(userName IN VARCHAR2, keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE)
        return radiology_record_rt_t IS
        l_tab radiology_record_rt_t := radiology_record_rt_t();
        BEGIN
        
        FOR t in
-       	   (SELECT *
-       	    FROM TABLE(searchWithKeywordsByRank(keywords)) rr
-       	    WHERE rr.test_date BETWEEN d1 AND d2) LOOP
+       	    (SELECT *
+       	     FROM TABLE(searchWithKeywordsByRank(userName, keywords)) rr
+       	     WHERE rr.test_date BETWEEN d1 AND d2) LOOP
        	    	  l_tab.extend;
        		  l_tab(l_tab.last) := radiology_record_rt(
        		  		    t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
@@ -364,13 +373,15 @@ CREATE FUNCTION searchWithKPByRank(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE)
 /
 
 /**
+ * @param userName userName of the user using search module.
  * @param keywords string of keywords.
  * @param d1 lowerbound of date to be included.
  * @param d2 upperbound of date to be included.
  * @param desencending true for descending ordering, false otherwise.
- * @return table of radiology_records that matches the given keywords, ordered by rank.
+ * @return table of radiology_records that matches the given keywords, ordered by rank
+ *         and is accessible from user with corresponding userName.
  */
-CREATE FUNCTION searchWithKPByTime(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE, 
+CREATE FUNCTION searchWithKPByTime(userName IN VARCHAR2, keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE, 
        						   descending IN VARCHAR2)
        return radiology_record_rt_t IS
        l_tab radiology_record_rt_t := radiology_record_rt_t();
@@ -378,10 +389,10 @@ CREATE FUNCTION searchWithKPByTime(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE,
        
        IF descending='TRUE' THEN
        	  FOR t in
-       	  (SELECT *
-           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
-	   WHERE rr.test_date BETWEEN d1 AND d2
-           ORDER BY rr.test_date DESC) LOOP
+       	   (SELECT *
+            FROM TABLE(searchWithKeywordsByRank(userName, keywords)) rr
+	    WHERE rr.test_date BETWEEN d1 AND d2
+            ORDER BY rr.test_date DESC) LOOP
        	      	 l_tab.extend;
 	      	 l_tab(l_tab.last) := radiology_record_rt(
 	         		   t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
@@ -389,10 +400,10 @@ CREATE FUNCTION searchWithKPByTime(keywords IN VARCHAR2 ,d1 IN DATE, d2 IN DATE,
   	   END LOOP;
        ELSE
           FOR t in
-       	  (SELECT *
-           FROM TABLE(searchWithKeywordsByRank(keywords)) rr
-	   WHERE rr.test_date BETWEEN d1 AND d2
-           ORDER BY rr.test_date ASC) LOOP
+       	   (SELECT *
+            FROM TABLE(searchWithKeywordsByRank(userName, keywords)) rr
+	    WHERE rr.test_date BETWEEN d1 AND d2
+            ORDER BY rr.test_date ASC) LOOP
        	      	 l_tab.extend;
 	      	 l_tab(l_tab.last) := radiology_record_rt(
 	         		   t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,

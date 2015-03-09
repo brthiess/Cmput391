@@ -51,7 +51,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKeywordsByRank($keywords){
-        return $this->_db->searchWithKeywordsByRank($keywords);
+        return $this->_db->searchWithKeywordsByRank($this->_user->userName, $keywords);
     }
     
     /**
@@ -60,7 +60,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithKeywordsByTime($keywords, $descending=True){
-        return $this->_db->searchWithKeywordsByTime($keywords, $descending);
+        return $this->_db->searchWithKeywordsByTime($this->_user->userName, $keywords, $descending);
     }
 
     /**
@@ -70,7 +70,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
-        return $this->_db->searchWithPeriodByTime($d1, $d2, $descending);
+        return $this->_db->searchWithPeriodByTime($this->_user->userName, $d1, $d2, $descending);
     }
 
     /**
@@ -80,7 +80,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByRank($keywords, Date $d1, Date $d2){
-        return $this->_db->searchWithKPByRank($keywords, $d1, $d2);
+        return $this->_db->searchWithKPByRank($this->_user->userName, $keywords, $d1, $d2);
     }
 
     /**
@@ -91,7 +91,7 @@ class Search{
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
-        return $this->_db->searchWithKPByTime($keywords, $d1, $d2, $descending);
+        return $this->_db->searchWithKPByTime($this->_user->userName, $keywords, $d1, $d2, $descending);
     }
 }
 
