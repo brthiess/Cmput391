@@ -7,18 +7,25 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
 * common.php: Functions that don't are small enough to not deserve their own specific module.
 * User.php: Encapsulate the SQL *users* schema.
 * Search.php: Search module. Example:
+
   ```
-  $search = new Search("userName");  // Throws an exception if not a valid "userName" is not valid.
-  $search->searchWithKeywordsByRank("awesome");  // Returns all records that contain "awesome" that is accessible to
-  						 // whatever user type is associated with "userName". e.g.
-						 // if "userName" is associated to an admin, then it can
-						 // access all records with keyword "awesome".
+  // Throws an exception if not a valid "userName" is not valid.
+  $search = new Search("userName");
+
+  // Returns all records that contain "awesome" that is accessible to
+  // whatever user type is associated with "userName". e.g.
+  // if "userName" is associated to an admin, then it can
+  // access all records with keyword "awesome".
+  $search->searchWithKeywordsByRank("awesome");
+  
   // See Search.php for more methods and documentation.
   ```
+  
 * RadiologyRecord.php: Encapsulate the SQL *radiology_record* schema.
 * Person.php: Encapsulate the SQL *persons* schema.
 * FamilyDoctor.php: Encapsulate the SQL *family_doctor* schema.
 * Date.php: Encapsulate the date object. This is so the user don't have to worry about date format between sql and php.
+
   ```
   $date01 = new Date(Month::March, 3, 2015);  // Recommended initialization style.
   $date02 = new Date(Month::March, 3, 15);  // Year truncated.
@@ -30,6 +37,7 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
 
   print $date01 . PHP_EOL;  // $date01 is automatically converted to Oracle date format string.
   ```
+  
 * Database.php: A singleton that directly communicates with the Database tier, i.e. acts as a proxy to db.
 
 ## Search Module Methods Notes:
