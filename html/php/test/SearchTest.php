@@ -42,7 +42,7 @@ class SearchTest extends PHPUnit_Framework_TestCase{
         foreach ($this->_familyDoctors as $fd){
             $db->addFamilyDoctor($fd);
         }
-
+        
         // Add records.
         foreach ($this->_records as $r){
             $db->addRadiologyRecord($r);

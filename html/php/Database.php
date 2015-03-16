@@ -10,8 +10,9 @@ include_once 'FamilyDoctor.php';
 include_once 'common.php';
 
 /**
- * The following are db credentials. If you want a quick db, I suggest looking into docker and use the 
- * following docker file: https://github.com/wnameless/docker-oracle-xe-11g
+ * The following are db credentials. If you want a quick db, I suggest looking
+ * into docker and use the following docker file: 
+ * https://github.com/wnameless/docker-oracle-xe-11g
  */
 const USER_NAME = 'system';
 const PASS = 'oracle';
@@ -29,6 +30,7 @@ class Database {
     private $_connection = NULL;  // Variable representing database connection.
         
     /**
+     * Use singleton method, instance() instead of this.
      * @param username username in oracle db.
      * @param password password in oracle db.
      * @param connectionString connectionString to oracle db.
@@ -71,7 +73,7 @@ class Database {
     }
     
     /**
-     * @param person which is a Person object.
+     * @param person which is a Person object. Make personID null to make id assignment automated.
      * @throws Exception, something about the Person properties is wrong.
      * @see Person
      */

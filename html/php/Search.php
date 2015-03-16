@@ -14,8 +14,6 @@ include_once 'Date.php';
  */
 class Search{
     private $_user=NULL; // User object. @see User
-
-
     private $_db=NULL;  // Database instance.
 
     /**
