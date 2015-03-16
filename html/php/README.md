@@ -25,6 +25,7 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
 * Person.php: Encapsulate the SQL *persons* schema.
 * FamilyDoctor.php: Encapsulate the SQL *family_doctor* schema.
 * Date.php: Encapsulate the date object. This is so the user don't have to worry about date format between sql and php.
+
   ```
   $date01 = new Date(Month::March, 3, 2015);  // Recommended initialization style.
   $date02 = new Date(Month::March, 3, 15);  // Year truncated.
@@ -40,6 +41,7 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
 * Database.php: A singleton that directly communicates with the Database tier, i.e. acts as a proxy to db.
 * UserManagement.php: allows a system administrator to manage (to enter or update) the user information, i.e., the information stored in tables
   		      users,persons, family_doctor.
+
   ```
   // Using constructor.
   $um = NULL;
