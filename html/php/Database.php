@@ -71,6 +71,30 @@ class Database {
             print "Database connection destroyed.\n";
         }
     }
+
+    public function getPerson($personID){
+        $sqlstmt = 'SELECT * FROM persons WHERE person_id='.Q($personID);        
+
+        $stid = oci_parse($this->_connection, $sqlstmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+
+        // Perform the logic of the query
+        $r = oci_execute($stid);
+        if (!$r) {
+            $e = oci_error($stid);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+
+        $row = oci_fetch_array($stid, OCI_ASSOC);
+        if ($row == False){
+            throw(new Exception("User doesn't exist"));
+        }
+        return new Person($row['PERSON_ID'], $row['FIRST_NAME'], $row['LAST_NAME'],
+                          $row['ADDRESS'], $row['EMAIL'], $row['PHONE']);
+    }
     
     /**
      * @param person which is a Person object. Make personID null to make id assignment automated.
@@ -94,11 +118,25 @@ class Database {
     }
 
     /**
+     * @param person updates the corresponding sqltuples.
+     */
+    public function updatePerson(Person $person){
+        $sqlStmt = "UPDATE persons ".
+                 "SET first_name='".$person->firstName."', ".
+                 "last_name='".$person->lastName."', ".
+                 "address='".$person->address."', ".
+                 "email='".$person->email."', ".
+                 "phone='".$person->phone."' ".
+                 "WHERE person_id = '".$person->personID."'";
+        $rv = oci_execute(oci_parse($this->_connection, $sqlStmt));
+    }
+
+    /**
      * @param id of the Person to be removed.
      * @throws Exception, id doesn't exist.
      */
     public function removePerson($id){
-        $sqlstmt = 'DELETE FROM persons WHERE person_id='.$id;
+        $sqlstmt = 'DELETE FROM persons WHERE person_id='.$id.'';
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -114,18 +152,25 @@ class Database {
      * @see User
      */
     public function addUser(User $user){
-        $sqlstmt = 'INSERT INTO users VALUES('.
+        $sqlStmt = 'INSERT INTO users VALUES('.
                  Q($user->userName).', '.
                  Q($user->password).', '.
                  Q($user->clss).', '.
                  $user->personID.', '.
                  Q($user->dateRegistered).')';
 
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute(oci_parse($this->_connection, $sqlStmt));        
+    }
+    
+    /**
+     * @param user updates the user tuple that matches user->userName.
+     */
+    public function updateUser(User $user){
+        $sqlStmt = "UPDATE users ".
+                 "SET password='".$user->password."', class='".$user->class."' ".
+                 ", person_id='".$user->person_id."', date_registered='".$user->dateRegistered."' ".
+                 "WHERE user_name='".$user->userName."'";
+        $rv = oci_execute(oci_parse($this->_connection, $sqlStmt));
     }
     
     /**
@@ -135,18 +180,14 @@ class Database {
     public function removeUser($userName){
         $sqlstmt = 'DELETE FROM users WHERE user_name='.Q($userName).'';
         
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
     }
 
     /**
      * @param userName of the user to be acquired.
      * @param password of the user to be acquired. This is for security reasons.
      * @return User object. (Note this can't be an array since userName is key).
-     *         False if user does not exist.
+     * @throws Throws exception if user doesn't exist.
      * @see User
      */
     public function getUser($userName){
@@ -167,7 +208,7 @@ class Database {
 
         $row = oci_fetch_array($stid, OCI_ASSOC);
         if ($row == False){
-            return False;
+            throw(new Exception("User doesn't exist"));
         }        
         return new User($row['USER_NAME'], $row['PASSWORD'], $row['CLASS'], 
                         $row['PERSON_ID'], new Date($row['DATE_REGISTERED']));
@@ -183,22 +224,14 @@ class Database {
                  $fd->doctorID.', '.
                  $fd->patientID.')';
 
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
     }
 
     public function removeFamilyDoctor(FamilyDoctor $fd){
         $sqlstmt = 'DELETE FROM family_doctor WHERE doctor_id='.$fd->doctorID.' and '.
                  'patient_id='.$fd->patientID;
         
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
     }
 
     public function addRadiologyRecord(RadiologyRecord $rr){
@@ -209,11 +242,7 @@ class Database {
                            $rr->radiologistID, Q($rr->testType), Q($rr->prescribingDate), 
                            Q($rr->testDate), Q($rr->diagnosis), Q($rr->description))).')';
             
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));            
     }
 
     public function removeRadiologyRecord($recordID){
@@ -240,11 +269,7 @@ class Database {
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
         
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute($stid);
         
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
@@ -279,11 +304,7 @@ class Database {
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
         
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute($stid);        
         
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
@@ -320,11 +341,7 @@ class Database {
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
         
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
+        $rv = oci_execute($stid);        
         
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
@@ -363,12 +380,8 @@ class Database {
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
         
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-        
+        $rv = oci_execute($stid);
+            
         $rv = array();
         while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
             $rv[] = 

@@ -12,6 +12,7 @@ include_once '../Date.php';
 
 /*!@class Search
  * @test Unit tests for the Search module. @see Search
+ * 
  */
 class SearchTest extends PHPUnit_Framework_TestCase{
     private $_people = null;

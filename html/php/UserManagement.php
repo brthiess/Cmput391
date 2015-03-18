@@ -5,6 +5,8 @@
 
 include_once 'Database.php';
 include_once 'User.php';
+include_once 'Person.php';
+include_once 'FamilyDoctor.php';
 
 /*!@class UserManagement
  * @brief 
@@ -28,7 +30,7 @@ class UserManagement{
         }
 
         // Verify that this user is an admin.
-        if($user->clss != 'a'){
+        if($user->clss != UserClass::admin){
             // Not an admin, throw an exception.
             throw new Exception("User associated with username: ".$adminUserName.
                                 " is not an admin.");
@@ -41,15 +43,42 @@ class UserManagement{
      *                  not associated with a person, or $user->userName already exist.
      */
     public function addUser(User $user){
-        try{
-            $this->_db->addUser($user);
-        }catch(Exception $e){
-            throw $e;
-        }
+        $this->_db->addUser($user);
+    }
+    
+    /**
+     * @param user User object to update the corresponding sql tuple.
+     * @throws If user->userName doesn't exist in sql.
+     */
+    public function updateUser(User $user){
+        $this->_db->updateUser($user);
     }
 
-    public function updateUserPassword($userName, $password){
-        
+    /**
+     * @param userName, removes the corresponding user tuple with the same userName.
+     */
+    public function removeUser($userName){
+        $this->_db->removeUser($userName);
+    }
+
+    public function addPerson(Person $person){
+        $this->_db->addPerson($person);
+    }
+
+    public function updatePerson(Person $person){
+        $this->_db->updatePerson($person);
+    }
+
+    public function removePerson($personID){
+        $this->_db->removePerson($personID);
+    }
+
+    public function addFamilyDoctor(FamilyDoctor $familyDoctor){
+        $this->_db->addFamilyDoctor($familyDoctor);
+    }
+
+    public function removeFamilyDoctor(FamilyDoctor $familyDoctor){
+        $this->_db->removeFamilyDoctor($familyDoctor);
     }
 }
 

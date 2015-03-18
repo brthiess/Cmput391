@@ -3,7 +3,18 @@
  * User.php
  */
 
+include_once 'Const.php';
 include_once 'Date.php';
+
+/*!@class UserClass
+ * @brief Serves as an enum type for users.class.
+ */
+class UserClass{
+    const admin = 'a';
+    const patient = 'p';
+    const doctor = 'd';
+    const radiologist = 'r';
+}
 
 /*!@class User
  * @brief PHP representation of user schema.
@@ -11,7 +22,7 @@ include_once 'Date.php';
 class User{
     public $userName = NULL;
     public $password = NULL;
-    public $clss = NULL;
+    public $clss = NULL;  // User class.
     public $personID = NULL;
     public $dateRegistered = NULL;
 
@@ -21,7 +32,7 @@ class User{
         $this->password = $password;
         $this->clss = $clss;
         $this->personID = $personID;
-        $this->dateRegistered = $dateRegistered;        
+        $this->dateRegistered = $dateRegistered;
     }
 }
 

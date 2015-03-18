@@ -8,6 +8,11 @@ include_once '../UserManagement.php';
 include_once '../Database.php';
 include_once '../Date.php';
 
+/*!@class UserManagementTest
+ * @test Unit tests for the UserManagement module. @see UserManagement
+ * 
+ * @group Cmput391Test
+ */
 class UserManagementTest extends PHPUnit_Framework_TestCase{
     private $_um = NULL;  // User management module.
     
@@ -16,12 +21,9 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
         
         global $PEOPLE, $USERS;
         
-        // Add Person objects.
-        foreach ($PEOPLE as $person){
-            $db->addPerson($person);
-        }
+        // Only add Joe Shmoe.
+        $db->addPerson($PEOPLE[0]);
 
-        // Add all people.
         // Only add the admin as user.        
         $db->addUser($USERS[0]);
         
@@ -41,9 +43,7 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
         
 
         // Remove all the people.
-        foreach ($PEOPLE as $person){
-            $db->removePerson($person->personID);
-        }
+        $db->removePerson($PEOPLE[0]->personID);
     }
     
     public function testAdminUse(){
@@ -81,14 +81,16 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
     }
     
     public function testAddUser(){
-        global $USERS;
+        global $USERS, $PEOPLE;
         $db = Database::instance();  // Acquire database instance.
 
         // Add a not-yet added user.
         $success = true;
         try{
+            $db->addPerson($PEOPLE[1]);
             $this->_um->addUser($USERS[1]);
             $db->removeUser($USERS[1]->userName);
+            $db->removePerson($PEOPLE[1]->personID);
         }catch(Exception $e){
             print $e->getMessage();
             $success = false;
@@ -105,26 +107,104 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
         $this->assertEquals(true, $success);
     }
 
-    public function testUpdateUserPassword(){
-        global $USERS;
+    public function testUpdateUser(){
+        global $USERS, $PEOPLE;
         $db = Database::instance();  // Acquire database instance.
-
+        
         // Update existing user.
+        $newPass = "asdf";
+        $user = $USERS[1];
+        $db->addPerson($PEOPLE[1]);
+        $db->addUser($user);
+        $user->password = $newPass;
+        $this->_um->updateUser($user); // Change from 1234 to asdf.        
+        
+        // See if the password changed.
+        $user = $db->getUser($user->userName);
+        $db->removeUser($user->userName);  // Cleanup.
+        $db->removePerson($PEOPLE[1]->personID);
+        $this->assertEquals($newPass, $user->password);        
     }
 
     public function testRemoveUser(){
-    }
+        global $USERS, $PEOPLE;
+        $db = Database::instance();  // Acquire database instance.
+
+        // Try adding and removing a user.
+        $db->addPerson($PEOPLE[1]);
+        $this->_um->addUser($USERS[1]);
+        $this->_um->removeUser($USERS[1]->userName);
+        $db->removePerson($PEOPLE[1]->personID);
+
+        $success = false;
+        try{
+            var_dump($db->getUser($USERS[1]->userName));
+
+            // At this point, user is not deleted. Delete it with the tested db code.
+            $db->removeUser($USERS[1]->userName);
+        }catch(Exception $e){
+            // If getUser fails, that means UserManagement::removeUser works.
+            $success = true;
+            $db->removeUser($USERS[1]->userName);
+        }
+        
+        $this->assertEquals(true, $success);
+    } 
 
     public function testAddPerson(){
+        global $PEOPLE;
+        $db = Database::instance();  // Acquire database instance.
+
+        $this->_um->addPerson($PEOPLE[6]);
+        
+        $success = true;
+        try{
+            //$db->getPerson($PEOPLE[6]->personID);
+        }catch(Exception $e){
+            $success = false;
+        }
+        $db->removePerson($PEOPLE[6]->personID);
+        $this->assertEquals(true, $success);
     }
 
     public function testUpdatePerson(){
+        global $PEOPLE;
+        $db = Database::instance();  // Acquire database instance.
+        
+        $person = $PEOPLE[6];
+        
+        $this->_um->addPerson($person);
+        $person->firstName = "BillyBurry";
+        $this->_um->updatePerson($person);
+        
+        $success = true;
+        $this->assertEquals("BillyBurry", $db->getPerson($person->personID)->firstName);
+        $db->removePerson($person->personID);
+        $this->assertEquals(true, $success);
     }
 
     public function testRemovePerson(){
+        global $PEOPLE;
+        $db = Database::instance();  // Acquire database instance.
+
+        $person = $PEOPLE[6];
+        $this->_um->addPerson($person);
+        $this->_um->removePerson($person->personID);
+        
+        $success = false;
+        try{
+            var_dump($db->getPerson($person->personID));
+
+            // At this point, person is not deleted. Delete it with the tested db code.
+            $db->removePerson($person->personID);
+        }catch(Exception $e){
+            // If getPeople fails, that means UserManagement::removeUser works.
+            $success = true;            
+        }
+        $this->assertEquals(true, $success);
     }
 
-    public function testAddFamilyDoctor(){
+    public function testAddFamilyDoctor(){        
     }
 
     public function testUpdateFamilyDoctor(){
