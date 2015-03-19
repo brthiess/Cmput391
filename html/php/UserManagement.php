@@ -45,6 +45,15 @@ class UserManagement{
     public function addUser(User $user){
         $this->_db->addUser($user);
     }
+
+    /**
+     * @param userName
+     * @return User corresponding to the userName provided. @see User
+     * @throws Throws exception if user doesn't exist.
+     */
+    public function getUser($userName){
+        $this->_db->getUser($userName);
+    }
     
     /**
      * @param user User object to update the corresponding sql tuple.
@@ -56,29 +65,73 @@ class UserManagement{
 
     /**
      * @param userName, removes the corresponding user tuple with the same userName.
+     * @throws Exception if userName doesn't correspond to a user in sql.
      */
     public function removeUser($userName){
         $this->_db->removeUser($userName);
     }
+    
+    /**
+     * @param personID
+     * @return returns the corresponding Person object. @see Person
+     */
+    public function getPerson($personID){
+        $this->_db->getPerson($personID);
+    }
 
+    /**
+     * @param person object to be added.
+     * @throws Exception if person added already exist.
+     */
     public function addPerson(Person $person){
         $this->_db->addPerson($person);
     }
 
+    /**
+     * @param person updates the corresponding tuple in sql.
+     * @throws Exception if person doesn't exist.
+     */
     public function updatePerson(Person $person){
         $this->_db->updatePerson($person);
     }
 
+    /**
+     * @param personID corresponds to the tuple in sql to be deleted.
+     * @throws Exception if personID don't correspond to a tuple in sql.
+     */
     public function removePerson($personID){
         $this->_db->removePerson($personID);
     }
 
+    /**
+     * @param familyDoctor adds the family doctor.
+     */
     public function addFamilyDoctor(FamilyDoctor $familyDoctor){
         $this->_db->addFamilyDoctor($familyDoctor);
     }
 
+    /**
+     * @param familyDoctor removes the corresponding sql tuple.
+     */
     public function removeFamilyDoctor(FamilyDoctor $familyDoctor){
         $this->_db->removeFamilyDoctor($familyDoctor);
+    }
+
+    /**
+     * @param doctorID
+     * @return array of Person with doctor. @see Person
+     */
+    public function getPeopleWithDoctor($doctorID){
+        $this->_db->getPeopleWithDoctor($doctorID);
+    }
+    
+    /**
+     * @param patientID
+     * @return array of Doctor that have the Patient with the corresponding patientID.
+     * @see Doctor.
+     */
+    public function getDoctorWithPatient($patientID){
+        $this->_db->getDoctorWithPatient($patientID);
     }
 }
 
