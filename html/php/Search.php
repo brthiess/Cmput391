@@ -85,7 +85,7 @@ class Search{
      * @param keywords string of keywords.
      * @param d1 lowerbound of date to be included.
      * @param d2 upperbound of date to be included.
-     * @param desencending true for descending ordering, false otherwise.
+     * @param desencending true for descending ordering, false otherwise. Default true.
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){

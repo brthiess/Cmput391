@@ -1,8 +1,10 @@
-/*
+/**
  *  File name:  setup.sql
  *  Function:   to create the initial database schema for the CMPUT 391 project,
  *              Winter Term, 2015
  *  Author:     Prof. Li-Yan Yuan
+ *
+ *  Modified for purposes of this project.
  */
 DROP FUNCTION searchWithKPByTime;
 DROP FUNCTION searchWithKPByRank;
@@ -10,6 +12,9 @@ DROP FUNCTION searchWithKeyWordsByRank;
 DROP FUNCTION searchWithKeyWordsByTime;
 DROP FUNCTION searchWithPeriodByTime;
 DROP FUNCTION getRadiologyRecords;
+DROP FUNCTION insertPerson;
+DROP FUNCTION insertRadiologyRecord;
+DROP TYPE persons_rt;
 DROP TYPE radiology_record_rt_t;
 DROP TYPE radiology_record_rt;
 DROP INDEX personsIndexLastName;
@@ -161,10 +166,78 @@ CREATE TYPE radiology_record_rt AS OBJECT(
 /
 
 /**
+ * @param rr radiology record tuple to be inserted.
+ * @return autoID 'TRUE' to automate primary key (record_id). Otherwise, rr.record_id will be the primary key.
+ */
+CREATE FUNCTION insertRadiologyRecord(rr IN radiology_record_rt, autoID IN VARCHAR2) RETURN INTEGER
+       IS
+       primaryKey INTEGER := -1;
+       BEGIN
+       
+       IF UPPER(autoID)='TRUE' THEN
+       	  primaryKey := records_seq.nextVal;
+       ELSE
+          primaryKey := rr.record_id;
+       END IF;
+       
+       INSERT INTO radiology_record VALUES(primaryKey,
+       	      	   	     	           rr.patient_id,
+			     	  	   rr.doctor_id,
+					   rr.radiologist_id,
+					   rr.test_type,
+					   rr.prescribing_date,
+					   rr.test_date,
+					   rr.diagnosis,
+					   rr.description);
+       
+       return primaryKey;
+       
+       END;
+/
+
+/**
  * radiology_record_rt_t table of row tuple. This is used to hold
  * the result for the query functions that returns radiology_record tuples.
  */
 CREATE TYPE radiology_record_rt_t IS TABLE OF radiology_record_rt;
+/
+
+CREATE TYPE persons_rt AS OBJECT(
+   person_id int,
+   first_name varchar(24),
+   last_name  varchar(24),
+   address    varchar(128),
+   email      varchar(128),
+   phone      char(10)
+);
+/
+
+/**
+ * @param person Person tuple to be inserted.
+ * @param autoID 'TRUE' if you want the primary key or person_id to be generated automatically.
+ * @return person_id of the newly inserted tuple.
+ */
+CREATE FUNCTION insertPerson(person IN persons_rt, autoID IN VARCHAR2) return INTEGER
+       IS
+       primaryKey INTEGER := -1;
+       BEGIN
+       
+       IF UPPER(autoID)='TRUE' THEN
+       	    primaryKey := persons_seq.nextVal;
+       ELSE
+          primaryKey := person.person_id;
+       END IF;
+       
+       INSERT INTO persons VALUES(primaryKey,
+       	      	   	     	  person.first_name,
+			     	  person.last_name,
+			     	  person.address,
+			     	  person.email,
+			     	  person.phone);
+       
+       return primaryKey;
+
+       END;
 /
 
 /**
@@ -315,7 +388,7 @@ CREATE FUNCTION searchWithPeriodByTime(userName IN VARCHAR2, d1 IN DATE, d2 IN D
        l_tab radiology_record_rt_t := radiology_record_rt_t();
        BEGIN
        
-       IF descending='TRUE' THEN
+       IF UPPER(descending)='TRUE' THEN
        	  FOR t in 
        	   (SELECT rr.*
             FROM TABLE(getRadiologyRecords(userName)) rr JOIN persons p ON rr.patient_id=p.person_id
@@ -387,7 +460,7 @@ CREATE FUNCTION searchWithKPByTime(userName IN VARCHAR2, keywords IN VARCHAR2 ,d
        l_tab radiology_record_rt_t := radiology_record_rt_t();
        BEGIN
        
-       IF descending='TRUE' THEN
+       IF UPPER(descending)='TRUE' THEN
        	  FOR t in
        	   (SELECT *
             FROM TABLE(searchWithKeywordsByRank(userName, keywords)) rr
