@@ -8,6 +8,7 @@ include_once 'User.php';
 include_once 'RadiologyRecord.php';
 include_once 'FamilyDoctor.php';
 include_once 'common.php';
+include_once 'PacsImages.php';
 
 /**
  * The following are db credentials. If you want a quick db, I suggest looking
@@ -98,23 +99,35 @@ class Database {
     
     /**
      * @param person which is a Person object. Make personID null to make id assignment automated.
+     * @return id of the person inserted. This is helpful when personID is set to null and sql 
+     *         automatically generates one for you.
      * @throws Exception, something about the Person properties is wrong.
      * @see Person
      */
-    public function addPerson(Person $person){ 
-        $sqlstmt = 'INSERT INTO persons VALUES('.
-                 ($person->personID == NULL? 'persons_seq.nextval' : $person->personID).', '.
-                 Q($person->firstName).', '.
-                 Q($person->lastName).', '.
-                 Q($person->address).', '.
-                 Q($person->email).', '.
-                 Q($person->phone).')';
+    public function addPerson(Person $person){
+        $id = $person->personID == NULL? "NULL" : $person->personID;
+        $autoID = $person->personID == NULL? "TRUE" : "FALSE";
+        $p = "insertPerson(persons_rt(".
+           $id.", ".
+           Q($person->firstName).", ".
+           Q($person->lastName).", ".
+           Q($person->address).", ".
+           Q($person->email).", ".
+           Q($person->phone)."),'".$autoID."')";
+
+        $sqlStmt = "BEGIN :r := ".$p."; END;";
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        oci_bind_by_name($stid, ":r", $r, 5);
 
         try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
+            $rv = oci_execute($stid);
         }catch(Exception $e){
             throw $e;
         }
+
+        //print $r. PHP_EOL;
+
+        return $r;
     }
 
     /**
@@ -226,24 +239,55 @@ class Database {
         $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
     }
 
+    /**
+     * @param fd Family doctor object to be removed.
+     * @throws Exception if fd tuple to be remove doesn't exist in SQL.
+     */
     public function removeFamilyDoctor(FamilyDoctor $fd){
         $sqlstmt = 'DELETE FROM family_doctor WHERE doctor_id='.$fd->doctorID.' and '.
                  'patient_id='.$fd->patientID;
         
         $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
     }
+    
+    /**
+     * @param rr RadiologyRecord object. Set rr->recordID = null to let sql automatically
+     *           assign recordID.
+     * @return The assigned recordID.
+     * @throws If radiology record already exist or one of the parameters are invalid. Billion
+     *         ways to get that wrong so I won't enumerate.
+     */
+    public function addRadiologyRecord(RadiologyRecord $rr){        
+        $id = $rr->recordID == NULL? "NULL" : $rr->recordID;
+        $autoID = $id == "NULL"? "TRUE" : "FALSE";
+        $p = "insertRadiologyRecord(radiology_record_rt(".
+           $id.", ".
+           $rr->patientID.", ".
+           $rr->doctorID.", ".
+           $rr->radiologistID.", ".
+           Q($rr->testType).", ".
+           Q($rr->prescribingDate).", ".
+           Q($rr->testDate).", ".
+           Q($rr->diagnosis).", ".
+           Q($rr->description)."),'".$autoID."')";
 
-    public function addRadiologyRecord(RadiologyRecord $rr){
-        $sqlstmt = 'INSERT INTO radiology_record VALUES('.
-                 commaSeparatedString(
-                     array(($rr->recordID==NULL? 'records_seq.nextval' : $rr->recordID),
-                           $rr->patientID, $rr->doctorID, 
-                           $rr->radiologistID, Q($rr->testType), Q($rr->prescribingDate), 
-                           Q($rr->testDate), Q($rr->diagnosis), Q($rr->description))).')';
-            
-        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));            
+        $sqlStmt = "BEGIN :r := ".$p."; END;";
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        oci_bind_by_name($stid, ":r", $r, 5);
+
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+
+        return $r;        
     }
-
+    
+    /**
+     * @param recordID id of the radiology_record tuple to be deleted.
+     * @throws if tuple associated with a recordID doesn't exist.
+     */
     public function removeRadiologyRecord($recordID){
         $sqlstmt = 'DELETE FROM radiology_record WHERE record_id='.$recordID.'';
         
@@ -556,7 +600,79 @@ class Database {
 
         oci_free_statement($stid);  
         return $rv;
-    }    
+    }
+    
+    public function insertImage(PacsImages $pi){
+        $sql = "INSERT INTO ".
+             "pacs_images(record_id, image_id, thumbnail, regular_size, full_size)".
+             " VALUES(".
+             $pi->recordID.", ".
+             $pi->imageID.", ".
+             "EMPTY_BLOB(),".
+             "EMPTY_BLOB(),".
+             "EMPTY_BLOB()".
+             ") RETURNING thumbnail, regular_size, full_size ".
+             "INTO :thumbnail, :regular_size, :full_size";        
+        //echo $sql . PHP_EOL;
+        $result = oci_parse($this->_connection, $sql);
+        $thumbnailBlob = oci_new_descriptor($this->_connection, OCI_D_LOB);
+        $regularSizeBlob = oci_new_descriptor($this->_connection, OCI_D_LOB);
+        $fullSizeBlob = oci_new_descriptor($this->_connection, OCI_D_LOB);
+        oci_bind_by_name($result, ":thumbnail", $thumbnailBlob, -1, OCI_B_BLOB);
+        oci_bind_by_name($result, ":regular_size", $regularSizeBlob, -1, OCI_B_BLOB);
+        oci_bind_by_name($result, ":full_size", $fullSizeBlob, -1, OCI_B_BLOB);
+        oci_execute($result, OCI_DEFAULT);
+
+        if(!$thumbnailBlob->save($pi->thumbnail) ||
+           !$regularSizeBlob->save($pi->regularSize) ||
+           !$fullSizeBlob->save($pi->fullSize)) {
+            oci_rollback($this->_connection);
+        }
+        else {
+            oci_commit($this->_connection);
+        }        
+        
+        oci_free_statement($result);
+        $thumbnailBlob->free();
+        $regularSizeBlob->free();
+        $fullSizeBlob->free();
+    }
+
+    public function removeImage($recordID, $imageID){
+        $sqlstmt = "DELETE FROM pacs_images WHERE record_id=".$recordID." AND ".
+                 "image_id=".$imageID;
+        
+        try{
+            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getImage($recordID, $imageID){
+        $sqlStmt = "SELECT * FROM pacs_images WHERE record_id=".$recordID." AND ".
+                "image_id=".$imageID;
+
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        if (!$stid) {
+            $e = oci_error($this->_connection);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+
+        // Perform the logic of the query
+        $r = oci_execute($stid);
+        if (!$r) {
+            $e = oci_error($stid);
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+        }
+
+        $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_LOBS);
+        if ($row == False){
+            throw(new Exception("User doesn't exist"));
+        }        
+        return new PacsImages($row['RECORD_ID'], $row['IMAGE_ID'], $row['THUMBNAIL'], 
+                              $row['REGULAR_SIZE'], $row['FULL_SIZE']);
+    }
 }
 
 ?>

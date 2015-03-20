@@ -9,6 +9,7 @@ include_once 'TestConstants.php';
 include_once '../Search.php';
 include_once '../Database.php';
 include_once '../Date.php';
+include_once '../PacsImages.php';
 
 /*!@class Search
  * @test Unit tests for the Search module. @see Search
@@ -20,7 +21,7 @@ class SearchTest extends PHPUnit_Framework_TestCase{
     private $_familyDoctors = null;
     private $_records = null;
     
-    protected function setUp(){                
+    protected function setUp(){
         $db = Database::instance();  // Acquire database instance
 
         global $PEOPLE, $USERS, $FAMILY_DOCTORS, $RECORDS;
@@ -210,6 +211,14 @@ class SearchTest extends PHPUnit_Framework_TestCase{
                                 new Date(Month::January, 2, 2015),
                                 new Date(Month::December, 31, 2015),
                                 false));
+    }
+
+    public function testImageInsertDeleteRetrieval(){
+        $db = Database::instance();  // Acquire database instance.
+        $pi = new PacsImages(1, 1, "asdf", "asdf", "asdf");
+        $db->insertImage($pi);
+        $this->assertEquals($db->getImage(1, 1), $pi);
+        $db->removeImage(1, 1);
     }
 }
 

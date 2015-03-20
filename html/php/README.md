@@ -52,6 +52,34 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
   }
   ```
 
+## Views to be considered:
+1. **Admin Profile Page:** I saw in the views that there is a profile.php. Since Admin have different
+   requirements from other users, it needs soemthing different. The following are requirements for the Admin
+   Profile page (not limited to, thus add whatever is discovered is necessary along the way):
+   
+   * A link to UserManagement page (utilizes *UserManagement.php*) see UserManagement page below.
+
+2. **UserManagement Page:** This is just a suggestion but basically, it must be able to do the
+   following (basically most of the methods in *UserManagement.php*), implement it whatever way
+   you want:
+   * For the update, I suggest having a way to first enter the primary key (userName or
+     person_id) and retrieve the corresponding data, before editing and changing them.
+   * update user
+   * remove user
+   * add Person
+   * update Person
+   * add Family Doctor
+   * remove Family Doctor
+
+3. **Search Page:** Utilizing the Search.php, it retrieves a list of Radiology_Records. Note that,
+    *"Each record displayed shall contain all the information, including the list of thumbnails of medical images, of the record."*, thus try to accomodate the multiple thumbnails per record. For images,
+    there are methods for it, but they are all bulks, thus could result in a performance overhead.
+    I will create methods to retrieve only thumbnails if needed. So for now, just have some 
+    dummy image.
+
+4. **Record Page:** If a record is selected, a page concerning the record is displayed.   
+   
+
 ## Search Module Methods Notes:
 *(This is just a note so I have something to talk about my modules in demo.)*
 

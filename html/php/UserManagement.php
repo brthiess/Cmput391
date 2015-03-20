@@ -9,7 +9,7 @@ include_once 'Person.php';
 include_once 'FamilyDoctor.php';
 
 /*!@class UserManagement
- * @brief 
+ * @brief A module for managing users that is only available for admins.
  */
 class UserManagement{
     private $_db = NULL;  // Database instance.
@@ -19,7 +19,7 @@ class UserManagement{
      * @throw Exception, if adminUserName is not a username of an admin.
      * @throw Exception, if adminUserName does not exist.
      */
-    public function __construct($adminUserName){        
+    public function __construct($adminUserName){
         $this->_db = Database::instance();
 
         
@@ -39,6 +39,7 @@ class UserManagement{
 
     /**
      * @param user User object to be added. @see User
+     * @return user index.
      * @throw Exception if one of the user attribute is wrong. e.g. user->personID is
      *                  not associated with a person, or $user->userName already exist.
      */
@@ -81,10 +82,11 @@ class UserManagement{
 
     /**
      * @param person object to be added.
+     * @return new person id.
      * @throws Exception if person added already exist.
      */
     public function addPerson(Person $person){
-        $this->_db->addPerson($person);
+        return $this->_db->addPerson($person);
     }
 
     /**
