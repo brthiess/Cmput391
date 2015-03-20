@@ -25,9 +25,8 @@ const CONNECTION_STRING = "localhost:49161/xe";
  * Note that this assumes that the schemas are already created.
  */
 class Database {
-    private $_username = NULL;
-    private $_connectionString = NULL;
-
+    private $_username = NULL; // Oracle Username.
+    private $_connectionString = NULL;  // e.g. "localhost:49161/xe"
     private $_connection = NULL;  // Variable representing database connection.
         
     /**
@@ -39,15 +38,8 @@ class Database {
     private function __construct($username, $password, $connectionString){
         $this->_userName = $username;
         $this->_connectionString = $connectionString;
-        $this->_connection = oci_connect($username, $password, $connectionString);
-        if (!$this->_connection) {
-            $e = oci_error();
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-            throw new Exception("Database connection failed. Please check constructor arguments.");
-        }else{
-            print "Database connection established.\n";
-        }
-    }
+        $this->createConnection($username, $password, $connectionString);
+    }    
 
     /**
      * Database Singleton.
@@ -65,18 +57,42 @@ class Database {
     /**
      * Destroys resource. This upholds RAII (just worry about initialization).
      */
-    public function __destruct(){
+    public function __destruct(){ $this->destroyConnection(); }
+    
+    /**
+     * @param username
+     * @param password
+     * @param connectionString
+     * @throws exception if error occurs.
+     */
+    public function createConnection($username, $password, $connectionString){
+        $this->_connection = oci_connect($username, $password, $connectionString);
+        if (!$this->_connection) {
+            $e = oci_error();
+            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+            throw new Exception("Database connection failed. Please check constructor arguments.");
+        }else{
+            print "Database connection established.\n";
+        }
+    }
+
+    /**
+     * Destroys current connection.
+     */
+    public function destroyConnection(){
         if($this->_connection != NULL){
             oci_close($this->_connection);
             $this->_connection = NULL;
             print "Database connection destroyed.\n";
         }
     }
-
-    public function getPerson($personID){
-        $sqlstmt = 'SELECT * FROM persons WHERE person_id='.Q($personID);        
-
-        $stid = oci_parse($this->_connection, $sqlstmt);
+    
+    /**
+     * @param sqlStmt SQL stmt to be executed.
+     * @return array of tuples, by capitlized column name.
+     */
+    public function executeQuery($sqlStmt){
+        $stid = oci_parse($this->_connection, $sqlStmt);
         if (!$stid) {
             $e = oci_error($this->_connection);
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -88,10 +104,53 @@ class Database {
             $e = oci_error($stid);
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
         }
+        
+        $res = null;
+        try{
+            oci_fetch_all($stid, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
+        }catch(Exception $e){
+            return array();
+        }
+        
+        return $res;
+    }
 
-        $row = oci_fetch_array($stid, OCI_ASSOC);
-        if ($row == False){
-            throw(new Exception("User doesn't exist"));
+    public function executeQueryWithBindings($sqlStmt, array $inBinding, array &$outBinding){
+        $stid = oci_parse($this->_connection, $sqlStmt);
+        
+        foreach($inBinding as $key => $bind){
+            oci_bind_by_name($stid, $key, $bind);
+        }
+
+        foreach($outBinding as $key => &$bind){
+            oci_bind_by_name($stid, $key, $bind, 100);
+        }
+
+        try{
+            $rv = oci_execute($stid);
+        }catch(Exception $e){
+            throw $e;
+        }
+        
+        $res = null;
+        try{
+            oci_fetch_all($stid, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
+        }catch(Exception $e){
+            return array();
+        }
+        
+        return $res;
+    }
+
+    /**
+     * @param 
+     */
+    public function getPerson($personID){
+        $sqlStmt = 'SELECT * FROM persons WHERE person_id='.Q($personID);        
+
+        $row = $this->executeQuery($sqlStmt)[0];
+        if(sizeof($row) == 0){
+            throw(new Exception("Person ID: ".$personID." don't have a corresponding row."));
         }
         return new Person($row['PERSON_ID'], $row['FIRST_NAME'], $row['LAST_NAME'],
                           $row['ADDRESS'], $row['EMAIL'], $row['PHONE']);
@@ -114,20 +173,12 @@ class Database {
            Q($person->address).", ".
            Q($person->email).", ".
            Q($person->phone)."),'".$autoID."')";
-
+                
         $sqlStmt = "BEGIN :r := ".$p."; END;";
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        oci_bind_by_name($stid, ":r", $r, 5);
+        $outBinding = array(":r"=>$r);
+        $this->executeQueryWithBindings($sqlStmt, array(), $outBinding); 
 
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-
-        //print $r. PHP_EOL;
-
-        return $r;
+        return $outBinding[":r"];
     }
 
     /**
@@ -141,7 +192,7 @@ class Database {
                  "email='".$person->email."', ".
                  "phone='".$person->phone."' ".
                  "WHERE person_id = '".$person->personID."'";
-        $rv = oci_execute(oci_parse($this->_connection, $sqlStmt));
+        $this->executeQuery($sqlStmt);
     }
 
     /**
@@ -149,13 +200,8 @@ class Database {
      * @throws Exception, id doesn't exist.
      */
     public function removePerson($id){
-        $sqlstmt = 'DELETE FROM persons WHERE person_id='.$id.'';
-        
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $sqlStmt = 'DELETE FROM persons WHERE person_id='.$id.'';
+        $this->executeQuery($sqlStmt);
     }
     
     /**
@@ -171,8 +217,7 @@ class Database {
                  Q($user->clss).', '.
                  $user->personID.', '.
                  Q($user->dateRegistered).')';
-
-        $rv = oci_execute(oci_parse($this->_connection, $sqlStmt));        
+        $this->executeQuery($sqlStmt);
     }
     
     /**
@@ -183,7 +228,7 @@ class Database {
                  "SET password='".$user->password."', class='".$user->class."' ".
                  ", person_id='".$user->person_id."', date_registered='".$user->dateRegistered."' ".
                  "WHERE user_name='".$user->userName."'";
-        $rv = oci_execute(oci_parse($this->_connection, $sqlStmt));
+        $this->executeQuery($sqlStmt);
     }
     
     /**
@@ -191,9 +236,8 @@ class Database {
      * @throws Exception if user with a userName does not exist.
      */
     public function removeUser($userName){
-        $sqlstmt = 'DELETE FROM users WHERE user_name='.Q($userName).'';
-        
-        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
+        $sqlStmt = 'DELETE FROM users WHERE user_name='.Q($userName).'';
+        $this->executeQuery($sqlStmt);
     }
 
     /**
@@ -203,24 +247,11 @@ class Database {
      * @see User
      */
     public function getUser($userName){
-        $sqlstmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
-
-        $stid = oci_parse($this->_connection, $sqlstmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-
-        // Perform the logic of the query
-        $r = oci_execute($stid);
-        if (!$r) {
-            $e = oci_error($stid);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-
-        $row = oci_fetch_array($stid, OCI_ASSOC);
-        if ($row == False){
-            throw(new Exception("User doesn't exist"));
+        $sqlStmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
+        
+        $row = $this->executeQuery($sqlStmt)[0];
+        if(sizeof($row) == 0){
+            throw(new Exception("UseName: ".$userName." don't have a corresponding row."));
         }        
         return new User($row['USER_NAME'], $row['PASSWORD'], $row['CLASS'], 
                         $row['PERSON_ID'], new Date($row['DATE_REGISTERED']));
@@ -232,11 +263,10 @@ class Database {
      * @see FamilyDoctor
      */
     public function addFamilyDoctor(FamilyDoctor $fd){
-        $sqlstmt = 'INSERT INTO family_doctor VALUES('.
+        $sqlStmt = 'INSERT INTO family_doctor VALUES('.
                  $fd->doctorID.', '.
                  $fd->patientID.')';
-
-        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
+        $this->executeQuery($sqlStmt);
     }
 
     /**
@@ -244,10 +274,9 @@ class Database {
      * @throws Exception if fd tuple to be remove doesn't exist in SQL.
      */
     public function removeFamilyDoctor(FamilyDoctor $fd){
-        $sqlstmt = 'DELETE FROM family_doctor WHERE doctor_id='.$fd->doctorID.' and '.
+        $sqlStmt = 'DELETE FROM family_doctor WHERE doctor_id='.$fd->doctorID.' and '.
                  'patient_id='.$fd->patientID;
-        
-        $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
+        $this->executeQuery($sqlStmt);
     }
     
     /**
@@ -272,16 +301,10 @@ class Database {
            Q($rr->description)."),'".$autoID."')";
 
         $sqlStmt = "BEGIN :r := ".$p."; END;";
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        oci_bind_by_name($stid, ":r", $r, 5);
-
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-
-        return $r;        
+        $outBinding = array(":r"=>$r);
+        $this->executeQueryWithBindings($sqlStmt, array(), $outBinding); 
+        
+        return $outBinding[":r"];
     }
     
     /**
@@ -289,13 +312,8 @@ class Database {
      * @throws if tuple associated with a recordID doesn't exist.
      */
     public function removeRadiologyRecord($recordID){
-        $sqlstmt = 'DELETE FROM radiology_record WHERE record_id='.$recordID.'';
-        
-        try{
-            $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
-        }catch(Exception $e){
-            throw $e;
-        }
+        $sqlStmt = 'DELETE FROM radiology_record WHERE record_id='.$recordID.'';
+        $this->executeQuery($sqlStmt);
     }
     
     /**
@@ -305,17 +323,9 @@ class Database {
      */
     public function getRadiologyRecords($userName){
         $sqlStmt = "SELECT * FROM TABLE(getRadiologyRecords('".$userName."'))";
-                                                                
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        $rv = oci_execute($stid);
-        
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -328,9 +338,7 @@ class Database {
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
-        }
-
-        oci_free_statement($stid);        
+        }        
         return $rv;
     }
     
@@ -341,16 +349,9 @@ class Database {
     public function searchWithKeywordsByRank($userName, $keywords){
         $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByRank('".$userName."','".
                  $keywords."'))";
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        $rv = oci_execute($stid);        
-        
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -363,9 +364,7 @@ class Database {
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
-        }
-
-        oci_free_statement($stid);        
+        }        
         return $rv;
     }
     
@@ -377,17 +376,9 @@ class Database {
     public function searchWithKeywordsByTime($userName, $keywords, $descending=True){
         $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByTime('".$userName."','".
                  $keywords."','".($descending? "TRUE" : "FALSE" )."'))";
-        
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        $rv = oci_execute($stid);        
-        
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -400,11 +391,8 @@ class Database {
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
-        }
-
-        oci_free_statement($stid);        
-        return $rv;
-        
+        }        
+        return $rv;        
     }
 
     /**
@@ -416,17 +404,9 @@ class Database {
     public function searchWithPeriodByTime($userName, Date $d1, Date $d2, $descending=True){
         $sqlStmt = "SELECT * FROM TABLE(searchWithPeriodByTime('".$userName."','".
                  $d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
-        
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        $rv = oci_execute($stid);
-            
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -439,10 +419,8 @@ class Database {
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
-        }
-
-        oci_free_statement($stid);        
-        return $rv;        
+        }        
+        return $rv;
     }
 
     /**
@@ -455,21 +433,9 @@ class Database {
     public function searchWithKPByRank($userName, $keywords, Date $d1, Date $d2){
         $sqlStmt = "SELECT * FROM TABLE(searchWithKPByRank('".$userName."','".
                  $keywords."','".$d1."','".$d2."'))";
-        
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-        
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -482,9 +448,7 @@ class Database {
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
-        }
-
-        oci_free_statement($stid);  
+        }        
         return $rv;
     }
 
@@ -497,22 +461,10 @@ class Database {
      */
     public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=True){
         $sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$userName."','".
-                 $keywords."','".$d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
-        
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-        
+                 $keywords."','".$d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";        
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -525,11 +477,8 @@ class Database {
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
-        }
-
-        oci_free_statement($stid);  
-        return $rv;
-    }
+        }        
+        return $rv;}
 
     /**
      * @param doctorID
@@ -537,22 +486,10 @@ class Database {
      */
     public function getPeopleWithDoctor($doctorID){
         $sqlStmt = "SELECT p.* FROM family_doctor fd JOINS persons p ON fd.patient_id = p.person_id ".
-                 "WHERE doctor_id=".$doctorID;
-        
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-        
+                 "WHERE doctor_id=".$doctorID;                
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
                   new Person(
                       $row['PERSON_ID'],
@@ -562,9 +499,7 @@ class Database {
                       $row['EMAIL'],
                       $row['PHONE']
                   );
-        }
-
-        oci_free_statement($stid);  
+        }        
         return $rv;
     }
 
@@ -577,28 +512,12 @@ class Database {
         $sqlStmt = "SELECT fd.* FROM family_doctor fd JOINS persons p ON fd.patient_id = p.person_id ".
                  "WHERE person_id=".$patientID;
         
-        $stid = oci_parse($this->_connection, $sqlStmt);
-        if (!$stid) {
-            $e = oci_error($this->_connection);
-            trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-        }
-        
-        try{
-            $rv = oci_execute($stid);
-        }catch(Exception $e){
-            throw $e;
-        }
-        
+        $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
-        while(($row = oci_fetch_array($stid, OCI_ASSOC)) != false){
+        foreach($rows as $row){
             $rv[] = 
-                  new FamilyDoctor(
-                      $row['DOCTOR_ID'],
-                      $row['PATIENT_ID']
-                  );
-        }
-
-        oci_free_statement($stid);  
+                  new FamilyDoctor($row['DOCTOR_ID'], $row['PATIENT_ID']);
+        }        
         return $rv;
     }
     
