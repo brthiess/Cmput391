@@ -12,6 +12,10 @@ a:hover {
 	cursor: pointer;
 }
 
+.behind {
+	z-index:-999;
+}
+
 .general-form {
 	border-radius: 0.5em;
 	background: #95a5a6;
@@ -61,14 +65,31 @@ a:hover {
 }
 
 .navigational-bar .user-name:hover {
-	background: #1abc9c;
-	transition: background 0.5s;
+	background: #1abc9c !important;
+	transition: background 0.5s !important;	
 }
 
 .navigational-bar .user-name a {
 	color: white;
 }
 
+
+@media (max-width:768px){
+	.navigational-bar {
+		height: 90px;
+		text-align: center;
+	}
+	
+
+}
+
+@media (max-width: 300px) {
+	.navigational-bar .user-image img {
+		position: absolute;
+		opacity:0;
+		z-index:-99;
+	}
+}
 
 /**********************************
 Login Page
@@ -177,11 +198,120 @@ Radiologist Page
 	background-image: url("../images/delete-image-hover.png");
 }
 
+
+/**************
+Search Tile
+****************/
+.search-tile {
+	background: #2980b9;
+	height: 150px;
+	width: 300px;
+	border-width: 4px;
+	border-style: solid;
+	border-color: #2980b9;
+	position: relative;
+	margin-top: 2em;
+}
+
+.search-tile:hover {
+	cursor: pointer;
+	border-color: white;
+}
+
+.search-tile .name {
+	position: absolute;
+	left:36%;
+	font-size: 2em;
+	font-weight:0;	
+}
+
+.search-tile .doctor {
+	position: absolute;
+	left: 36%;
+	top:35%;
+	font-size:1.5em;
+	font-weight: 0;
+}
+
+.search-tile .date .day {
+	position: absolute;
+	left: 5%;
+	top:-10%;
+	font-size:5em;
+	font-weight: 0;
+}
+
+.search-tile .date .month {
+	position: absolute;
+	left: 7%;
+	top:44%;
+	font-size:1em;
+	font-weight: 0;
+}
+
+.search-tile .date .year {
+	position: absolute;
+	left: 7%;
+	top:56%;
+	font-size:1em;
+	font-weight: 0;
+}
+
+.search-tile .diagnosis {
+	position: absolute;
+	left: 36%;
+	top:80%;
+	font-size:1em;
+	font-weight: 0;
+}
+
+/********************
+Radiology Record Tile
+*********************/
+
+.tile-record {
+	background: white;
+	padding-left: 0;
+}
+
+.tile-record ul{
+	padding-left: 0;
+	margin-left:0;
+}
+
+.tile-record li{
+	width: 100%;
+	padding-left: 0.5em;
+	padding-right: 2em;
+	margin-left: 0em;
+	list-style-type: none;
+	text-align:left;
+	font-size:1.1em;
+	font-weight:600;
+	color: #666666;
+	position:relative;
+	line-height: 2em;
+	border-bottom-style:solid;
+	border-bottom-color: #bdc3c7;
+	border-bottom-width: 1px;
+}
+
+.tile-record li p {
+	font-weight: 100;
+	display:inline;
+}
+
+.tile-record li:hover {
+	background: #ecf0f1;
+}
+
+
+
 /***************
 Button Settings
 ****************/
 .large-btn {
-	font-size: 2.3em;
+	font-size: 2.1em;
 	font-weight: 700;
 }
 @media (max-width: 500px) {
@@ -240,4 +370,14 @@ Button Settings
 .purple-btn:hover {
 	background: #8e44ad !important;
 	border-color: #8e44ad !important;
+}
+
+.red-btn {
+	background: #e74c3c !important;
+	border-color: #e74c3c !important;
+}
+
+.red-btn:hover {
+	background: #c0392b !important;
+	border-color: #c0392b !important;
 }

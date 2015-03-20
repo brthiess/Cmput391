@@ -1,10 +1,10 @@
 <div class="col-xs-12 navigational-bar">
-	<div class="col-xs-8">
+	<div class="col-sm-4">
 		<div class="title">
 			<a href="index.php">The Radiology Clinic</a>
 		</div>
 	</div>
-	<div class="col-xs-4">
+	<div class="col-sm-8">
 		<div class="user-image">
 			<img src="../images/avatar.png">
 		</div>

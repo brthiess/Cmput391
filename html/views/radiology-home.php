@@ -3,7 +3,9 @@
 <?php include 'header.php';?>
 <body>
 	<?php include 'navbar.php';?>
-	<?php include 'search-box.php';?>
+	<?php 
+	$search_type = "Search Radiology Records";
+	include 'search-box.php';?>
 	<div class="col-md-4 col-md-offset-4 top-buffer">
 		<div class="col-sm-10 center-block general-form">
 		<div class="text-center col-md-12"><h2>Upload Record</h2></div>

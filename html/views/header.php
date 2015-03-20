@@ -10,5 +10,6 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<script src="../js/calendar.js"></script>
 	<script src="../js/upload-image.js"></script>
+	<script src="../js/search.js"></script>
 </head>
 
