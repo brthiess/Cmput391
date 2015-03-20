@@ -556,8 +556,7 @@ class Database {
 
         oci_free_statement($stid);  
         return $rv;
-    }
-    
+    }    
 }
 
 ?>
