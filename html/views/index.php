@@ -11,7 +11,7 @@
 		<div class="row">
 			<div class="col-sm-4" id="patient-login-form"> 
 				<div class="col-sm-8 login-form col-sm-offset-2">
-					<form class="form-group" action="profile.php" method="post">
+					<form class="form-group" action="user-home.php" method="post">
 						<div class="row top-buffer">
 							<input type="text" class="form-control" id="patient-user-name" name="username" placeholder="Patient Username">
 						</div>
@@ -27,7 +27,7 @@
 			</div>
 			<div class="col-sm-4" id="radiologist-login-form"> 
 				<div class="col-sm-8 login-form col-sm-offset-2">
-					<div class="form-group">
+					<form class="form-group" action="radiology-home.php" method="post">
 						<div class="row top-buffer">
 							<input type="text" class="form-control" id="radiologist-user-name" placeholder="Radiologist Username">
 						</div>
@@ -35,14 +35,14 @@
 							<input type="password" class="form-control" id="radiologist-password" placeholder="Password">
 						</div>
 						<div class="row top-buffer">
-							<button type="button" class="btn btn-block btn-info radiologist-login-btn"><h4>Radiologist Login</h4></button> 
+							<button type="submit" class="btn btn-block btn-info green-btn"><h4>Radiologist Login</h4></button> 
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 			<div class="col-sm-4" id="admin-login-form"> 
 				<div class="col-sm-8 login-form col-sm-offset-2">			
-					<div class="form-group">
+					<form class="form-group" action="admin-home.php" method="post">
 						<div class="row top-buffer">
 							<input type="text" class="form-control" id="admin-user-name" placeholder="Admin Username">
 						</div>
@@ -50,9 +50,9 @@
 							<input type="password" class="form-control" id="admin-password" placeholder="Password">
 						</div>
 						<div class="row top-buffer">
-							<button type="button" class="btn btn-block btn-info admin-login-btn"><h4>Admin Login</h4></button> 
+							<button type="submit" class="btn btn-block btn-info purple-btn"><h4>Admin Login</h4></button> 
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</div>

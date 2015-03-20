@@ -5,22 +5,70 @@ body {
 	background: #34495e;
 	color:white;
 }
-.navbar {
-  border-radius: 0 !important;
+
+
+a:hover {
+	text-decoration: none !important;
+	cursor: pointer;
 }
 
-.navbar-brand {
-	color: white !important;
+.general-form {
+	border-radius: 0.5em;
+	background: #95a5a6;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-bottom:1em;
+	margin-bottom: 1em;
 }
 
-.navbar-brand:hover {
-	color: #bdc3c7 !important;
-}
-
-.navbar-default {
+.navigational-bar {
+	height: 45px;
+	margin:0;
 	background: #16a085;
-	border-color: #16a085;
+	width: 100%;
 }
+
+.navigational-bar .title {
+	padding-top: 10px;
+	padding-left: 5px;
+	height: 45px;
+	width: 205px;
+	
+}
+
+.navigational-bar .title a {
+	color: white;
+	font-size: 1.5em;
+}
+.navigational-bar .title:hover {
+	background: #1abc9c;
+	transition: background 0.5s;
+}
+.navigational-bar .user-image img {
+	height: 40px;
+	width: 40px;
+	border-radius: 1.8em;
+	float:right;
+}
+
+.navigational-bar .user-name {
+	padding-top: 10px;
+	font-size: 1.5em;
+	font-weight: 600;
+	float:right;
+	padding-right:10px;
+	height: 45px;
+}
+
+.navigational-bar .user-name:hover {
+	background: #1abc9c;
+	transition: background 0.5s;
+}
+
+.navigational-bar .user-name a {
+	color: white;
+}
+
 
 /**********************************
 Login Page
@@ -40,25 +88,8 @@ Login Page
 	margin-top: 1em;
 }
 
-
-.admin-login-btn {
-	background: #9b59b6 !important;
-	border-color: #9b59b6 !important;
-}
-
-.admin-login-btn:hover {
-	background: #8e44ad !important;
-	border-color: #8e44ad !important;
-}
-
-.radiologist-login-btn {
-	background: #2ecc71 !important;
-	border-color: #2ecc71 !important;
-}
-
-.radiologist-login-btn:hover {
-	background: #27ae60 !important;
-	border-color: #27ae60 !important;
+.bottom-buffer {
+	margin-bottom: 1em;
 }
 
 /********************************
@@ -67,6 +98,14 @@ Radiologist Page
 .radiology-form {
 	background: #7f8c8d;
 	padding-right: 1em;
+}
+
+.create-person-form {
+	margin-top: 1em;
+	border-radius: 1em;
+	background: #7f8c8d;
+	padding-right: 1em;
+	padding-bottom: 1em;
 }
 
 .medical-image {
@@ -136,4 +175,69 @@ Radiologist Page
 	opacity: 1;
 	cursor: pointer;
 	background-image: url("../images/delete-image-hover.png");
+}
+
+/***************
+Button Settings
+****************/
+.large-btn {
+	font-size: 2.3em;
+	font-weight: 700;
+}
+@media (max-width: 500px) {
+	.large-btn {
+		font-size: 1.8em;
+	}
+}
+.full-width-btn {
+	width: 100%;
+}
+.dropdown-btn {
+	text-align:left;
+}
+
+.dropdown-btn .caret {
+	position: absolute;
+	right: 10px;
+	top: 45%;
+}
+
+.green-btn {
+	background: #2ecc71 !important;
+	border-color: #2ecc71 !important;
+}
+
+.green-btn:hover {
+	background: #27ae60 !important;
+	border-color: #27ae60 !important;
+}
+
+.green-btn:focus {
+	background: #27ae60 !important;
+	border-color: #27ae60 !important;
+}
+
+.orange-btn {
+	background: #e67e22 !important;
+	border-color: #e67e22!important;
+}
+
+.orange-btn:hover {
+	background: #d35400 !important;
+	border-color: #d35400 !important;
+}
+
+.orange-btn:focus {
+	background: #d35400 !important;
+	border-color: #d35400 !important;
+}
+
+.purple-btn {
+	background: #9b59b6 !important;
+	border-color: #9b59b6 !important;
+}
+
+.purple-btn:hover {
+	background: #8e44ad !important;
+	border-color: #8e44ad !important;
 }

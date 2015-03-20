@@ -10,8 +10,18 @@
 	<div class="text-center col-md-12"><h2>Input Record</h2></div>
 	<div class="form-group">
 		<div class="col-sm-12">
+			<fieldset disabled>
 				<label class="control-label" for="patient-id">Patient ID</label>
-				<input type="text" class="form-control" id="patient-id">
+				<?php 
+					$patient_id = $_POST["patient-id"];
+					echo '<input type="text" class="form-control" id="patient-id" placeholder="' . $patient_id . '">';
+				?>
+				<label class="control-label" for="record-id">Record ID</label>
+				<?php 
+					$record_id = 5;
+					echo '<input type="text" class="form-control" id="record-id" placeholder="' . $record_id . '">';
+				?>
+			</fieldset>
 		</div>
 		<div class="col-sm-12">
 				<label class="control-label" for="doctor-id">Doctor ID</label>
