@@ -72,7 +72,7 @@ class Database {
             trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
             throw new Exception("Database connection failed. Please check constructor arguments.");
         }else{
-            print "Database connection established.\n";
+            //print "Database connection established.\n";
         }
     }
 
@@ -83,7 +83,7 @@ class Database {
         if($this->_connection != NULL){
             oci_close($this->_connection);
             $this->_connection = NULL;
-            print "Database connection destroyed.\n";
+            //print "Database connection destroyed.\n";
         }
     }
     
@@ -249,12 +249,13 @@ class Database {
     public function getUser($userName){
         $sqlStmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
         
-        $row = $this->executeQuery($sqlStmt)[0];
-        if(sizeof($row) == 0){
-            throw(new Exception("UseName: ".$userName." don't have a corresponding row."));
-        }        
-        return new User($row['USER_NAME'], $row['PASSWORD'], $row['CLASS'], 
-                        $row['PERSON_ID'], new Date($row['DATE_REGISTERED']));
+        $row = $this->executeQuery($sqlStmt);
+        if($row == null){
+            return false;
+        }     
+		$user = $row[0];
+        return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
+                        $user['PERSON_ID'], new Date($user['DATE_REGISTERED']));
     }
     
     /**

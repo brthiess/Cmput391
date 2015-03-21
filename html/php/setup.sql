@@ -107,6 +107,24 @@ CREATE TABLE pacs_images (
  * From here and below, are custom SQL statements. Freely append yours.*
  **********************************************************************/
 
+ INSERT INTO persons (person_id, first_name, last_name, address,  email, phone) 
+ VALUES (
+ 1,
+ 'Brad',
+ 'Thiessen',
+ '753 Revell Cr.',
+ 'brthiess@ualberta.ca',
+ '7809224343' 
+ );
+ 
+ INSERT INTO users VALUES (
+   'brtlrt',
+   'jikipol',
+   'a',
+   1,
+   TO_DATE('2015/05/03', 'yyyy/mm/dd')
+);
+ 
 /**
  * person_seq
  *

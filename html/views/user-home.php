@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php include 'header.php';?>
+<?php 	include_once 'header.php';
+		include_once '../php/login.php';
+		include_once '../php/connect.php';
+		
+		start_session();
+		login($db, $_POST["username"], $_POST["password"]);
+?>
 <body>
-<?php include 'navbar.php';?>
+<?php include_once 'navbar.php';?>
+	
+	
+	<?php if (check_login($db)) : ?>
+
+
 		<div class="col-sm-12 behind">
 		 &nbsp </div>
 	<div class="col-md-4"></div>
@@ -19,4 +30,9 @@
 	
 
 </body>
+		<?php else : ?>
+            <div class="col-sm-12 text-center">
+                <h2>You are not authorized to access this page. Please <a href="index.php">login</a>.</h2>
+            </div>
+        <?php endif; ?>
 </html>

@@ -1,4 +1,6 @@
 var input="";
+var start="";
+var end="";
 var tileID=0;
 
 $(document).ready( function() {
@@ -21,7 +23,8 @@ $(document).ready( function() {
 
 function getInput() {
 	input = $("#search-keywords").val();	
-	
+	start = $("#start-date").val();	
+	end = $("#end-date").val();		
 }
 
 
@@ -30,7 +33,7 @@ function showResult() {
 	$.ajax ({
 			type:"post",
 			url: 'search-results.php',
-			data:'input='+input,
+			data:'input=' + input + 'start_date=' + start + '+end_date=' + end + '+username='+username;
 			success:function(data){
 						$("#search-results").html(data);				
 			}

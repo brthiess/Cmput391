@@ -49,10 +49,15 @@ a:hover {
 	transition: background 0.5s;
 }
 .navigational-bar .user-image img {
-	height: 40px;
-	width: 40px;
-	border-radius: 1.8em;
+	height: 35px;
+	width: 35px;
+	padding-top: 5px;
 	float:right;
+}
+
+.navigational-bar .user-image img:hover {
+	cursor:pointer;
+	opacity: 0.8;
 }
 
 .navigational-bar .user-name {

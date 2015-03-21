@@ -6,7 +6,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="user-image">
-			<img src="../images/avatar.png">
+			<a href="../php/logout.php"><img src="../images/logout.png"></a>
 		</div>
 		<div class="user-name">
 			<a href="user-settings.php">Brad Thiessen <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
