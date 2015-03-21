@@ -122,7 +122,7 @@ CREATE TABLE pacs_images (
    'jikipol',
    'a',
    1,
-   TO_DATE('2015/05/03', 'yyyy/mm/dd')
+   TO_DATE('JAN-05-15', 'mm/dd/yy')
 );
  
 /**

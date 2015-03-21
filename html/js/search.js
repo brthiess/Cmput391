@@ -33,7 +33,7 @@ function showResult() {
 	$.ajax ({
 			type:"post",
 			url: 'search-results.php',
-			data:'input=' + input + 'start_date=' + start + '+end_date=' + end + '+username='+username;
+			data:'input=' + input + 'start_date=' + start + '+end_date=' + end + '+username='+username,
 			success:function(data){
 						$("#search-results").html(data);				
 			}

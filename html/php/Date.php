@@ -16,9 +16,8 @@ class Month {
      * @param m ORACLE MON format or Month::Janurary, Month::February, etc.     
      */
     public function __construct($m){
-        $type = gettype($m);
         
-        if($type == "string"){
+        if(!is_numeric($m)){			
             $this->_val = intval(Month::MONtoMM($m));
         }else{
             if($m >= 1 && $m <= 12){

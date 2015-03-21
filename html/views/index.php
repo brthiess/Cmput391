@@ -17,6 +17,7 @@
 						</div>
 						<div class="row top-buffer">
 							<input type="password" class="form-control" id="patient-password" name="password" placeholder="Password">
+							<input type="hidden" class="form-control" name="clss" value="p">
 						</div>
 						<input type="hidden" name="type" value="patient"/>
 						<div class="row top-buffer">
@@ -29,10 +30,11 @@
 				<div class="col-sm-8 login-form col-sm-offset-2">
 					<form class="form-group" action="radiology-home.php" method="post">
 						<div class="row top-buffer">
-							<input type="text" class="form-control" id="radiologist-user-name" placeholder="Radiologist Username">
+							<input type="text" class="form-control" id="radiologist-user-name" name="username" placeholder="Radiologist Username">
 						</div>
 						<div class="row top-buffer">
-							<input type="password" class="form-control" id="radiologist-password" placeholder="Password">
+							<input type="password" class="form-control" id="radiologist-password" name="password" placeholder="Password">
+							<input type="hidden" class="form-control" name="clss" value="r">
 						</div>
 						<div class="row top-buffer">
 							<button type="submit" class="btn btn-block btn-info green-btn"><h4>Radiologist Login</h4></button> 
@@ -44,10 +46,11 @@
 				<div class="col-sm-8 login-form col-sm-offset-2">			
 					<form class="form-group" action="admin-home.php" method="post">
 						<div class="row top-buffer">
-							<input type="text" class="form-control" id="admin-user-name" placeholder="Admin Username">
+							<input type="text" class="form-control" id="admin-user-name" name="username" placeholder="Admin Username">
 						</div>
 						<div class="row top-buffer">
-							<input type="password" class="form-control" id="admin-password" placeholder="Password">
+							<input type="password" class="form-control" id="admin-password" name="password" placeholder="Password">
+							<input type="hidden" class="form-control" name="clss" value="a">
 						</div>
 						<div class="row top-buffer">
 							<button type="submit" class="btn btn-block btn-info purple-btn"><h4>Admin Login</h4></button> 
