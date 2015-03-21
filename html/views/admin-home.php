@@ -34,10 +34,8 @@
 		<a href="admin-search-radiology.php"><button class="btn btn-info center-block red-btn large-btn"><span class="glyphicon glyphicon-search"  aria-hidden="true"></span> Search Records</button></a>
 	</div>
 	
-		<?php else : ?>
-            <div class="col-sm-12 text-center">
-                <h2>You are not authorized to access this page. Please <a href="index.php">login</a>.</h2>
-            </div>
+		<?php else : include_once 'authorization-error.php';?>
+
         <?php endif; ?>
 	
 </body>

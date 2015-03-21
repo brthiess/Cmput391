@@ -11,5 +11,6 @@
 	<script src="../js/calendar.js"></script>
 	<script src="../js/upload-image.js"></script>
 	<script src="../js/search.js"></script>
+	<script src="../js/save-record.js"></script>
 </head>
 
