@@ -214,8 +214,9 @@ class SearchTest extends PHPUnit_Framework_TestCase{
     }
 
     public function testImageInsertDeleteRetrieval(){
+        global $IndexOffset;
         $db = Database::instance();  // Acquire database instance.
-        $pi = new PacsImages(1, 1, "asdf", "asdf", "asdf");
+        $pi = new PacsImages($IndexOffset + 1, $IndexOffset + 1, "asdf", "asdf", "asdf");
         $db->insertImage($pi);
         $this->assertEquals($db->getImage(1, 1), $pi);
         $db->removeImage(1, 1);

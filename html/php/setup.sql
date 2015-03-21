@@ -109,7 +109,7 @@ CREATE TABLE pacs_images (
 
  INSERT INTO persons (person_id, first_name, last_name, address,  email, phone) 
  VALUES (
- 1,
+ 10,
  'Brad',
  'Thiessen',
  '753 Revell Cr.',
@@ -121,7 +121,7 @@ CREATE TABLE pacs_images (
    'brtlrt',
    'jikipol',
    'a',
-   1,
+   10,
    TO_DATE('JAN-05-15', 'mm/dd/yy')
 );
  
