@@ -257,6 +257,21 @@ class Database {
         return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
                         $user['PERSON_ID'], new Date($user['DATE_REGISTERED']));
     }
+	/**
+	* @param Username of the user we want to find out exists
+	* @return Returns true if the user exists.  False otherwise
+	*/
+	public function userExists($username) {
+		$sqlStmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
+        
+        $row = $this->executeQuery($sqlStmt);
+        if($row == null){
+            return false;
+        }  
+		else {
+			return true;
+		}
+	}
     
     /**
      * @param fd FamilyDoctor object.
