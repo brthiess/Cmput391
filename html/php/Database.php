@@ -14,9 +14,9 @@ include_once 'common.php';
  * into docker and use the following docker file: 
  * https://github.com/wnameless/docker-oracle-xe-11g
  */
-const USER_NAME = 'system';
-const PASS = 'oracle';
-const CONNECTION_STRING = "localhost:49161/xe";
+const USER_NAME = 'brad';
+const PASS = 'Brad';
+const CONNECTION_STRING = "localhost/xe";
 
 /*!@class Database
  * @brief Encapsulates the Database Tier of the 3-tier architecture.
