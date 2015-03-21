@@ -38,7 +38,7 @@ class Search{
     }
 
     /**
-     * @return table of radiology_records that is accessible from user.
+     * @return array of radiology_records that is accessible from user.
      */
     public function getRadiologyRecords(){
         return $this->_db->getRadiologyRecords($this->_user->userName);
@@ -46,7 +46,7 @@ class Search{
 
     /**
      * @param keywords string of keywords.
-     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKeywordsByRank($keywords){
         return $this->_db->searchWithKeywordsByRank($this->_user->userName, $keywords);
@@ -55,7 +55,7 @@ class Search{
     /**
      * @param keywords string of keywords.
      * @param true for descending ordering, false otherwise.
-     * @return table of radiology_records that matches the given keywords, ordered by test_date.
+     * @return array of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithKeywordsByTime($keywords, $descending=True){
         return $this->_db->searchWithKeywordsByTime($this->_user->userName, $keywords, $descending);
@@ -65,7 +65,7 @@ class Search{
      * @param d1 lowerbound of date to be included.
      * @param d2 upperbound of date to be included.
      * @param descending true for descending ordering, false otherwise.
-     * @return table of radiology_records that matches the given keywords, ordered by test_date.
+     * @return array of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
         return $this->_db->searchWithPeriodByTime($this->_user->userName, $d1, $d2, $descending);
@@ -75,7 +75,7 @@ class Search{
      * @param keywords string of keywords.
      * @param d1 lowerbound of date to be included.
      * @param d2 upperbound of date to be included.
-     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByRank($keywords, Date $d1, Date $d2){
         return $this->_db->searchWithKPByRank($this->_user->userName, $keywords, $d1, $d2);
@@ -86,7 +86,7 @@ class Search{
      * @param d1 lowerbound of date to be included.
      * @param d2 upperbound of date to be included.
      * @param desencending true for descending ordering, false otherwise. Default true.
-     * @return table of radiology_records that matches the given keywords, ordered by rank.
+     * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
         return $this->_db->searchWithKPByTime($this->_user->userName, $keywords, $d1, $d2, $descending);

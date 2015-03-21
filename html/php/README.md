@@ -51,6 +51,7 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
     // "adminUserName" doesn't exit or is not a username of an admin.
   }
   ```
+   
 
 ## Search Module Methods Notes:
 *(This is just a note so I have something to talk about my modules in demo.)*
