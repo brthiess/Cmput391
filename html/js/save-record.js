@@ -2,11 +2,11 @@ $(document).ready( function() {
 	
 	$('body').on('click','.save-record-btn',function(){	
 		event.preventDefault();
-		getInput();
+		saveRecord();
 	});	
 });
 
-function getInput() {
+function saveRecord() {
 	var username = $("#username").val();	
 	var password = $("#password").val();	
 	var type = $("#type").val();		
