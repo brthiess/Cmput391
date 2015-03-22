@@ -476,7 +476,7 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=True){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$userName."','".
+		$sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$userName."','".
                  $keywords."','".$d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";        
         $rows = $this->executeQuery($sqlStmt);        
         $rv = array();

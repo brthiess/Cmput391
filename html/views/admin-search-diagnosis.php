@@ -21,6 +21,7 @@
 	<div class="col-md-4"></div>
 	<?php 
 		$search_type = "Search Diagnosis";
+		$search_type_short = "d";
 		include 'search-box.php';?>
 		<div class="col-md-4"></div>
 	

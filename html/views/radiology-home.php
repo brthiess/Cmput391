@@ -20,6 +20,7 @@
 	<?php if (check_login($db, 'r')) : ?>
 	<?php 
 	$search_type = "Search Radiology Records";
+	$search_type_short = "r";
 	include 'search-box.php';?>
 	<div class="col-md-4 col-md-offset-4 top-buffer">
 		<div class="col-sm-10 center-block general-form">

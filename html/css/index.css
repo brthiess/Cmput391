@@ -331,6 +331,14 @@ Button Settings
 	text-align:left;
 }
 
+.radio-btn:hover {
+	color: white !important;
+}
+
+.radio-btn {
+	box-shadow: none !important;
+}
+
 .dropdown-btn .caret {
 	position: absolute;
 	right: 10px;

@@ -16,8 +16,7 @@ class Month {
      * @param m ORACLE MON format or Month::Janurary, Month::February, etc.     
      */
     public function __construct($m){
-        
-        if(!is_numeric($m)){			
+        if(!is_numeric($m)){	
             $this->_val = intval(Month::MONtoMM($m));
         }else{
             if($m >= 1 && $m <= 12){
@@ -194,7 +193,7 @@ class Date{
     public function __toString(){
         $dayStr = ($this->_day < 10? '0'.$this->_day : (string)$this->_day);
         $yearStr = substr(sprintf('%08d', $this->_year), -2, 2);
-        return $dayStr.'-'.$this->_month->toMON().'-'.$yearStr;
+        return $yearStr.'-'.$this->_month->toMM().'-'.$dayStr;
     }
 
     public function getMonth(){ return $this->_month; }

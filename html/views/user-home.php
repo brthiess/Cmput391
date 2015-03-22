@@ -25,6 +25,7 @@
 	<div class="col-md-4"></div>
 	<?php 	
 	$search_type = "Search Radiology Records";
+	$search_type_short = "r";
 	include 'search-box.php';?>
 	<div class="col-md-4"></div>
 	
