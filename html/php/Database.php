@@ -261,7 +261,7 @@ class Database {
 	* @param Username of the user we want to find out exists
 	* @return Returns true if the user exists.  False otherwise
 	*/
-	public function userExists($username) {
+	public function userExists($userName) {
 		$sqlStmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
         
         $row = $this->executeQuery($sqlStmt);

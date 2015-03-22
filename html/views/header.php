@@ -12,5 +12,6 @@
 	<script src="../js/upload-image.js"></script>
 	<script src="../js/search.js"></script>
 	<script src="../js/save-record.js"></script>
+	<script src="../js/spin.min.js"></script>
 </head>
 

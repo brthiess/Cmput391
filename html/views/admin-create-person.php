@@ -12,7 +12,7 @@
 <?php include_once 'navbar.php';?>
 	<?php if (check_login($db, 'a')) : ?>
 
-	<div class="col-sm-6 col-sm-offset-3 create-person-form">
+	<div class="col-sm-6 col-sm-offset-3 create-person-form" id="form">
 		<div class="text-center col-md-12"><h2>Create Person</h2></div>
 		<div class="form-group">
 			<div class="col-sm-12">
@@ -26,8 +26,8 @@
 			<div class="col-sm-12">
 					<label class="control-label" for="type">Type</label>
 					<div class="dropdown">
-						<button class="btn btn-default dropdown-btn dropdown-toggle form-control" type="button" id="type" name="clss" data-toggle="dropdown" aria-expanded="false">
-							<span data-bind="label">Type</span>
+						<button class="btn btn-default dropdown-btn dropdown-toggle form-control" type="button" name="clss" data-toggle="dropdown" aria-expanded="false">
+							<span id="type" data-bind="label">Type</span>
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="type">
@@ -70,7 +70,8 @@
 		</div>
 		<br>
 	</div>
-	<div class="col-sm-6 col-sm-offset-3 bottom-buffer top-buffer"><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></div>
+	<div class="col-sm-6 col-sm-offset-3 bottom-buffer top-buffer save-record-container"><fieldset disabled><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset></div>
+	<div class="col-sm-12 error-log"></div>
 		<?php else : include_once 'authorization-error.php';?>
 
         <?php endif; ?>

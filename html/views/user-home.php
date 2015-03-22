@@ -9,7 +9,7 @@
 		
 		if($_SERVER['REQUEST_METHOD'] == "POST") {
 			login($db, $_POST["username"], $_POST["password"], $_POST["clss"]);
-			header('Location: admin-home.php');	
+			header('Location: user-home.php');	
 			exit;
 		}
 ?>
