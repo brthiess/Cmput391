@@ -12,8 +12,10 @@ $(document).ready( function() {
 			$.ajax ({
 				url: '../php/get-all-user-information.php?username='+username,
 				success:function(data){
-						$(".error-log").html(data);				
-				}			
+								$(".error-log").html(data);
+								var userInfo = JSON.parse(data);
+								console.log(userInfo);
+						}		
 			})		
 		}
     });

@@ -4,7 +4,11 @@
 
 		start_session();
 		if (check_login($db, 'a')){
-			echo json_encode($person = $db->getUser($_GET["username"]));
-			echo json_encode($db->getPerson($person->personID));			
+			$user_info = array();
+			$person = $_GET["username"];
+			$user = $db->getUser($person);
+			array_push($user_info, $user);
+			array_push($user_info, $db->getPerson($user->personID));	
+			echo json_encode($user_info);
 		}
 ?>
