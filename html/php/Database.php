@@ -257,6 +257,17 @@ class Database {
         return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
                         $user['PERSON_ID'], new Date($user['DATE_REGISTERED']));
     }
+	   /**
+     * @return All users 
+     */
+	public function getAllUsers(){
+		$sqlStmt = 'SELECT user_name FROM users';
+		$rows = $this->executeQuery($sqlStmt);
+		return $rows;
+	}
+	
+	
+	
 	/**
 	* @param Username of the user we want to find out exists
 	* @return Returns true if the user exists.  False otherwise

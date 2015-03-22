@@ -1,7 +1,26 @@
 var spinner;
+
+
 $(document).ready( function() {
+	
+	//Get all users for autocomplete
+	allUsers = getAllUsers();
+	$( ".username-edit" ).autocomplete({
+		source: allUsers,
+		change: function(event, ui) { //Get users information and fill in all inputs ajax style
+			var username = $(".username-edit").val();
+			$.ajax ({
+				url: '../php/get-all-user-information.php?username='+username,
+				success:function(data){
+						$(".error-log").html(data);				
+				}			
+			})		
+		}
+    });
+	
+	
 
-
+	//Saves a record when admin clicks on save record
 	$('body').on('click','.save-record-btn',function(){	
 		event.preventDefault();
 		saveRecord();
@@ -9,6 +28,7 @@ $(document).ready( function() {
 		spinner = new Spinner(opts).spin(target);
 	});	
 	
+	//Watches to make sure all fields in the form are filled out before allowing admin to add/edit a user
 	$(".form-control").change(function() {
 		if (allFieldsFilled()) {
 			$(".save-record-container").html('<button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>');
@@ -18,7 +38,7 @@ $(document).ready( function() {
 		}
 	});
 
-	
+	//spinner stuff
 		var opts = {
 		  lines: 13, // The number of lines to draw
 		  length: 20, // The length of each line
@@ -85,6 +105,25 @@ function allFieldsFilled() {
 		console.log("False");
 		false;
 	}
+	
+}
+
+//Ajax call to DB to get all users
+function getAllUsers() {
+		var allUsers = [];
+	$.ajax ({
+			url: '../php/get-all-users.php',
+			success:function(data){
+				allUsersJSON = JSON.parse(data);
+				console.log(allUsersJSON);
+				for (var i = 0; i < allUsersJSON.length; i++){
+					allUsers[i] = allUsersJSON[i].USER_NAME;
+				}
+				console.log(allUsers);
+			}
+	});
+	
+	return allUsers;
 	
 }
 

@@ -9,7 +9,8 @@
 		<div class="form-group">
 			<div class="col-sm-12">
 					<label class="control-label" for="username">User Name</label>
-					<input type="text" class="form-control" id="username">
+					<input type="text" class="form-control username-edit" id="username">
+
 			</div>
 			<div class="col-sm-12">
 					<label class="control-label" for="password">Password</label>
@@ -63,5 +64,6 @@
 		<br>
 	</div>
 	<div class="col-sm-6 col-sm-offset-3 bottom-buffer top-buffer"><button class="btn btn-info full-width-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></div>
+	<div class="error-log col-sm-12"></div>
 </body>
 </html>	
