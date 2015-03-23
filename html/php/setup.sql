@@ -14,6 +14,9 @@ DROP FUNCTION searchWithPeriodByTime;
 DROP FUNCTION getRadiologyRecords;
 DROP FUNCTION insertPerson;
 DROP FUNCTION insertRadiologyRecord;
+DROP FUNCTION getFTImgCntTtAndP;
+DROP TYPE ft01_t_t;
+DROP TYPE ft01_t;
 DROP TYPE persons_rt;
 DROP TYPE radiology_record_rt_t;
 DROP TYPE radiology_record_rt;
@@ -277,7 +280,7 @@ CREATE FUNCTION getRadiologyRecords(userName IN VARCHAR2) return radiology_recor
        	    (SELECT rr.*
              FROM radiology_record rr) LOOP
 	     	   l_tab.extend;
-	     	   l_tab(l_tab.last) := radiology_record_rt(
+		   	     	   l_tab(l_tab.last) := radiology_record_rt(
 	           		     t.record_id, t.patient_id, t.doctor_id, t.radiologist_id, t.test_type,
 		 		     t.prescribing_date, t.test_date, t.diagnosis, t.description);
 	    END LOOP;
@@ -504,5 +507,40 @@ CREATE FUNCTION searchWithKPByTime(userName IN VARCHAR2, keywords IN VARCHAR2 ,d
 
        return l_tab;
 
+       END;
+/
+
+/**
+ * fact table 01 type.
+ */
+CREATE TYPE ft01_t AS OBJECT(
+       patient_name varchar(50),
+       test_type   varchar(24),
+       period_date date  -- Starting date of the period in which the test is taken.
+);
+/
+
+/**
+ *  fact table 01 table type. (Stores a bunch of ft01_t).
+ */
+CREATE TYPE ft01_t_t IS TABLE OF ft01_t;
+/
+
+CREATE FUNCTION getFTImgCntTtAndP(ival IN INTEGER) RETURN ft01_t_t 
+       IS
+       l_tab ft01_t_t := ft01_t_t();
+       BEGIN
+       
+       IF ival=1 THEN
+          raise_application_error(-20000, 'Interval '||ival||' is not recognized.');
+       ELSIF ival=2 THEN
+       	    raise_application_error(-20000, 'Interval '||ival||' is not recognized.');
+       ELSE
+          --interval not recognized, raise an error.
+	  raise_application_error(-20000, 'Interval '||ival||' is not recognized.');
+       END IF;
+
+       return l_tab;
+      
        END;
 /
