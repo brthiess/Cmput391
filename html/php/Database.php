@@ -175,6 +175,7 @@ class Database {
            Q($person->phone)."),'".$autoID."')";
                 
         $sqlStmt = "BEGIN :r := ".$p."; END;";
+		$r = null;
         $outBinding = array(":r"=>$r);
         $this->executeQueryWithBindings($sqlStmt, array(), $outBinding); 
 

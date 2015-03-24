@@ -29,7 +29,6 @@ a:hover {
 	height: 45px;
 	margin:0;
 	background: #16a085;
-	width: 100%;
 }
 
 .navigational-bar .title {
@@ -310,6 +309,36 @@ Radiology Record Tile
 	background: #ecf0f1;
 }
 
+
+/**************************
+Create and Edit Persons Form
+***************************/
+
+.confirmation-container {
+	background: #2ecc71;
+	height: 120px;
+	width: 50%;
+	z-index: -999;
+	position: absolute;
+	top: 50%;
+	left: 25%;
+	border-radius: 5px;
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+.confirmation-container p {
+	text-align: center;
+	width: 100%;
+	font-size: 3em;
+	font-weight: 700;
+}
+
+@media (max-width: 800px) {
+	.confirmation-container p {
+		font-size: 2em;
+	}
+}
 
 
 /***************
