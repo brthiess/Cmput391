@@ -73,6 +73,20 @@ function saveRecord() {
 	var phone = $("#phone").val();		
 	var doctor = $("#family-doctor").val();	
 	
+
+	if (type == 'Patient') {
+		type = 'p';
+	}
+	else if (type == 'Doctor'){
+		type = 'd';
+	}
+	else if (type == 'Administrator') {
+		type = 'a';
+	}
+	else if (type == 'Radiologist') {
+		type = 'r';
+	}
+	
 	console.log("TYPE: "  + type);
 
 	$.ajax ({
@@ -84,6 +98,14 @@ function saveRecord() {
 					"doctor": doctor},
 			success:function(data){
 				spinner.stop();
+				//Show confirmation 
+				$(".confirmation-container").css("opacity", "1");
+				$(".confirmation-container").css("z-index", "999");
+				setTimeout(function() {
+					$(".confirmation-container").css("opacity","0");
+					$(".confirmation-container").css("z-index","-1");
+				}, 5000);
+				
 				$(".error-log").html(data);
 			}
 	})
