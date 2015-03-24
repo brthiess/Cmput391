@@ -9,15 +9,16 @@ include_once 'RadiologyRecord.php';
 include_once 'FamilyDoctor.php';
 include_once 'common.php';
 include_once 'PacsImages.php';
+include_once 'DataAnalysis.php';
 
 /**
  * The following are db credentials. If you want a quick db, I suggest looking
  * into docker and use the following docker file: 
  * https://github.com/wnameless/docker-oracle-xe-11g
  */
-const USER_NAME = 'system';
-const PASS = 'oracle';
-const CONNECTION_STRING = "localhost:49161/xe";
+const USER_NAME = 'brad';
+const PASS = 'Brad';
+const CONNECTION_STRING = "localhost/xe";
 
 /*!@class Database
  * @brief Encapsulates the Database Tier of the 3-tier architecture.
@@ -618,6 +619,26 @@ class Database {
         }        
         return new PacsImages($row['RECORD_ID'], $row['IMAGE_ID'], $row['THUMBNAIL'], 
                               $row['REGULAR_SIZE'], $row['FULL_SIZE']);
+    }
+
+    /**
+     * @param interval 0 for weekly, 1 for monthly, 2 for yearly.
+     * @return Data cube wrt to the interval.
+     */
+    public function getDataCube($interval){        
+        switch($interval){
+        case 0:
+            // Weekly.            
+        case 1:
+            // Monthly.
+        case 2:
+            // Yearly.
+            $sqlStmt = "SELECT * FROM TABLE(getDataCube01(".$interval."))";
+            return $this->executeQuery($sqlStmt);
+        default:
+            // Unknown interval.
+            throw new Exception("Interval type not recognized");
+        }
     }
 }
 ?>

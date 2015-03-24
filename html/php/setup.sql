@@ -14,10 +14,7 @@ DROP FUNCTION searchWithPeriodByTime;
 DROP FUNCTION getRadiologyRecords;
 DROP FUNCTION insertPerson;
 DROP FUNCTION insertRadiologyRecord;
-DROP FUNCTION getImgCntPerPatient;
-DROP TYPE ft02_t_t;
-DROP TYPE ft02_t;
-DROP FUNCTION getImgCntPerPeriod;
+DROP FUNCTION getDataCube01;
 DROP TYPE ft01_t_t;
 DROP TYPE ft01_t;
 DROP TYPE persons_rt;
@@ -514,11 +511,13 @@ CREATE FUNCTION searchWithKPByTime(userName IN VARCHAR2, keywords IN VARCHAR2 ,d
 /
 
 /**
- * fact table 01 type. Image Count Per Period.
+ * fact table 01 type. Data Cube 01.
  */
 CREATE TYPE ft01_t AS OBJECT(
-       period_date varchar(20),  -- Starting date of the period in which the test is taken.
-       img_cnt INTEGER
+       patient_name varchar(50),
+       test_type varchar(24),
+       datStr varchar(20),
+       cnt INTEGER
 );
 /
 
@@ -531,31 +530,63 @@ CREATE TYPE ft01_t_t IS TABLE OF ft01_t;
 /**
  * @param ival 1 to return monthly image count. 2 to return annual image count.
  * @return table of ft01_t or (period_date, img_cnt).
+ * @deprecated
  */
-CREATE FUNCTION getImgCntPerPeriod(ival IN INTEGER) RETURN ft01_t_t 
+CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t 
        IS
        l_tab ft01_t_t := ft01_t_t();
        BEGIN
        
-       IF ival=1 THEN
+       IF ival=0 THEN
+       	  --Weekly.
+	  FOR t in
+       	   (SELECT (p.last_name||', '||p.first_name) AS nme, test_type, week, cnt
+	    FROM persons p JOIN
+	    (SELECT rr.patient_id,
+       	    rr.test_type,
+       	    to_char(rr.test_date, 'yyyy-ww') As week,
+       	    COUNT(*) as cnt
+	    FROM radiology_record rr JOIN pacs_images pi ON rr.record_id = pi.record_id
+	    GROUP BY CUBE (rr.patient_id,
+       	       	     	   rr.test_type,
+	       		   to_char(rr.test_date, 'yyyy-ww'))) a 
+			   ON p.person_id = a.patient_id) LOOP
+       	      	 l_tab.extend;
+	      	 l_tab(l_tab.last) := ft01_t(t.nme, t.test_type, t.week, t.cnt);
+  	   END LOOP;
+       ElSIF ival=1 THEN
        	  --Monthly.
           FOR t in
-       	   (SELECT to_char(rr.test_date, 'YYYY-MM') AS dateStr, COUNT(*) cnt
-	    FROM pacs_images pi JOIN radiology_record rr ON pi.record_id = rr.record_id
-	    GROUP BY to_char(rr.test_date, 'YYYY-MM')
-	    ORDER BY 1 ASC) LOOP
+	   (SELECT (p.last_name||', '||p.first_name) AS nme, test_type, mnth, cnt
+	   FROM persons p JOIN
+       	   (SELECT rr.patient_id,
+       	    rr.test_type,
+       	    to_char(rr.test_date, 'yyyy-mm') As mnth,
+       	    COUNT(*) as cnt
+	    FROM radiology_record rr JOIN pacs_images pi ON rr.record_id = pi.record_id
+	    GROUP BY CUBE (rr.patient_id,
+       	       	     	   rr.test_type,
+	       		   to_char(rr.test_date, 'yyyy-mm'))) a
+			   ON p.person_id = a.patient_id) LOOP
        	      	 l_tab.extend;
-	      	 l_tab(l_tab.last) := ft01_t(t.dateStr, t.cnt);
+		 l_tab(l_tab.last) := ft01_t(t.nme, t.test_type, t.mnth, t.cnt);
   	   END LOOP;
        ELSIF ival=2 THEN
        	  --Annually.
        	  FOR t in
-       	   (SELECT to_char(rr.test_date, 'YYYY') AS dateStr, COUNT(*) AS cnt
-	    FROM pacs_images pi JOIN radiology_record rr ON pi.record_id = rr.record_id
-	    GROUP BY to_char(rr.test_date, 'YYYY')
-	    ORDER BY 1 ASC) LOOP
+	  (SELECT (p.last_name||', '||p.first_name) AS nme, test_type, yr, cnt
+	   FROM persons p JOIN
+       	   (SELECT rr.patient_id,
+       	    rr.test_type,
+       	    to_char(rr.test_date, 'yyyy') As yr,
+       	    COUNT(*) as cnt
+	    FROM radiology_record rr JOIN pacs_images pi ON rr.record_id = pi.record_id
+	    GROUP BY CUBE (rr.patient_id,
+       	       	     	   rr.test_type,
+	       		   to_char(rr.test_date, 'yyyy'))) a
+			   ON p.person_id = a.patient_id) LOOP
        	      	 l_tab.extend;
-	      	 l_tab(l_tab.last) := ft01_t(t.dateStr, t.cnt);
+		 l_tab(l_tab.last) := ft01_t(t.nme, t.test_type, t.yr, t.cnt);
   	   END LOOP;
        ELSE
           --interval not recognized, raise an error.
@@ -567,39 +598,4 @@ CREATE FUNCTION getImgCntPerPeriod(ival IN INTEGER) RETURN ft01_t_t
        END;
 /
 
-/**
- * fact table 02 type. Image Count Per Period.
- */
-CREATE TYPE ft02_t AS OBJECT(
-       patient_name varchar(50),
-       img_cnt INTEGER
-);
-/
-
-/**
- *  fact table 02 table type. (Stores a bunch of ft02_t).
- */
-CREATE TYPE ft02_t_t IS TABLE OF ft02_t;
-/
-
-
-CREATE FUNCTION getImgCntPerPatient RETURN ft02_t_t
-       IS
-       l_tab ft02_t_t := ft02_t_t();
-       BEGIN
-       
-       FOR t in
-       (SELECT (p.last_name||', '||p.first_name) AS patient_name, COUNT(*) AS cnt
-	FROM radiology_record rr
-	INNER JOIN pacs_images pi ON rr.record_id = pi.record_id
-	INNER JOIN persons p ON rr.patient_id = p.person_id
-	GROUP BY p.last_name, p.first_name
-	ORDER BY 1 ASC) LOOP
-       	      	 l_tab.extend;
-	      	 l_tab(l_tab.last) := ft02_t(t.patient_name, t.cnt);
-       END LOOP;
-
-       return l_tab;
-       
-       END;
-/
+--CREATE FUNCTION getDataCube01()

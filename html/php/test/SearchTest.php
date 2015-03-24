@@ -20,15 +20,17 @@ class SearchTest extends PHPUnit_Framework_TestCase{
     private $_users = null;
     private $_familyDoctors = null;
     private $_records = null;
+    private $_images = null;
     
     protected function setUp(){
         $db = Database::instance();  // Acquire database instance
 
-        global $PEOPLE, $USERS, $FAMILY_DOCTORS, $RECORDS;
+        global $PEOPLE, $USERS, $FAMILY_DOCTORS, $RECORDS, $IMAGES;
         $this->_people = $PEOPLE;
         $this->_users = $USERS;
         $this->_familyDoctors = $FAMILY_DOCTORS;
         $this->_records = $RECORDS;
+        $this->_images = $IMAGES;
         
         // Add Person objects.
         foreach ($this->_people as $person){
@@ -49,13 +51,21 @@ class SearchTest extends PHPUnit_Framework_TestCase{
         foreach ($this->_records as $r){
             $db->addRadiologyRecord($r);
         }
+
+        // Add images.
+        foreach ($this->_images as $r){
+            $db->insertImage($r);
+        }
     }
 
     protected function tearDown(){
         $db = Database::instance();  // Acquire database instance.
         
-        // Deallocate database on reverse order of intialization.        
-        
+        // Deallocate database on reverse order of intialization.         
+        foreach ($this->_images as $r){
+            $db->removeImage($r->imageID);
+        }
+
         foreach ($this->_records as $r){
             $db->removeRadiologyRecord($r->recordID);
         }
@@ -214,12 +224,8 @@ class SearchTest extends PHPUnit_Framework_TestCase{
     }
 
     public function testImageInsertDeleteRetrieval(){
-        global $IndexOffset;
-        $db = Database::instance();  // Acquire database instance.
-        $pi = new PacsImages(1, 1, "asdf", "asdf", "asdf");
-        $db->insertImage($pi);
-        $this->assertEquals($db->getImage(1, 1), $pi);
-        $db->removeImage(1);
+        $db = Database::instance();  // Acquire database instance
+        var_dump($db->getDataCube(2));
     }
 }
 
