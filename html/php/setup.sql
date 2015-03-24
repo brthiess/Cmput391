@@ -14,7 +14,10 @@ DROP FUNCTION searchWithPeriodByTime;
 DROP FUNCTION getRadiologyRecords;
 DROP FUNCTION insertPerson;
 DROP FUNCTION insertRadiologyRecord;
-DROP FUNCTION getFTImgCntTtAndP;
+DROP FUNCTION getImgCntPerPatient;
+DROP TYPE ft02_t_t;
+DROP TYPE ft02_t;
+DROP FUNCTION getImgCntPerPeriod;
 DROP TYPE ft01_t_t;
 DROP TYPE ft01_t;
 DROP TYPE persons_rt;
@@ -511,12 +514,11 @@ CREATE FUNCTION searchWithKPByTime(userName IN VARCHAR2, keywords IN VARCHAR2 ,d
 /
 
 /**
- * fact table 01 type.
+ * fact table 01 type. Image Count Per Period.
  */
 CREATE TYPE ft01_t AS OBJECT(
-       patient_name varchar(50),
-       test_type   varchar(24),
-       period_date date  -- Starting date of the period in which the test is taken.
+       period_date varchar(20),  -- Starting date of the period in which the test is taken.
+       img_cnt INTEGER
 );
 /
 
@@ -526,15 +528,35 @@ CREATE TYPE ft01_t AS OBJECT(
 CREATE TYPE ft01_t_t IS TABLE OF ft01_t;
 /
 
-CREATE FUNCTION getFTImgCntTtAndP(ival IN INTEGER) RETURN ft01_t_t 
+/**
+ * @param ival 1 to return monthly image count. 2 to return annual image count.
+ * @return table of ft01_t or (period_date, img_cnt).
+ */
+CREATE FUNCTION getImgCntPerPeriod(ival IN INTEGER) RETURN ft01_t_t 
        IS
        l_tab ft01_t_t := ft01_t_t();
        BEGIN
        
        IF ival=1 THEN
-          raise_application_error(-20000, 'Interval '||ival||' is not recognized.');
+       	  --Monthly.
+          FOR t in
+       	   (SELECT to_char(rr.test_date, 'YYYY-MM') AS dateStr, COUNT(*) cnt
+	    FROM pacs_images pi JOIN radiology_record rr ON pi.record_id = rr.record_id
+	    GROUP BY to_char(rr.test_date, 'YYYY-MM')
+	    ORDER BY 1 ASC) LOOP
+       	      	 l_tab.extend;
+	      	 l_tab(l_tab.last) := ft01_t(t.dateStr, t.cnt);
+  	   END LOOP;
        ELSIF ival=2 THEN
-       	    raise_application_error(-20000, 'Interval '||ival||' is not recognized.');
+       	  --Annually.
+       	  FOR t in
+       	   (SELECT to_char(rr.test_date, 'YYYY') AS dateStr, COUNT(*) AS cnt
+	    FROM pacs_images pi JOIN radiology_record rr ON pi.record_id = rr.record_id
+	    GROUP BY to_char(rr.test_date, 'YYYY')
+	    ORDER BY 1 ASC) LOOP
+       	      	 l_tab.extend;
+	      	 l_tab(l_tab.last) := ft01_t(t.dateStr, t.cnt);
+  	   END LOOP;
        ELSE
           --interval not recognized, raise an error.
 	  raise_application_error(-20000, 'Interval '||ival||' is not recognized.');
@@ -542,5 +564,42 @@ CREATE FUNCTION getFTImgCntTtAndP(ival IN INTEGER) RETURN ft01_t_t
 
        return l_tab;
       
+       END;
+/
+
+/**
+ * fact table 02 type. Image Count Per Period.
+ */
+CREATE TYPE ft02_t AS OBJECT(
+       patient_name varchar(50),
+       img_cnt INTEGER
+);
+/
+
+/**
+ *  fact table 02 table type. (Stores a bunch of ft02_t).
+ */
+CREATE TYPE ft02_t_t IS TABLE OF ft02_t;
+/
+
+
+CREATE FUNCTION getImgCntPerPatient RETURN ft02_t_t
+       IS
+       l_tab ft02_t_t := ft02_t_t();
+       BEGIN
+       
+       FOR t in
+       (SELECT (p.last_name||', '||p.first_name) AS patient_name, COUNT(*) AS cnt
+	FROM radiology_record rr
+	INNER JOIN pacs_images pi ON rr.record_id = pi.record_id
+	INNER JOIN persons p ON rr.patient_id = p.person_id
+	GROUP BY p.last_name, p.first_name
+	ORDER BY 1 ASC) LOOP
+       	      	 l_tab.extend;
+	      	 l_tab(l_tab.last) := ft02_t(t.patient_name, t.cnt);
+       END LOOP;
+
+       return l_tab;
+       
        END;
 /

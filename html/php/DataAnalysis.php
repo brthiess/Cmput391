@@ -5,6 +5,7 @@
 
 
 include_once 'Database.php';
+include_once 'Person.php';
 
 class Interval{
     // Constants.
@@ -42,7 +43,14 @@ class DataAnalysis{
      * @param interval could be Interval::Daily, Interval::Monthly, and so on.
      * @return 
      */
-    public function getFTImgCntTestTypeAndPeriod($interval){
+    public function getImgCntPerPeriod($interval){
+    }
+
+    /**
+     * 
+     */
+    public function getImgCntPerPatient(){
+        
     }
 
     /**

@@ -15,9 +15,9 @@ include_once 'PacsImages.php';
  * into docker and use the following docker file: 
  * https://github.com/wnameless/docker-oracle-xe-11g
  */
-const USER_NAME = 'brad';
-const PASS = 'Brad';
-const CONNECTION_STRING = "localhost/xe";
+const USER_NAME = 'system';
+const PASS = 'oracle';
+const CONNECTION_STRING = "localhost:49161/xe";
 
 /*!@class Database
  * @brief Encapsulates the Database Tier of the 3-tier architecture.
@@ -132,7 +132,7 @@ class Database {
             throw $e;
         }
         
-        $res = null;
+        $res = array();
         try{
             oci_fetch_all($stid, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
         }catch(Exception $e){
@@ -226,7 +226,7 @@ class Database {
     public function updateUser(User $user){
         $sqlStmt = "UPDATE users ".
                  "SET password='".$user->password."', class='".$user->class."' ".
-                 ", person_id='".$user->person_id."', date_registered='".$user->dateRegistered."' ".
+                 ", person_id='".$user->personID."', date_registered='".$user->dateRegistered."' ".
                  "WHERE user_name='".$user->userName."'";
         $this->executeQuery($sqlStmt);
     }
@@ -584,9 +584,8 @@ class Database {
         $fullSizeBlob->free();
     }
 
-    public function removeImage($recordID, $imageID){
-        $sqlstmt = "DELETE FROM pacs_images WHERE record_id=".$recordID." AND ".
-                 "image_id=".$imageID;
+    public function removeImage($imageID){
+        $sqlstmt = "DELETE FROM pacs_images WHERE image_id=".$imageID;
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -620,5 +619,4 @@ class Database {
                               $row['REGULAR_SIZE'], $row['FULL_SIZE']);
     }
 }
-
 ?>
