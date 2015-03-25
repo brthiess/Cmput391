@@ -5,9 +5,11 @@
 
 
 include_once 'Database.php';
+include_once 'Person.php';
 
 class Interval{
     // Constants.
+    const Weekly = 0;
     const Monthly = 1;
     const Annually = 2;
 }
@@ -39,15 +41,12 @@ class DataAnalysis{
     }
     
     /**
-     * @param interval could be Interval::Daily, Interval::Monthly, and so on.
-     * @return 
+     * @param interval 0 for weekly, 1 for monthly, 2 for yearly.
+     * @return Data cube wrt to the interval.
      */
-    public function getFTImgCntTestTypeAndPeriod($interval){
+    public function getDataCube($interval){
+        return $this->_db->getDataCube($interval);
     }
+}
 
-    /**
-     * @return
-     */
-    public function getFTPatientNameTestTypeAndTime(){
-    }
 ?>

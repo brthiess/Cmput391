@@ -9,6 +9,7 @@ include_once 'RadiologyRecord.php';
 include_once 'FamilyDoctor.php';
 include_once 'common.php';
 include_once 'PacsImages.php';
+include_once 'DataAnalysis.php';
 
 /**
  * The following are db credentials. If you want a quick db, I suggest looking
@@ -132,7 +133,7 @@ class Database {
             throw $e;
         }
         
-        $res = null;
+        $res = array();
         try{
             oci_fetch_all($stid, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
         }catch(Exception $e){
@@ -602,9 +603,8 @@ class Database {
         $fullSizeBlob->free();
     }
 
-    public function removeImage($recordID, $imageID){
-        $sqlstmt = "DELETE FROM pacs_images WHERE record_id=".$recordID." AND ".
-                 "image_id=".$imageID;
+    public function removeImage($imageID){
+        $sqlstmt = "DELETE FROM pacs_images WHERE image_id=".$imageID;
         
         try{
             $rv = oci_execute(oci_parse($this->_connection, $sqlstmt));
@@ -637,6 +637,25 @@ class Database {
         return new PacsImages($row['RECORD_ID'], $row['IMAGE_ID'], $row['THUMBNAIL'], 
                               $row['REGULAR_SIZE'], $row['FULL_SIZE']);
     }
-}
 
+    /**
+     * @param interval 0 for weekly, 1 for monthly, 2 for yearly.
+     * @return Data cube wrt to the interval.
+     */
+    public function getDataCube($interval){        
+        switch($interval){
+        case 0:
+            // Weekly.            
+        case 1:
+            // Monthly.
+        case 2:
+            // Yearly.
+            $sqlStmt = "SELECT * FROM TABLE(getDataCube01(".$interval."))";
+            return $this->executeQuery($sqlStmt);
+        default:
+            // Unknown interval.
+            throw new Exception("Interval type not recognized");
+        }
+    }
+}
 ?>

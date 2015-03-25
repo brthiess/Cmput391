@@ -10,6 +10,7 @@ include_once "../User.php";
 include_once "../RadiologyRecord.php";
 include_once "../FamilyDoctor.php";
 include_once '../Date.php';
+include_once '../PacsImages.php';
 
 $PEOPLE = array(
     new Person(1, "Joe", "Shmoe", "123 Edm", "shmoe@joe.h", "123-456"),
@@ -50,5 +51,14 @@ $RECORDS = array(
                         new Date(Month::February, 10, 2015), 
                         new Date(Month::April, 21, 2015), 'super genius positive',
                         'client exceed single digit IQ.')
+);
+
+$IMAGES = array(
+    new PacsImages(1, 1, "asdf", "asdf", "asdf"),
+    new PacsImages(1, 2, "asdf", "asdf", "asdf"),
+    new PacsImages(2, 3, "asdf", "asdf", "asdf"),
+    new PacsImages(2, 4, "asdf", "asdf", "asdf"),
+    new PacsImages(3, 5, "asdf", "asdf", "asdf"),
+    new PacsImages(3, 6, "asdf", "asdf", "asdf"),
 );
 ?>
