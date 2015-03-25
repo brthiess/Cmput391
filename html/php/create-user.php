@@ -39,16 +39,28 @@
 
 		
 		$start_date = new Date($start_date_month, $start_date_day, $start_date_year);
+		
+		//Person
+		$person = new Person(null, $first_name, $last_name, $address, $email, $phone);
 
-		if ($db->userExists($username)) { //If user exists already
-			include_once 'edit-user.php';
-			edit_user();
+		
+		$new_id = 0;
+		
+		if ($db->userExists($username)) { //If user exists already	
+			//Get User ID
+			$new_id = $db->getUserID($username);
+			//Set it to the person
+			$person->personID = $new_id;
+			$db->updatePerson($person);
+			print("Person Edited");
+			//Update User
+			$user = new User($username, $password, $clss, $new_id, $start_date);
+			$db->updateUser($user);
+			print("User Updated");
 			return;
 		}		
-		else { //User is new.  Add it to DB
-			
+		else { //User is new.  Add it to DB			
 			//Add person to DB
-			$person = new Person(null, $first_name, $last_name, $address, $email, $phone);
 			$new_id = $db->addPerson($person);
 			print("Person Added");
 			

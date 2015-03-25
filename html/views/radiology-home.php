@@ -26,7 +26,7 @@
 		<div class="col-sm-10 center-block general-form">
 		<div class="text-center col-md-12"><h2>Upload Record</h2></div>
 		
-			<form class="form-group" action="upload-record.php" method="post">
+			<form class="form-group" action="upload-record-view.php" method="post">
 				<div class="col-sm-12">
 					<label class="control-label" for="patient-id">Patient ID</label>
 					<input type="text" class="form-control" id="patient-id" name="patient-id">

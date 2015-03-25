@@ -1,12 +1,20 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
-<?php include 'header.php';?>
-<script src="../js/upload-image.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<body>
-<?php include 'navbar.php';?>
+<?php 	include_once 'header.php';
+echo '<script src="../js/upload-image.js"></script>';
+echo '<script src="../js/upload-record.js"></script>';
+		include_once '../php/login.php';
+		include_once '../php/connect.php';		
 
-<div class="col-sm-4 radiology-form">
+		start_session();		
+?>
+<body>
+<?php include_once 'navbar.php';?>
+	<?php if (check_login($db, 'r')) : ?>
+
+<div class="col-sm-4 radiology-form" id="radiology-form">
 	<div class="text-center col-md-12"><h2>Input Record</h2></div>
 	<div class="form-group">
 		<div class="col-sm-12">
@@ -14,12 +22,7 @@
 				<label class="control-label" for="patient-id">Patient ID</label>
 				<?php 
 					$patient_id = $_POST["patient-id"];
-					echo '<input type="text" class="form-control" id="patient-id" placeholder="' . $patient_id . '">';
-				?>
-				<label class="control-label" for="record-id">Record ID</label>
-				<?php 
-					$record_id = 5;
-					echo '<input type="text" class="form-control" id="record-id" placeholder="' . $record_id . '">';
+					echo '<input type="text" class="form-control" id="patient-id" value="' . $patient_id . '">';
 				?>
 			</fieldset>
 		</div>
@@ -34,6 +37,14 @@
 		<div class="col-sm-12">
 				<label class="control-label" for="test-type">Test Type</label>
 				<input type="text" class="form-control" id="test-type">
+		</div>
+		<div class="col-sm-12">
+			<label class="control-label" for="prescribing-date">Prescribing Date</label>
+			<input type="text" class="form-control" id="prescribing-date" name="start-date">
+		</div>
+		<div class="col-sm-12">
+			<label class="control-label" for="test-date">Test Date</label>
+			<input type="text" class="form-control" id="test-date" name="start-date">
 		</div>
 		<div class="col-sm-12">
 			<label class="control-label" for="diagnosis">Diagnosis</label>
@@ -63,8 +74,12 @@
 	</div>
 </div>
 	<div class="row top-buffer"></div>
-	<div class="col-sm-2 col-sm-offset-5 top-buffer">
-		<button class="btn btn-info"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>
+	<div class="col-sm-2 col-sm-offset-5 top-buffer upload-record-container">
+		<fieldset disabled><button class="btn btn-info"><strong><span class="glyphicon glyphicon-floppy-save upload-record-btn" aria-hidden="true"></span> Save Record</strong></button></fieldset>
 	</div>
+	<div class="error-log"></div>
+		<?php else : include_once 'authorization-error.php';?>
+
+        <?php endif; ?>
 </body>
 </html>

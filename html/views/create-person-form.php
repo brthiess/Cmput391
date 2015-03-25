@@ -1,3 +1,4 @@
+	<script src="../js/save-record.js"></script>	
 	<div class="col-sm-6 col-sm-offset-3 create-person-form" id="form">
 		<div class="text-center col-md-12"><h2><?php echo $title;?></h2></div>
 		<div class="form-group">
@@ -25,7 +26,7 @@
 					</div>
 			</div>
 			<div class="col-sm-12">
-				<label class="control-label" for="diagnosis">Date Registered</label>
+				<label class="control-label" for="date-registered">Date Registered</label>
 				<input type="text" class="form-control" id="start-date" name="start-date">
 			</div>
 			<div class="col-sm-12">

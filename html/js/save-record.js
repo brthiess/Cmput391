@@ -91,7 +91,7 @@ function saveRecord() {
 
 	$.ajax ({
 			type:"post",
-			url: '../php/create-user.php',
+			url: "../php/create-user.php",
 			data:{"username": username, "password": password, "clss": type,
 					"start_date": startDate, "first_name": firstName, "last_name": lastName,
 					"address": address, "email": email, "phone": phone,
@@ -104,7 +104,7 @@ function saveRecord() {
 				setTimeout(function() {
 					$(".confirmation-container").css("opacity","0");
 					$(".confirmation-container").css("z-index","-1");
-				}, 5000);
+				}, 1000);
 				
 				$(".error-log").html(data);
 			}

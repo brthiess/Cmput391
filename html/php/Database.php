@@ -226,8 +226,8 @@ class Database {
      */
     public function updateUser(User $user){
         $sqlStmt = "UPDATE users ".
-                 "SET password='".$user->password."', class='".$user->class."' ".
-                 ", person_id='".$user->person_id."', date_registered='".$user->dateRegistered."' ".
+                 "SET password='".$user->password."', class='".$user->clss."' ".
+                 ", person_id='".$user->personID."', date_registered='".$user->dateRegistered."' ".
                  "WHERE user_name='".$user->userName."'";
         $this->executeQuery($sqlStmt);
     }
@@ -257,6 +257,22 @@ class Database {
 		$user = $row[0];
         return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
                         $user['PERSON_ID'], new Date($user['DATE_REGISTERED']));
+    }
+	 /**
+     * @param userName of the user to be acquired.
+     * @return User corresponding to the userName provided.
+     * @throws Throws exception if user doesn't exist.
+     * @see User
+     */
+    public function getUserID($userName){
+        $sqlStmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
+        
+        $row = $this->executeQuery($sqlStmt);
+        if($row == null){
+            return false;
+        }     
+		$user = $row[0];
+        return $user['PERSON_ID'];
     }
 	   /**
      * @return All users 
@@ -327,7 +343,8 @@ class Database {
            Q($rr->testDate).", ".
            Q($rr->diagnosis).", ".
            Q($rr->description)."),'".$autoID."')";
-
+	
+		$r = null;
         $sqlStmt = "BEGIN :r := ".$p."; END;";
         $outBinding = array(":r"=>$r);
         $this->executeQueryWithBindings($sqlStmt, array(), $outBinding); 
