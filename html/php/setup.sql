@@ -93,6 +93,12 @@ CREATE TABLE radiology_record (
    FOREIGN KEY(radiologist_id) REFERENCES  persons
 );
 
+CREATE TABLE radiology_image (
+	record_id int,
+	image clob,
+	FOREIGN KEY(record_id) REFERENCES radiology_record
+);
+
 /*
  *  to store the pacs images
  */

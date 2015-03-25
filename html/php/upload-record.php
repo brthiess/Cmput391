@@ -20,6 +20,9 @@ function upload_record($db) {
 	$description = $_POST["description"];
 	$test_date = $_POST["test_date"];
 	$prescribing_date = $_POST["prescribing_date"];	
+	$images = json_decode($_POST["images"]);
+	
+	
 	
 	$test_date_month = explode("/", $_POST["test_date"])[0];
 	$test_date_day = explode("/", $_POST["test_date"])[1];
@@ -33,8 +36,16 @@ function upload_record($db) {
 	$prescribing_date = new Date($prescribing_date_month, $prescribing_date_day, $prescribing_date_year);
 	
 	$rr = new RadiologyRecord(null, $patient_id, $doctor_id, $radiologist_id, $test_type, $prescribing_date, $test_date, $diagnosis, $description);
-	print("record added");
+
 	$rr_id = $db->addRadiologyRecord($rr);
+	print("record added");
 	print($rr_id);
+	
+	//Delete current images and replace with new ones
+	$db->deleteRadiologyImages($rr_id);
+	for ($i = 0; $i < count($images); $i++){
+		$db->addRadiologyImage($images[$i], $rr_id);
+		print("Image Added");
+	}
 }	
 ?>

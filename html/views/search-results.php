@@ -1,10 +1,10 @@
-<?php include 'search-tile.php';
-		include '../php/Search.php';
-		include '../php/login.php';
-		include '../php/connect.php';
+<?php include_once 'search-tile.php';
+		include_once '../php/Search.php';
+		include_once '../php/login.php';
+		include_once '../php/connect.php';
 		
 		start_session();
-	if (check_login($db, 'a')) { //Make sure search is authorized
+	if (check_login($db, 'all')) { //Make sure search is authorized
 		
 		// Throws an exception if not a valid "userName" is not valid.
 		$username = $_SESSION["username"];
@@ -33,7 +33,7 @@
 		}
 		if (strlen($end_date) == 0) {
 			$end_date_month = "01";
-			$end_date_year = "99";
+			$end_date_year = "49";
 			$end_date_day= "15";
 		}
 		else {
@@ -41,18 +41,29 @@
 			$end_date_day = explode("/", $_POST["end_date"])[1];
 			$end_date_year = explode("/", $_POST["end_date"])[2];
 		}
+		if (strlen($keywords) == 0) {
+			$keywords = "null";
+		}
+		
+		
 
 		$start_date = new Date($start_date_month, $start_date_day, $start_date_year);
 		$end_date = new Date($end_date_month, $end_date_day, $end_date_year);
 		
+		print($start_date);
+		print($end_date);
+		
 		if ($search_type == 'r') {  //Search radiology records
 			if ($sort_type == 'n'){  //If user indicates not to sort results by time
+					print("No Sort");
 					$search_results = $search->searchWithKPByRank($keywords, $start_date, $end_date);
 			}
 			else if ($sort_type == 'd') {  //If user indicates to sort results by time descending
+				print("desc");
 				$search_results = $search->searchWithKPByTime($keywords, $start_date, $end_date, true);
 			}
 			else if ($sort_type == 'a') { // If user indicates to sort results by time ascending
+				print("asc");
 				$search_results = $search->searchWithKPByTime($keywords, $start_date, $end_date, false);
 			}
 		}
@@ -61,11 +72,11 @@
 			
 			
 		}
-		print_r($search_results);
+		
+		for($i = 0; $i < count($search_results); $i++) {
+		print_tile($db, $search_results[$i]->recordID);		
+		}
+
 	}
 	
-	print_tile(1);		
-	print_tile(2);		
-	print_tile(3);		
-	print_tile(4);		
 ?>
