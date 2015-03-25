@@ -103,8 +103,6 @@ class Month {
             return 'DEC';
         }
     }
-	
-	
 
     /**
      * @param $mm 
@@ -195,7 +193,7 @@ class Date{
     public function __toString(){
         $dayStr = ($this->_day < 10? '0'.$this->_day : (string)$this->_day);
         $yearStr = substr(sprintf('%08d', $this->_year), -2, 2);
-        return $yearStr.'-'.$this->_month->toMM().'-'.$dayStr;
+        return $dayStr.'-'.$this->_month->toMON().'-'.$yearStr;
     }
 
     public function getMonth(){ return $this->_month; }
