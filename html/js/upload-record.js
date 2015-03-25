@@ -50,10 +50,20 @@ function uploadRecord(){
 	var testDate = $("#test-date").val();
 	var prescribingDate = $("#prescribing-date").val();
 	
+	
+	imageArray = [];
+	
+	$(".radiology-image").each(function(index){
+		imageArray.push($(this).attr("src"));		
+	});
+	
+	var images = JSON.stringify(imageArray);
+	console.log(images);
+	
 		$.ajax ({
 			type: "post",
 			url: "../php/upload-record.php",
-			data: {"patient_id": patientID, "doctor_id": doctorID, "radiologist_id": radiologistID, "test_type": testType, "diagnosis": diagnosis, "description": description, "test_date": testDate, "prescribing_date": prescribingDate},
+			data: {"patient_id": patientID, "doctor_id": doctorID, "radiologist_id": radiologistID, "test_type": testType, "diagnosis": diagnosis, "description": description, "test_date": testDate, "prescribing_date": prescribingDate, "images": images},
 			success:function(data){	
 				spinner.stop();
 				$(".confirmation-container").css("opacity", "1");

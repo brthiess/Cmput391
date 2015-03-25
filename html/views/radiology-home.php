@@ -37,6 +37,8 @@
 			</form>
 		</div>
 	</div>
+	<div id="search-results" class="col-sm-12">
+	</div>
 		<?php else : ?>
             <div class="col-sm-12 text-center">
                 <h2>You are not authorized to access this page. Please <a href="index.php">login</a>.</h2>

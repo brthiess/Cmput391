@@ -352,6 +352,8 @@ class Database {
         
         return $outBinding[":r"];
     }
+	
+
     
     /**
      * @param recordID id of the radiology_record tuple to be deleted.
@@ -387,6 +389,42 @@ class Database {
         }        
         return $rv;
     }
+	
+	public function getRadiologyRecordByRecordID($record_id) {
+		$sqlStmt = "SELECT * FROM radiology_record WHERE record_id=" .$record_id."";
+        $rows = $this->executeQuery($sqlStmt);
+		if (array_key_exists(0, $rows)){			
+			return $rows[0];
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	* Adds an image to the DB
+	*/
+	function addRadiologyImage($image, $record_id){		
+		$sqlStmt = 'INSERT INTO radiology_image (record_id, image) VALUES(' . $record_id . ', :image)';
+		$imageArray = array(":image" => $image);
+		$r = null;
+		$outBinding = array(":r"=>$r);
+		$this->executeQueryWithBindings($sqlStmt, $imageArray, $outBinding );
+	}
+	
+	/**
+	* Deletes all images with specified record_id
+	*/
+	function deleteRadiologyImages($record_id){
+		$sqlStmt = 'DELETE FROM radiology_image WHERE record_id='.$record_id.'';
+        $this->executeQuery($sqlStmt);		
+	}
+	
+	function getRadiologyImages($record_id) {
+		$sqlStmt = 'SELECT image FROM radiology_image WHERE record_id = ' . $record_id.'';
+		$rows = $this->executeQuery($sqlStmt);
+		return $rows;
+	}
     
     /**
      * @param keywords string of keywords.
@@ -479,6 +517,7 @@ class Database {
     public function searchWithKPByRank($userName, $keywords, Date $d1, Date $d2){
         $sqlStmt = "SELECT * FROM TABLE(searchWithKPByRank('".$userName."','".
                  $keywords."','".$d1."','".$d2."'))";
+		print($sqlStmt);
         $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
         foreach($rows as $row){

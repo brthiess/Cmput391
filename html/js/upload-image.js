@@ -31,7 +31,7 @@ function addImage() {
 		   $("#upload-images-div").append("<div class='col-sm-4 image-row' id='image-row-" + imageNumber + "'>\
 													<div class='image-holder'>\
 														<div class='delete-image-caption' onclick='deleteImage(" + imageNumber + ")'></div>\
-														<img id='img-" + imageNumber + "'  height='100' src='" + reader.result + "' alt=''>\
+														<img class='radiology-image' id='img-" + imageNumber + "'  height='100' src='" + reader.result + "' alt=''>\
 													</div>\
 											</div>");
 			imageNumber += 1;
