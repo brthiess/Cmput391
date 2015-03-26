@@ -16,7 +16,14 @@ $(document).ready( function() {
 		console.log(tileID); 
 		showTileData();
 	});
-
+	
+	
+	//Modal Image
+	$('body').on('click', '.thumbnail', function() {
+		var imageSrc = $(this).find('img').attr("src");
+		$('#modal-image').attr("src", imageSrc);
+		console.log(imageSrc);
+	});
 	
 });
 

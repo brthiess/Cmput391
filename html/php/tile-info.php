@@ -132,5 +132,7 @@ function getPatientAddress($rr, $db){
 function getPatientID($rr, $db){
 	return $rr["PATIENT_ID"];
 }
-
+function getRadiologyImages($record_id, $db){
+	return $db->getRadiologyImages($record_id);
+}
 ?>
