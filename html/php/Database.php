@@ -391,9 +391,9 @@ class Database {
     }
 	
 	public function getRadiologyRecordByRecordID($record_id) {
-		$sqlStmt = "SELECT * FROM radiology_record WHERE record_id=" .$record_id."";
+		$sqlStmt = 'SELECT * FROM radiology_record WHERE record_id=' . $record_id . '';
         $rows = $this->executeQuery($sqlStmt);
-		if (array_key_exists(0, $rows)){			
+		if (array_key_exists(0, $rows)){	
 			return $rows[0];
 		}
 		else {

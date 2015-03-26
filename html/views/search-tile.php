@@ -14,11 +14,11 @@ function print_tile($db, $record_id){
 		//Get Person Information on Record
 		$rr = $db->getRadiologyRecordByRecordID($record_id);
 		print_r($rr);
-		$day = getDay($rr);
-		$year = getYear($rr);
-		$month = getMonth($rr);
+		$day = getTestDay($rr);
+		$year = getTestYear($rr);
+		$month = getTestMonth($rr);
 		$diagnosis = getDiagnosis($rr);
-		$doctor = getDoctor($rr, $db);
+		$doctor = getDoctorName($rr, $db);
 		$patientName = getPatientName($rr, $db);
 			echo '<div class="col-lg-3 col-md-4 col-sm-6">
 					<div class="search-tile center-block" id="id-' . $record_id . '">
