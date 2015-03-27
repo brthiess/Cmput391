@@ -6,6 +6,9 @@
  *
  *  Modified for purposes of this project.
  */
+DROP FUNCTION getDataCube01;
+DROP TYPE ft01_t_t;
+DROP TYPE ft01_t;
 DROP FUNCTION searchWithKPByTime;
 DROP FUNCTION searchWithKPByRank;
 DROP FUNCTION searchWithKeyWordsByRank;
@@ -14,9 +17,6 @@ DROP FUNCTION searchWithPeriodByTime;
 DROP FUNCTION getRadiologyRecords;
 DROP FUNCTION insertPerson;
 DROP FUNCTION insertRadiologyRecord;
-DROP FUNCTION getDataCube01;
-DROP TYPE ft01_t_t;
-DROP TYPE ft01_t;
 DROP TYPE persons_rt;
 DROP TYPE radiology_record_rt_t;
 DROP TYPE radiology_record_rt;

@@ -3,6 +3,8 @@
  * Date.php
  */
 
+include_once 'Const.php';
+
 /*!@class Month
  * @brief 
  * 
@@ -13,7 +15,8 @@ class Month {
     private $_val = self::January;
     
     /**
-     * @param m ORACLE MON format or Month::Janurary, Month::February, etc.     
+     * @param m ORACLE MM format, such as 00, 01, or use Month::Janurary, Month::February, etc.
+     *          or use ORACLE MON format, such as 'FEB'.
      */
     public function __construct($m){
         if(!is_numeric($m)){	
@@ -153,7 +156,7 @@ class Date{
     /**
      * Two way to initialize. Provide ORACLE DATE format string or
      * provide Month, Date, Year.
-     * @param ORACLE Date format string DD-MON-YY, e.g. 05-FEB-15 or
+     * @param ORACLE Date format string DD-MM-YYYY, e.g. 05-02-2015 or
      *
      * @param Month
      * @param Day
@@ -171,7 +174,7 @@ class Date{
 
     private function __construct1($a1){
         $args = explode('-', $a1);
-        $this->__construct3($args[1], $args[0], $args[2]);
+        $this->__construct3($args[0], $args[1], $args[2]);
     }
 
     private function __construct3($month, $day, $year){
@@ -179,11 +182,11 @@ class Date{
                 
         if($day >= 1 && $day <= 31){
             $this->_day = intval($day);
-        }else{
+        }else{            
             throw new Exception('Day is out of bound.');
         }
         
-        $this->_year = intval($year)%100;  // Only keep 2 least significant digit.
+        $this->_year = $year;
     }
     
     /**
@@ -192,8 +195,10 @@ class Date{
      */
     public function __toString(){
         $dayStr = ($this->_day < 10? '0'.$this->_day : (string)$this->_day);
-        $yearStr = substr(sprintf('%08d', $this->_year), -2, 2);
-        return $yearStr.'-'.$this->_month->toMM().'-'.$dayStr;
+        $dateStr = "TO_DATE('".$this->_month->toMM()."-".$dayStr."-".$this->_year."', '".
+                 DATE_FORMAT."')";
+        //print $dateStr;
+        return $dateStr;
     }
 
     public function getMonth(){ return $this->_month; }
