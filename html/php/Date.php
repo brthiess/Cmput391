@@ -15,13 +15,18 @@ class Month {
     private $_val = self::January;
     
     /**
-     * @param m ORACLE MM format, such as 00, 01, or use Month::Janurary, Month::February, etc.     
+     * @param m ORACLE MM format, such as 00, 01, or use Month::Janurary, Month::February, etc.
+     *          or use ORACLE MON format, such as 'FEB'.
      */
     public function __construct($m){
-        if($m >= 1 && $m <= 12){
-            $this->_val = $m;
-        }else{        
-            throw new Exception('Month index: '.$m.' is out of bound.');
+        if(!is_numeric($m)){	
+            $this->_val = intval(Month::MONtoMM($m));
+        }else{
+            if($m >= 1 && $m <= 12){
+                $this->_val = $m;
+            }else{        
+                throw new Exception('Month index: '.$m.' is out of bound.');
+            }
         }
     }
     
