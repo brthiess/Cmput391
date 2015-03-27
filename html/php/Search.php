@@ -93,6 +93,10 @@ class Search{
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
         return $this->_db->searchWithKPByTime($this->_user->userName, $keywords, $d1, $d2, $descending);
     }
+	
+	public function searchByDiagnosis($keywords, $d1, $d2){
+		return $this->_db->searchByDiagnosis($keywords, $d1, $d2);
+	}
 }
 
 ?>

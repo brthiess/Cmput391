@@ -21,7 +21,7 @@
 						</div>
 						<input type="hidden" name="type" value="patient"/>
 						<div class="row top-buffer">
-							<button type="submit" class="btn btn-block btn-info"><h4>Patient Login</h4></button> 
+							<button type="submit" class="btn btn-block btn-info"><h4>Patient/Doctor Login</h4></button> 
 						</div>
 					</form>
 				</div>

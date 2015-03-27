@@ -213,8 +213,13 @@ class Database {
      * @see User
      */
     public function addUser(User $user){
+		print($user->username);
+		print($user->password);
+		print($user->clss);
+		print($user->personID);
+		print($user->dateRegistered);
         $sqlStmt = 'INSERT INTO users VALUES('.
-                 Q($user->userName).', '.
+                 Q($user->username).', '.
                  Q($user->password).', '.
                  Q($user->clss).', '.
                  $user->personID.', '.
@@ -605,6 +610,28 @@ class Database {
         }        
         return $rv;
     }
+	
+	public function searchByDiagnosis($keywords, $d1, $d2){
+		$keywords = strtoupper($keywords);
+		$sqlStmt = "SELECT * FROM radiology_record r, persons p WHERE UPPER(r.diagnosis) LIKE '%" . $keywords . "%' AND r.patient_id = p.person_id";
+		$rows = $this->executeQuery($sqlStmt);
+		$rv = array();
+        foreach($rows as $row){
+            $rv[] = 
+                  new RadiologyRecord(
+                      $row['RECORD_ID'],
+                      $row['PATIENT_ID'],
+                      $row['DOCTOR_ID'],
+                      $row['RADIOLOGIST_ID'],
+                      $row['TEST_TYPE'],
+                      new Date($row['PRESCRIBING_DATE']),
+                      new Date($row['TEST_DATE']),
+                      $row['DIAGNOSIS'],
+                      $row['DESCRIPTION']
+                  );
+        } 
+		return $rv;
+	}
     
     public function insertImage(PacsImages $pi){
         $sql = "INSERT INTO ".

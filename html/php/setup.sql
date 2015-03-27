@@ -29,6 +29,7 @@ DROP SEQUENCE records_seq;
 DROP SEQUENCE persons_seq;
 DROP TABLE family_doctor;
 DROP TABLE pacs_images;
+DROP TABLE radiology_image;
 DROP TABLE radiology_record;
 DROP TABLE users;
 DROP TABLE persons;

@@ -45,8 +45,8 @@
 
 		
 		$new_id = 0;
-		
 		if ($db->userExists($username)) { //If user exists already	
+			print("EXISTS: " . $username);
 			//Get User ID
 			$new_id = $db->getUserID($username);
 			//Set it to the person
@@ -63,7 +63,6 @@
 			//Add person to DB
 			$new_id = $db->addPerson($person);
 			print("Person Added");
-			
 			//Add user with person_id we just obtained
 			$user = new User($username, $password, $clss, $new_id, $start_date);
 			$db->addUser($user);

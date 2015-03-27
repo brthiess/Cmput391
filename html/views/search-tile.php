@@ -40,7 +40,7 @@ function print_tile($db, $record_id){
 							</div>
 						</div>
 						<div class="diagnosis">
-							'. $diagnosis .'
+							Diagnosis: '. $diagnosis .'
 						</div>
 					</div>
 				 </div>';

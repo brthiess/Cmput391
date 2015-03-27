@@ -69,8 +69,7 @@
 		}
 		
 		else if ($search_type == 'd') {  //Search by diagnosis
-			
-			
+			$search_results = $search->searchByDiagnosis($keywords, $start_date, $end_date);	
 		}
 		
 		for($i = 0; $i < count($search_results); $i++) {

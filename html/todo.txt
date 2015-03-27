@@ -1,0 +1,10 @@
+TODO:
+In Edit/Create Person:
+	-Change Family Doctor to Family Doctor ID.  Make sure their is a foreign key reference created
+In Forms:
+	-Change Person Saved Modal to gray with opacity .8
+	-Implement it so user can modify info and password
+	-Fix Date thing
+In Search
+		-Add tags to tiles
+	
