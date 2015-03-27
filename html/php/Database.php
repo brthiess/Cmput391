@@ -339,7 +339,8 @@ class Database {
      * @throws If radiology record already exist or one of the parameters are invalid. Billion
      *         ways to get that wrong so I won't enumerate.
      */
-    public function addRadiologyRecord(RadiologyRecord $rr){        
+    public function addRadiologyRecord(RadiologyRecord $rr){     
+		print($rr->testDate);
         $id = $rr->recordID == NULL? "NULL" : $rr->recordID;
         $autoID = $id == "NULL"? "TRUE" : "FALSE";
         $p = "insertRadiologyRecord(radiology_record_rt(".
@@ -576,6 +577,9 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=true){
+				print("\nUSERNAME");
+		print($userName);
+
         $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
                  "radiologist_id, test_type, ".
                  "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
@@ -583,6 +587,7 @@ class Database {
                  "diagnosis, description ".
                  "FROM TABLE(searchWithKPByTime('".$userName."','".
                  $keywords."',".$d1.",".$d2.",'".($descending? "TRUE" : "FALSE" )."'))";
+		print($sqlStmt);
         $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){

@@ -41,7 +41,7 @@ class Search{
      * @return array of radiology_records that is accessible from user.
      */
     public function getRadiologyRecords(){
-        return $this->_db->getRadiologyRecords($this->_user->userName);
+        return $this->_db->getRadiologyRecords($this->_user->username);
     }
 
     /**
@@ -49,7 +49,7 @@ class Search{
      * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKeywordsByRank($keywords){
-        return $this->_db->searchWithKeywordsByRank($this->_user->userName, $keywords);
+        return $this->_db->searchWithKeywordsByRank($this->_user->username, $keywords);
     }
     
     /**
@@ -58,7 +58,7 @@ class Search{
      * @return array of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithKeywordsByTime($keywords, $descending=True){
-        return $this->_db->searchWithKeywordsByTime($this->_user->userName, $keywords, $descending);
+        return $this->_db->searchWithKeywordsByTime($this->_user->username, $keywords, $descending);
     }
 
     /**
@@ -68,7 +68,7 @@ class Search{
      * @return array of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithPeriodByTime(Date $d1, Date $d2, $descending=True){
-        return $this->_db->searchWithPeriodByTime($this->_user->userName, $d1, $d2, $descending);
+        return $this->_db->searchWithPeriodByTime($this->_user->username, $d1, $d2, $descending);
     }
 
     /**
@@ -78,7 +78,7 @@ class Search{
      * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByRank($keywords, Date $d1, Date $d2){
-        return $this->_db->searchWithKPByRank($this->_user->userName, $keywords, $d1, $d2);
+        return $this->_db->searchWithKPByRank($this->_user->username, $keywords, $d1, $d2);
 
     }
 
@@ -90,7 +90,7 @@ class Search{
      * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($keywords, Date $d1, Date $d2, $descending=True){
-        return $this->_db->searchWithKPByTime($this->_user->userName, $keywords, $d1, $d2, $descending);
+        return $this->_db->searchWithKPByTime($this->_user->username, $keywords, $d1, $d2, $descending);
     }
 	
 	public function searchByDiagnosis($keywords, $d1, $d2){

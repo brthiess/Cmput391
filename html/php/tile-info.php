@@ -1,6 +1,6 @@
 <?php
 function getTestDay($rr){
-	return explode("-", $rr["TEST_DATE"])[0];
+	return explode("-", $rr["TEST_DATE"])[2];
 }
 function getTestMonth($rr){
 	$month = explode("-", $rr["TEST_DATE"])[1];
@@ -33,10 +33,10 @@ function getTestMonth($rr){
 		
 }
 function getTestYear($rr){
-	return explode("-", $rr["TEST_DATE"])[2];
+	return explode("-", $rr["TEST_DATE"])[0];
 }
 function getPrescribeDay($rr){
-	return explode("-", $rr["PRESCRIBING_DATE"])[0];
+	return explode("-", $rr["PRESCRIBING_DATE"])[2];
 }
 function getTestDate($rr){
 	return $rr["TEST_DATE"];
@@ -75,13 +75,13 @@ function getPrescribeMonth($rr){
 		
 }
 function getPrescribeYear($rr){
-	return explode("-", $rr["PRESCRIBING_DATE"])[2];
+	return explode("-", $rr["PRESCRIBING_DATE"])[0];
 }
 function getDiagnosis($rr){
 	return $rr["DIAGNOSIS"];
 }
 function getDescription($rr){
-	return $rr["DIAGNOSIS"];
+	return $rr["DESCRIPTION"];
 }
 function getTestType($rr){
 	return $rr["TEST_TYPE"];

@@ -23,7 +23,7 @@
 		//Check to see if user entered a start date.  If not, put in our own start date of 01/01/1000
 		if (strlen($start_date) == 0) {
 			$start_date_month = "03";
-			$start_date_year = "00";
+			$start_date_year = "1900";
 			$start_date_day = "15";
 		}
 		else {	//Separate inputted date into its month year and day counterparts
@@ -33,7 +33,7 @@
 		}
 		if (strlen($end_date) == 0) {
 			$end_date_month = "01";
-			$end_date_year = "49";
+			$end_date_year = "3000";
 			$end_date_day= "15";
 		}
 		else {
@@ -71,6 +71,8 @@
 		else if ($search_type == 'd') {  //Search by diagnosis
 			$search_results = $search->searchByDiagnosis($keywords, $start_date, $end_date);	
 		}
+		
+		print_r($search_results);
 		
 		for($i = 0; $i < count($search_results); $i++) {
 		print_tile($db, $search_results[$i]->recordID);		

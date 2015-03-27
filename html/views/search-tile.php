@@ -36,7 +36,7 @@ function print_tile($db, $record_id){
 								'. $month .'
 							</div>
 							<div class="year">
-								'. $year .'
+								\''. $year .'
 							</div>
 						</div>
 						<div class="diagnosis">
