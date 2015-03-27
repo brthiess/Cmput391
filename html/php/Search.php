@@ -78,7 +78,6 @@ class Search{
      * @return array of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByRank($keywords, Date $d1, Date $d2){
-		print($this->_user->userName);
         return $this->_db->searchWithKPByRank($this->_user->userName, $keywords, $d1, $d2);
 
     }

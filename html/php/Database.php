@@ -10,6 +10,7 @@ include_once 'FamilyDoctor.php';
 include_once 'common.php';
 include_once 'PacsImages.php';
 include_once 'DataAnalysis.php';
+include_once 'Const.php';
 
 /**
  * The following are db credentials. If you want a quick db, I suggest looking
@@ -218,7 +219,7 @@ class Database {
                  Q($user->password).', '.
                  Q($user->clss).', '.
                  $user->personID.', '.
-                 Q($user->dateRegistered).')';
+                 $user->dateRegistered.')';
         $this->executeQuery($sqlStmt);
     }
     
@@ -228,7 +229,7 @@ class Database {
     public function updateUser(User $user){
         $sqlStmt = "UPDATE users ".
                  "SET password='".$user->password."', class='".$user->clss."' ".
-                 ", person_id='".$user->personID."', date_registered='".$user->dateRegistered."' ".
+                 ", person_id='".$user->personID."', date_registered=".$user->dateRegistered." ".
                  "WHERE user_name='".$user->userName."'";
         $this->executeQuery($sqlStmt);
     }
@@ -249,15 +250,17 @@ class Database {
      * @see User
      */
     public function getUser($userName){
-        $sqlStmt = 'SELECT * FROM users WHERE user_name='.Q($userName);        
-        
+        $sqlStmt = "SELECT user_name,  password, class, person_id, ".
+                 "TO_CHAR(date_registered, '".DATE_FORMAT."') AS regDate".
+                 " FROM users WHERE user_name=".Q($userName);
+
         $row = $this->executeQuery($sqlStmt);
         if($row == null){
             return false;
         }     
 		$user = $row[0];
         return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
-                        $user['PERSON_ID'], new Date($user['DATE_REGISTERED']));
+                        $user['PERSON_ID'], new Date($user['REGDATE']));
     }
 	 /**
      * @param userName of the user to be acquired.
@@ -340,8 +343,8 @@ class Database {
            $rr->doctorID.", ".
            $rr->radiologistID.", ".
            Q($rr->testType).", ".
-           Q($rr->prescribingDate).", ".
-           Q($rr->testDate).", ".
+           $rr->prescribingDate.", ".
+           $rr->testDate.", ".
            Q($rr->diagnosis).", ".
            Q($rr->description)."),'".$autoID."')";
 	
@@ -370,7 +373,12 @@ class Database {
      * @throws Exception user not recognized.
      */
     public function getRadiologyRecords($userName){
-        $sqlStmt = "SELECT * FROM TABLE(getRadiologyRecords('".$userName."'))";
+        $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description ".
+                 "FROM TABLE(getRadiologyRecords('".$userName."'))";
         $rows = $this->executeQuery($sqlStmt);        
         $rv = array();
         foreach($rows as $row){
@@ -381,8 +389,8 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
@@ -431,9 +439,13 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKeywordsByRank($userName, $keywords){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByRank('".$userName."','".
-                 $keywords."'))";
-        $rows = $this->executeQuery($sqlStmt);        
+        $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description ".
+                 "FROM TABLE(searchWithKeywordsByRank('".$userName."','".$keywords."'))";
+        $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){
             $rv[] = 
@@ -443,8 +455,8 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
@@ -458,9 +470,14 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
     public function searchWithKeywordsByTime($userName, $keywords, $descending=True){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKeywordsByTime('".$userName."','".
+        $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description ".
+                 "FROM TABLE(searchWithKeywordsByTime('".$userName."','".
                  $keywords."','".($descending? "TRUE" : "FALSE" )."'))";
-        $rows = $this->executeQuery($sqlStmt);        
+        $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){
             $rv[] = 
@@ -470,13 +487,13 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
         }        
-        return $rv;        
+        return $rv;
     }
 
     /**
@@ -485,10 +502,15 @@ class Database {
      * @param descending true for descending ordering, false otherwise.
      * @return table of radiology_records that matches the given keywords, ordered by test_date.
      */
-    public function searchWithPeriodByTime($userName, Date $d1, Date $d2, $descending=True){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithPeriodByTime('".$userName."','".
-                 $d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";
-        $rows = $this->executeQuery($sqlStmt);        
+    public function searchWithPeriodByTime($userName, Date $d1, Date $d2, $descending=true){
+        $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description ".
+                 "FROM TABLE(searchWithPeriodByTime('".$userName."',".
+                 $d1.",".$d2.",'".($descending? "TRUE" : "FALSE" )."'))";
+        $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){
             $rv[] = 
@@ -498,8 +520,8 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
@@ -515,10 +537,14 @@ class Database {
      *         and test taken within d1 and d2, ordered by rank.
      */
     public function searchWithKPByRank($userName, $keywords, Date $d1, Date $d2){
-        $sqlStmt = "SELECT * FROM TABLE(searchWithKPByRank('".$userName."','".
-                 $keywords."','".$d1."','".$d2."'))";
-		print($sqlStmt);
-        $rows = $this->executeQuery($sqlStmt);        
+        $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description ".
+                 "FROM TABLE(searchWithKPByRank('".$userName."','".
+                 $keywords."',".$d1.",".$d2."))";
+        $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){
             $rv[] = 
@@ -528,8 +554,8 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
@@ -544,10 +570,15 @@ class Database {
      * @param desencending true for descending ordering, false otherwise.
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
-    public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=True){
-		$sqlStmt = "SELECT * FROM TABLE(searchWithKPByTime('".$userName."','".
-                 $keywords."','".$d1."','".$d2."','".($descending? "TRUE" : "FALSE" )."'))";        
-        $rows = $this->executeQuery($sqlStmt);        
+    public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=true){
+        $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description ".
+                 "FROM TABLE(searchWithKPByTime('".$userName."','".
+                 $keywords."',".$d1.",".$d2.",'".($descending? "TRUE" : "FALSE" )."'))";
+        $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){
             $rv[] = 
@@ -557,14 +588,15 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );
         }        
-        return $rv;}
-
+        return $rv;
+    }
+    
     /**
      * @param doctorID
      * @return array of Person with doctor. @see Person

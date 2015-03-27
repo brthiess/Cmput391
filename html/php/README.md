@@ -28,8 +28,7 @@ This folder contains the php modules (Business Tier of 3-Tier architecture).
 
   ```
   $date01 = new Date(Month::March, 3, 2015);  // Recommended initialization style.
-  $date02 = new Date(Month::March, 3, 15);  // Year truncated.
-  $date03 = new Date("03-MAR-15");  // Standard oracle date format.
+  $date03 = new Date("03-03-15");  // Standard oracle date format.
 
   // These are all equals.
   $date01 == $date02;
