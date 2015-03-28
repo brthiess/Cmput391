@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php include 'header.php';?>
+<?php 	include_once 'header.php';
+		include_once '../php/login.php';
+		include_once '../php/connect.php';
+		
+
+		start_session();
+		
+		if($_SERVER['REQUEST_METHOD'] == "POST") {
+			login($db, $_POST["username"], $_POST["password"], $_POST["clss"]);
+			header('Location: admin-home.php');	
+			exit;
+		}
+?>
+<script src="../js/user-settings.js"></script>
 <body>
-<?php include 'navbar.php';?>
+<?php include_once 'navbar.php';?>
+	
+	
+<?php if (check_login($db, 'all')) : ?>
 
 	<div class="row">
 		<h1 class="text-center">Account Settings</h1>
@@ -23,8 +39,10 @@
 					<label class="control-label" for="new-password-again">New Password Again</label>
 					<input type="password" class="form-control" id="new-password-again">
 			</div>
-				<div class="col-sm-10 col-sm-offset-1 bottom-buffer top-buffer"><button class="btn btn-info full-width-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save New Password</strong></button></div>
+				<div class="col-sm-10 col-sm-offset-1 bottom-buffer top-buffer save-password-container"><fieldset disabled><button class="btn btn-info full-width-btn save-password-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save New Password</strong></button></fieldset></div>
 		</div>
+		<div class="confirmation-container"><p>New Password Saved</p></div>
+		<div class="error-log"></div>
 	</div>
 	<div class="col-sm-3 col-sm-offset-3 general-form">
 		<div class="text-center col-md-12"><h2>Change Information</h2></div>
@@ -49,11 +67,12 @@
 				<label class="control-label" for="phone">Phone</label>
 				<input type="text" class="form-control" id="phone">
 			</div>
-			<div class="col-sm-10 col-sm-offset-1 bottom-buffer top-buffer"><button class="btn btn-info full-width-btn green-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Information</strong></button></div>
-
+			<div class="col-sm-10 col-sm-offset-1 bottom-buffer top-buffer change-information-container"><fieldset disabled><button class="btn btn-info full-width-btn green-btn save-information-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Information</strong></button></fieldset></div>
+			<div class="confirmation-container confirmation-container-name"><p>New Password Saved</p></div>
 		</div>
 		<br>
 	</div>
-
+	<?php else : include_once 'authorization-error.php';?>
+	<?php endif; ?>
 </body>
 </html>	

@@ -238,6 +238,14 @@ class Database {
                  "WHERE user_name='".$user->userName."'";
         $this->executeQuery($sqlStmt);
     }
+	
+	 /**
+     * @param username and password.  Changes user password
+     */
+	public function updateUserPassword($username, $password){
+		$sqlStmt = "UPDATE users SET password='" . $password . "' WHERE user_name='" . $username ."'";
+		$this->executeQuery($sqlStmt);
+	}
     
     /**
      * @param userName of the user to remove.
@@ -577,8 +585,6 @@ class Database {
      * @return table of radiology_records that matches the given keywords, ordered by rank.
      */
     public function searchWithKPByTime($userName, $keywords, Date $d1, Date $d2, $descending=true){
-				print("\nUSERNAME");
-		print($userName);
 
         $sqlStmt = "SELECT record_id, patient_id, doctor_id,".
                  "radiologist_id, test_type, ".
@@ -587,7 +593,6 @@ class Database {
                  "diagnosis, description ".
                  "FROM TABLE(searchWithKPByTime('".$userName."','".
                  $keywords."',".$d1.",".$d2.",'".($descending? "TRUE" : "FALSE" )."'))";
-		print($sqlStmt);
         $rows = $this->executeQuery($sqlStmt);
         $rv = array();
         foreach($rows as $row){
@@ -650,10 +655,18 @@ class Database {
 	
 	public function searchByDiagnosis($keywords, $d1, $d2){
 		$keywords = strtoupper($keywords);
-		$sqlStmt = "SELECT * FROM radiology_record r, persons p WHERE UPPER(r.diagnosis) LIKE '%" . $keywords . "%' AND r.patient_id = p.person_id";
+		$sqlStmt = "SELECT record_id, patient_id, doctor_id,".
+                 "radiologist_id, test_type, ".
+                 "TO_CHAR(prescribing_date, '".DATE_FORMAT."') AS prescDate,".
+                 "TO_CHAR(test_date, '".DATE_FORMAT."') AS testDate, ".
+                 "diagnosis, description  FROM radiology_record r, persons p WHERE UPPER(r.diagnosis) LIKE '%" . $keywords . "%' AND r.patient_id = p.person_id";
 		$rows = $this->executeQuery($sqlStmt);
 		$rv = array();
+		
+		print("NUMBER OF ROWS:" . count($rows));
+
         foreach($rows as $row){
+					print(" PRESCDATE: " . $row['PRESCDATE']);
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],
@@ -661,8 +674,8 @@ class Database {
                       $row['DOCTOR_ID'],
                       $row['RADIOLOGIST_ID'],
                       $row['TEST_TYPE'],
-                      new Date($row['PRESCRIBING_DATE']),
-                      new Date($row['TEST_DATE']),
+                      new Date($row['PRESCDATE']),
+                      new Date($row['TESTDATE']),
                       $row['DIAGNOSIS'],
                       $row['DESCRIPTION']
                   );

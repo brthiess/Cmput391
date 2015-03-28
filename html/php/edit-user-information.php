@@ -17,15 +17,14 @@
 	
 function edit_user($db) {
 	//Check to see if old password matches
-	$old_password = $_POST["old_password"];
-	$new_password = $_POST["new_password"];
-	if ($old_password == $_SESSION["password"]) {
-		$db->updateUserPassword($_SESSION["username"], $new_password);
-		$_SESSION["password"] = $new_password;
-	}
-	else {  //Return error.  User entered incorrect password
-		header('HTTP/1.1 500 Internal Server Error');
-	}
+	$phone = $_POST["phone"];
+	$email = $_POST["email"];
+	$first_name = $_POST["first_name"];
+	$last_name = $_POST["last_name"];
+	$address = $_POST["address"];
+	$person = new Person($_SESSION["person_id"], $first_name, $last_name, $email, $address, $phone);
+	$db->updatePerson($person);
+
 }
 
 ?>

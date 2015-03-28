@@ -321,14 +321,12 @@ Create and Edit Persons Form
 ***************************/
 
 .confirmation-container {
-	background: #2ecc71;
-	height: 120px;
+	background: #666666;
 	width: 50%;
 	z-index: -999;
 	position: absolute;
 	top: 50%;
 	left: 25%;
-	border-radius: 5px;
 	opacity: 0;
 	transition: opacity 1s;
 }
@@ -336,7 +334,7 @@ Create and Edit Persons Form
 .confirmation-container p {
 	text-align: center;
 	width: 100%;
-	font-size: 3em;
+	font-size: 2em;
 	font-weight: 700;
 }
 
