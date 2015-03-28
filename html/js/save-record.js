@@ -41,18 +41,42 @@ $(document).ready( function() {
 		//Check to see if every input has some input
 		//If so, then put check mark beside it (for now)
 		inputHasValue();
-		if (allFieldsFilled()) {
+		
+		//Give the input a checkmark if input is email
+		if(inputIsEmail('email')){
+			setInputsCorrect(['email'], true, false);
+		}
+		else {
+			setInputsCorrect(['email'], false, false);
+		}
+		
+		//Give the input a checkmark if the input is a phone number
+		if(inputIsPhone('phone')){
+			setInputsCorrect(['phone'], true, false);
+		}
+		else {
+			setInputsCorrect(['phone'], false, false);
+		}
+		
+				//Give the input a checkmark if the input is a phone number
+		if(inputIsType('type')){
+			setInputsCorrect(['type'], true, true);
+		}
+		else {
+			setInputsCorrect(['type'], false, true);
+		}
+		
+		if (inputsMatch(passwordArray)){
+			setInputsCorrect(passwordArray, true, false);
+		}
+		else {
+			setInputsCorrect(passwordArray, false, false);
+		}
+		if (allFieldsCorrect()) {
 			$(".save-record-container").html('<button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>');
 		}
 		else {
 			$(".save-record-container").html('<fieldset disabled><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset>');
-		}
-		
-		if (inputsMatch(passwordArray)){
-			setInputsCorrectOrWrong(passwordArray, true);
-		}
-		else {
-			setInputsCorrectOrWrong(passwordArray, false);
 		}
 	});
 
@@ -82,9 +106,7 @@ $(document).ready( function() {
 function inputsMatch(inputArray){
 	for(var i = 0; i < inputArray.length; i++){
 		for(var j = i + 1; j < inputArray.length; j++){
-			if ($("#" + inputArray[i]).val() != $("#" + inputArray[j]).val()){
-				console.log($(inputArray[i]).val());
-				console.log($(inputArray[j]).val());
+			if ($("#" + inputArray[i]).val() != $("#" + inputArray[j]).val() || $("#" + inputArray[i]).val().length == 0){
 				return false;
 			}
 		}
@@ -94,7 +116,7 @@ function inputsMatch(inputArray){
 
 //Sets the input to either correct or wrong
 //Takes the div ID as input
-function setInputsCorrectOrWrong(inputArray, correct){
+function setInputsCorrect(inputArray, correct, list){
 	var input = '';
 	if (correct == true){
 		input = 'input-correct';
@@ -102,8 +124,15 @@ function setInputsCorrectOrWrong(inputArray, correct){
 	else {
 		input = 'input-wrong';
 	}
-	for (var i = 0; i < inputArray.length; i++){
-		$("#" + inputArray[i]).attr("class", "form-control " +  input);
+	if (list) {  //If inputs are in list form (as opposed to normal text input)
+		for (var i = 0; i < inputArray.length; i++){
+			$("#" + inputArray[i]).parent().attr("class", "form-control " + input);
+		}
+	}
+	else {
+		for (var i = 0; i < inputArray.length; i++){
+			$("#" + inputArray[i]).attr("class", "form-control " +  input);
+		}
 	}
 }
 
@@ -112,13 +141,40 @@ function setInputsCorrectOrWrong(inputArray, correct){
 function inputHasValue() {
 	$('.form-control').each(function() {
 		if ($(this).val().length > 0){
-			setInputsCorrectOrWrong([$(this).attr("id")], true);
+			setInputsCorrect([$(this).attr("id")], true, false);
 		}
 		else {
-			setInputsCorrectOrWrong([$(this).attr("id")], false);
+			setInputsCorrect([$(this).attr("id")], false, false);
 		}
 		
 	});
+}
+
+//Checks if the given input is an email
+function inputIsEmail(input){
+	var email = $("#" + input).val();
+	var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+
+function inputIsPhone(input){
+	var phone = $("#" + input).val();
+	if (isNumeric(phone) && phone.length == 10){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function inputIsType(input){
+	var type = $("#" + input).html();
+	if (type == 'Patient' || type == 'Radiologist' || type == 'Doctor' || type == 'Administrator'){
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 
@@ -148,7 +204,6 @@ function saveRecord() {
 		type = 'r';
 	}
 	
-	console.log("TYPE: "  + type);
 
 	$.ajax ({
 			type:"post",
@@ -172,23 +227,16 @@ function saveRecord() {
 	})
 }
 
-function allFieldsFilled() {
-	if ($("#username").val().length > 0 &&
-		$("#password").val().length > 0 &&
-		$("#start-date").val().length > 0 &&
-		$("#first-name").val().length > 0 &&
-		$("#last-name").val().length > 0 &&
-		$("#address").val().length > 0 &&
-		$("#phone").val().length > 0	 &&	
-		$("#email").val().length > 0	&&	
-		$("#family-doctor").val().length > 0		
-		) {
-			return true;
+function allFieldsCorrect() {
+	var correct = true;
+	$('.form-control').each(function() {
+		if ($(this).attr("class").indexOf("input-correct") == -1){
+			console.log("FALSE");
+			correct = false;
 		}
-	else {
-		false;
-	}
+	});
 	
+	return correct;
 }
 
 //Ajax call to DB to get all users
@@ -202,12 +250,17 @@ function getAllUsers() {
 				for (var i = 0; i < allUsersJSON.length; i++){
 					allUsers[i] = allUsersJSON[i].USER_NAME;
 				}
-				console.log(allUsers);
 			}
 	});
 	
 	return allUsers;
 	
+}
+
+
+//Returns true if the string is a number
+function isNumeric(num){
+    return !isNaN(num);
 }
 
 
