@@ -20,6 +20,10 @@ $(document).ready( function() {
 		}
     });
 	
+	$(".form-control").each(function() {
+		$(this).attr("class", "form-control input-wrong");
+	});
+	
 	
 
 	//Saves a record when admin clicks on save record
@@ -30,13 +34,25 @@ $(document).ready( function() {
 		spinner = new Spinner(opts).spin(target);
 	});	
 	
+	var passwordArray = ["password", "password-again"];
+	
 	//Watches to make sure all fields in the form are filled out before allowing admin to add/edit a user
 	$(".form-control").change(function() {
+		//Check to see if every input has some input
+		//If so, then put check mark beside it (for now)
+		inputHasValue();
 		if (allFieldsFilled()) {
 			$(".save-record-container").html('<button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>');
 		}
 		else {
 			$(".save-record-container").html('<fieldset disabled><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset>');
+		}
+		
+		if (inputsMatch(passwordArray)){
+			setInputsCorrectOrWrong(passwordArray, true);
+		}
+		else {
+			setInputsCorrectOrWrong(passwordArray, false);
 		}
 	});
 
@@ -60,6 +76,51 @@ $(document).ready( function() {
 		  left: '50%' // Left position relative to parent
 		};
 });
+
+//Returns true if all given inputs have the same value (Useful for password matching)
+//Takes array of IDs
+function inputsMatch(inputArray){
+	for(var i = 0; i < inputArray.length; i++){
+		for(var j = i + 1; j < inputArray.length; j++){
+			if ($("#" + inputArray[i]).val() != $("#" + inputArray[j]).val()){
+				console.log($(inputArray[i]).val());
+				console.log($(inputArray[j]).val());
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+//Sets the input to either correct or wrong
+//Takes the div ID as input
+function setInputsCorrectOrWrong(inputArray, correct){
+	var input = '';
+	if (correct == true){
+		input = 'input-correct';
+	}
+	else {
+		input = 'input-wrong';
+	}
+	for (var i = 0; i < inputArray.length; i++){
+		$("#" + inputArray[i]).attr("class", "form-control " +  input);
+	}
+}
+
+
+//If the input has a length > 0 then set the input to a checkmark
+function inputHasValue() {
+	$('.form-control').each(function() {
+		if ($(this).val().length > 0){
+			setInputsCorrectOrWrong([$(this).attr("id")], true);
+		}
+		else {
+			setInputsCorrectOrWrong([$(this).attr("id")], false);
+		}
+		
+	});
+}
+
 
 function saveRecord() {
 	var username = $("#username").val();	
@@ -122,11 +183,9 @@ function allFieldsFilled() {
 		$("#email").val().length > 0	&&	
 		$("#family-doctor").val().length > 0		
 		) {
-			console.log("true");
 			return true;
 		}
 	else {
-		console.log("False");
 		false;
 	}
 	

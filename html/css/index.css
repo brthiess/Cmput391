@@ -94,6 +94,22 @@ a:hover {
 		z-index:-99;
 	}
 }
+/***************
+Form Styles
+***************/
+.form-control {
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: 20px 20px;
+	box-shadow: none;
+}
+.input-correct {
+	background-image: url(../images/checkmark.png);
+}
+
+.input-wrong {
+	background-image: url(../images/x.png);
+}
 /************************
 Modal
 *************************/

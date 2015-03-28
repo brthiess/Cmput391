@@ -1,8 +1,7 @@
 TODO:
 In Edit/Create Person:
-	-Change Family Doctor to Family Doctor ID.  Make sure their is a foreign key reference created
+	-Change Family Doctor to Family Doctor ID.  Make sure there is a foreign key reference created
 In Forms:
-	-Implement it so user can modify info and password
 In Search
 
 

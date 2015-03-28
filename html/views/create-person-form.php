@@ -11,6 +11,10 @@
 					<input type="password" class="form-control" id="password" name="password">
 			</div>
 			<div class="col-sm-12">
+					<label class="control-label" for="password">Confirm Password</label>
+					<input type="password" class="form-control" id="password-again" name="password-again">
+			</div>
+			<div class="col-sm-12">
 					<label class="control-label" for="type">Type</label>
 					<div class="dropdown">
 						<button class="btn btn-default dropdown-btn dropdown-toggle form-control" type="button" name="clss" data-toggle="dropdown" aria-expanded="false">
@@ -50,7 +54,7 @@
 				<input type="text" class="form-control" id="phone" name="phone">
 			</div>
 			<div class="col-sm-12">
-				<label class="control-label" for="family-doctor">Family Doctor</label>
+				<label class="control-label" for="family-doctor">Doctor ID</label>
 				<input type="text" class="form-control" id="family-doctor" name="doctor">
 			</div>
 			

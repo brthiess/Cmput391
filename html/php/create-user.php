@@ -23,9 +23,11 @@
 		$clss = $_POST["clss"];
 		$email = $_POST["email"];
 		$phone = $_POST["phone"];
-		$doctor = $_POST["doctor"];
+		$doctor_id = $_POST["doctor"];
 		$address = $_POST["address"];
 		$start_date = $_POST["start_date"];
+
+		
 		if (strlen($start_date) == 0) {
 			$start_date_month = '01';
 			$start_date_day = '01';
@@ -57,6 +59,10 @@
 			$user = new User($username, $password, $clss, $new_id, $start_date);
 			$db->updateUser($user);
 			print("User Updated");
+			$doctor = new FamilyDoctor($doctor_id, $new_id);
+			$db->removeFamilyDoctor($doctor);
+			$db->addFamilyDoctor($doctor);
+			print("Doctor Edited");
 			return;
 		}		
 		else { //User is new.  Add it to DB			
@@ -67,6 +73,9 @@
 			$user = new User($username, $password, $clss, $new_id, $start_date);
 			$db->addUser($user);
 			print("User Added");
+			$doctor = new FamilyDoctor($doctor_id, $new_id);
+			$db->addFamilyDoctor($doctor);
+			print("Doctor Added");			
 		}
 	}
 	
