@@ -643,10 +643,10 @@ class Database {
      * @see Doctor.
      */
     public function getDoctorWithPatient($patientID){
-        $sqlStmt = "SELECT fd.* FROM family_doctor fd, persons p WHERE fd.patient_id=" . $patientID . " AND ROWNUM=1";
+        $sqlStmt = "SELECT doctor_id FROM family_doctor WHERE patient_id=" . $patientID;
         
         $rows = $this->executeQuery($sqlStmt);        
-		return $rows[0]['DOCTOR_ID'];
+		return $rows;
     }
 	
 	public function getDoctorIDs(){

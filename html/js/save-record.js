@@ -315,8 +315,17 @@ function outputPersonInfo(personInfo){
 }
 
 
-function outputDoctorInfo(doctorInfo){
-	//FIX $("#family-doctor").val(doctorInfo);
+function outputDoctorInfo(doctorInfo){	
+	removeAllDoctorInfo();
+	for(var i = 0; i < doctorInfo.length; i++){
+		addDoctorInputWithValue(doctorInfo[i].DOCTOR_ID);
+	}
+}
+
+function removeAllDoctorInfo(){
+	for(var i = 0; i <= id; i++){
+		removeDoctorInput(i);
+	}
 }
 
 //Returns true if the string is a number
@@ -382,6 +391,13 @@ function addDoctorInput(){
 	id += 1;
 	$(".form-group").append('<div class="col-sm-12 doctor-input top-buffer" id="id-' + id + '"><div class="col-sm-3"><label class="control-label" for="family-doctor">Doctor ID</label></div><div class="col-sm-4 delete-image"><img class="delete-image-btn" src="../images/delete-icon.png"></div><input type="text" class="form-control family-doctor" id="family-doctor-' + id + '" name="doctor"></div>');
 }
+
+function addDoctorInputWithValue(value){
+	id += 1;
+	$(".form-group").append('<div class="col-sm-12 doctor-input top-buffer" id="id-' + id + '"><div class="col-sm-3"><label class="control-label" for="family-doctor">Doctor ID</label></div><div class="col-sm-4 delete-image"><img class="delete-image-btn" src="../images/delete-icon.png"></div><input type="text" class="form-control family-doctor" id="family-doctor-' + id + '" value="' + value + '" name="doctor"></div>');
+}
+
+
 
 function removeDoctorInput(id){
 	$("#id-" + id).remove();
