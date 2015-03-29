@@ -53,11 +53,12 @@
 				<label class="control-label" for="phone">Phone</label>
 				<input type="text" class="form-control" id="phone" name="phone">
 			</div>
-			<div class="col-sm-12">
-				<label class="control-label" for="family-doctor">Doctor ID</label>
-				<input type="text" class="form-control" id="family-doctor" name="doctor">
+			<div class="col-sm-12 form-separator top-buffer bottom-buffer">
+				<img class="img-responsive" src="../images/white-line.png">
 			</div>
-			
+			<div class="col-sm-12 text-center">
+				<button class="btn btn-info add-doctor-btn green-btn"><strong>+</strong> Add Doctor To Person</button>
+			</div>			
 		</div>
 		<br>
 		<div class="confirmation-container">

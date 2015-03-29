@@ -114,6 +114,14 @@ Form Styles
 .no-feedback{
 	background-image: none !important;
 }
+
+.delete-image img {
+	height: 25px !important;
+	width: 25px;
+}
+.delete-image img:hover {
+	cursor:pointer;
+}
 /************************
 Modal
 *************************/

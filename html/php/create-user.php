@@ -23,9 +23,10 @@
 		$clss = $_POST["clss"];
 		$email = $_POST["email"];
 		$phone = $_POST["phone"];
-		$doctor_id = $_POST["doctor"];
+		$doctor_ids = json_decode($_POST["doctor"]);
 		$address = $_POST["address"];
 		$start_date = $_POST["start_date"];
+		
 
 		
 		if (strlen($start_date) == 0) {
@@ -59,10 +60,12 @@
 			$user = new User($username, $password, $clss, $new_id, $start_date);
 			$db->updateUser($user);
 			print("User Updated");
-			$doctor = new FamilyDoctor($doctor_id, $new_id);
-			$db->removeFamilyDoctor($doctor);
-			$db->addFamilyDoctor($doctor);
-			print("Doctor Edited");
+			$db->removeAllFamilyDoctorsFromPatient($new_id);
+			foreach($doctor_ids as $doctor_id){
+				$doctor = new FamilyDoctor($doctor_id, $new_id);
+				$db->addFamilyDoctor($doctor);
+				print("Doctor Edited");
+			}
 			return;
 		}		
 		else { //User is new.  Add it to DB			
@@ -73,9 +76,12 @@
 			$user = new User($username, $password, $clss, $new_id, $start_date);
 			$db->addUser($user);
 			print("User Added");
-			$doctor = new FamilyDoctor($doctor_id, $new_id);
-			$db->addFamilyDoctor($doctor);
-			print("Doctor Added");			
+			$db->removeAllFamilyDoctorsAssociatedWithPatient($new_id);
+			foreach($doctor_ids as $doctor_id){
+				$doctor = new FamilyDoctor($doctor_id, $new_id);
+				$db->addFamilyDoctor($doctor);
+				print("Doctor Added");
+			}		
 		}
 	}
 	

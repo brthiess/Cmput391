@@ -334,6 +334,14 @@ class Database {
                  'patient_id='.$fd->patientID;
         $this->executeQuery($sqlStmt);
     }
+	    /**
+     * @param fd Family doctor object to be removed.
+     * @throws Exception if fd tuple to be remove doesn't exist in SQL.
+     */
+    public function removeAllFamilyDoctorsFromPatient($patient_id){
+        $sqlStmt = 'DELETE FROM family_doctor WHERE patient_id='.$patient_id;
+        $this->executeQuery($sqlStmt);
+    }
     
     /**
      * @param rr RadiologyRecord object. Set rr->recordID = null to let sql automatically

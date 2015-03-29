@@ -1,6 +1,8 @@
 var spinner;
 var allDoctors;
 
+var id = 0;
+
 $(document).ready( function() {
 	
 	//Get all users for autocomplete
@@ -25,7 +27,7 @@ $(document).ready( function() {
     });
 	
 	allDoctors = getAllDoctors();
-	$("#family-doctor").autocomplete({
+	$(".family-doctor").autocomplete({
 		source: allDoctors,
 		change: function(event, ui){
 			check_form();
@@ -46,12 +48,27 @@ $(document).ready( function() {
 		spinner = new Spinner(opts).spin(target);
 	});	
 	
+	//Saves a record when admin clicks on save record
+	$('body').on('click','.add-doctor-btn',function(){	
+		event.preventDefault();
+		addDoctorInput();
+		check_form()
+	});	
+	
+	//Saves a record when admin clicks on save record
+	$('body').on('click','.delete-image-btn',function(){	
+		event.preventDefault();
+		//Get div id
+		var id = $(this).parent().parent().attr("id").split('-')[1];
+		console.log("ID: " + id);
+		removeDoctorInput(id);
+	});	
+	
 
 	
 	//Watches to make sure all fields in the form are filled out before allowing admin to add/edit a user
-	$(".form-control").change(function() {
-		check_form();
-	
+	$('body').on('change', ".form-control", function() {
+		check_form();	
 	});
 
 	//spinner stuff
@@ -179,9 +196,16 @@ function saveRecord() {
 	var lastName = $("#last-name").val();		
 	var address = $("#address").val();		
 	var email = $("#email").val();		
-	var phone = $("#phone").val();		
-	var doctor = $("#family-doctor").val();	
+	var phone = $("#phone").val();	
 	
+	var doctorArray = [];
+	
+	$(".family-doctor").each(function() {
+		doctorArray.push($(this).val());
+	});
+	
+	console.log(doctorArray);
+	var jsonDoctorArray = JSON.stringify(doctorArray);
 
 	if (type == 'Patient') {
 		type = 'p';
@@ -203,7 +227,7 @@ function saveRecord() {
 			data:{"username": username, "password": password, "clss": type,
 					"start_date": startDate, "first_name": firstName, "last_name": lastName,
 					"address": address, "email": email, "phone": phone,
-					"doctor": doctor},
+					"doctor": jsonDoctorArray},
 			success:function(data){
 				spinner.stop();
 				//Show confirmation 
@@ -290,8 +314,9 @@ function outputPersonInfo(personInfo){
 	$("#phone").val(personInfo.phone);
 }
 
+
 function outputDoctorInfo(doctorInfo){
-	$("#family-doctor").val(doctorInfo);
+	//FIX $("#family-doctor").val(doctorInfo);
 }
 
 //Returns true if the string is a number
@@ -329,11 +354,14 @@ function check_form() {
 			setInputsCorrect(['type'], false, true);
 		}
 		
-		if (inputIsDoctor('family-doctor')){
-			setInputsCorrect(['family-doctor'], true, false);
-		}
-		else {
-			setInputsCorrect(['family-doctor'], false, false);
+		for(var i = 0; i <= id; i++){
+			console.log("ACTIVATING");
+			if (inputIsDoctor('family-doctor-' + i)){
+				setInputsCorrect(['family-doctor-' + i], true, false);
+			}
+			else {
+				setInputsCorrect(['family-doctor-' + i], false, false);
+			}
 		}
 		
 		if (inputsMatch(passwordArray)){
@@ -348,7 +376,16 @@ function check_form() {
 		else {
 			$(".save-record-container").html('<fieldset disabled><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset>');
 		}
-	}
+}
+
+function addDoctorInput(){
+	id += 1;
+	$(".form-group").append('<div class="col-sm-12 doctor-input top-buffer" id="id-' + id + '"><div class="col-sm-3"><label class="control-label" for="family-doctor">Doctor ID</label></div><div class="col-sm-4 delete-image"><img class="delete-image-btn" src="../images/delete-icon.png"></div><input type="text" class="form-control family-doctor" id="family-doctor-' + id + '" name="doctor"></div>');
+}
+
+function removeDoctorInput(id){
+	$("#id-" + id).remove();
+}
 
 
 
