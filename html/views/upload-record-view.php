@@ -75,7 +75,7 @@ echo '<script src="../js/upload-record.js"></script>';
 </div>
 	<div class="row top-buffer"></div>
 	<div class="col-sm-2 col-sm-offset-5 top-buffer upload-record-container">
-		<fieldset disabled><button class="btn btn-info"><strong><span class="glyphicon glyphicon-floppy-save upload-record-btn" aria-hidden="true"></span> Save Record</strong></button></fieldset>
+		<fieldset disabled><button class="btn btn-info upload-record-btn"><strong><span class="glyphicon glyphicon-floppy-save " aria-hidden="true"></span> Save Record</strong></button></fieldset>
 	</div>
 	<div class="error-log"></div>
 		<?php else : include_once 'authorization-error.php';?>

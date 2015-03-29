@@ -26,8 +26,11 @@ $(document).ready( function() {
 	
 	allDoctors = getAllDoctors();
 	$("#family-doctor").autocomplete({
-		source: allDoctors
-	})
+		source: allDoctors,
+		change: function(event, ui){
+			check_form();
+		}
+	});
 	
 	$(".form-control").each(function() {
 		$(this).addClass("input-wrong");

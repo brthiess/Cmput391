@@ -4,7 +4,7 @@
 
 		start_session();
 		if (check_login($db, 'all')){
-			$doctor_ids = $db->getDoctorIDs();			
-			echo json_encode($doctor_ids);
+			$radiologist_ids = $db->getRadiologistIDs();			
+			echo json_encode($radiologist_ids);
 		}
 ?>

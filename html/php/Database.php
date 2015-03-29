@@ -654,6 +654,33 @@ class Database {
 		return $rows;
     }
 	
+	public function getPatientIDs(){
+        $sqlStmt = "SELECT person_id FROM users WHERE class='p'";
+        
+        $rows = $this->executeQuery($sqlStmt);      
+
+		$ids = array();
+		
+		foreach($rows as $row){
+			array_push($ids, $row["PERSON_ID"]);
+		}
+		return $rows;
+    }
+	
+	
+	public function getRadiologistIDs(){
+        $sqlStmt = "SELECT person_id FROM users WHERE class='r'";
+        
+        $rows = $this->executeQuery($sqlStmt);      
+
+		$ids = array();
+		
+		foreach($rows as $row){
+			array_push($ids, $row["PERSON_ID"]);
+		}
+		return $rows;
+    }
+	
 	public function searchByDiagnosis($keywords, $d1, $d2){
 		$keywords = strtoupper($keywords);
 		$sqlStmt = "SELECT record_id, patient_id, doctor_id,".
