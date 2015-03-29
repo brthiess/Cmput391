@@ -154,8 +154,9 @@ function inputIsType(input){
 }
 
 function inputIsDoctor(input){
-	print(allDoctors);
-	if (allDoctors.indexOf(input) > -1){
+	var value = $("#" + input).val();
+	
+	if (allDoctors.indexOf(value) > -1){
 		console.log("true");
 		return true;
 	}
