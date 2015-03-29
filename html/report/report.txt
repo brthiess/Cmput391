@@ -1,0 +1,9 @@
+CMPUT 391 Report
+
+This project report describes the CMPUT391 Radiology Project. The report is divided in three sections based on the 3-tier architecture: Database Layer, Business Layer, and Presentation Layer.
+
+Database Layer
+
+Business Layer
+
+Presentation Layer
