@@ -214,11 +214,6 @@ class Database {
      * @see User
      */
     public function addUser(User $user){
-		print($user->username);
-		print($user->password);
-		print($user->clss);
-		print($user->personID);
-		print($user->dateRegistered);
         $sqlStmt = 'INSERT INTO users VALUES('.
                  Q($user->username).', '.
                  Q($user->password).', '.
@@ -348,7 +343,6 @@ class Database {
      *         ways to get that wrong so I won't enumerate.
      */
     public function addRadiologyRecord(RadiologyRecord $rr){     
-		print($rr->testDate);
         $id = $rr->recordID == NULL? "NULL" : $rr->recordID;
         $autoID = $id == "NULL"? "TRUE" : "FALSE";
         $p = "insertRadiologyRecord(radiology_record_rt(".
@@ -641,16 +635,23 @@ class Database {
      * @see Doctor.
      */
     public function getDoctorWithPatient($patientID){
-        $sqlStmt = "SELECT fd.* FROM family_doctor fd JOINS persons p ON fd.patient_id = p.person_id ".
-                 "WHERE person_id=".$patientID;
+        $sqlStmt = "SELECT fd.* FROM family_doctor fd, persons p WHERE fd.patient_id=" . $patientID . " AND ROWNUM=1";
         
         $rows = $this->executeQuery($sqlStmt);        
-        $rv = array();
-        foreach($rows as $row){
-            $rv[] = 
-                  new FamilyDoctor($row['DOCTOR_ID'], $row['PATIENT_ID']);
-        }        
-        return $rv;
+		return $rows[0]['DOCTOR_ID'];
+    }
+	
+	public function getDoctorIDs(){
+        $sqlStmt = "SELECT person_id FROM users WHERE class='d'";
+        
+        $rows = $this->executeQuery($sqlStmt);      
+
+		$ids = array();
+		
+		foreach($rows as $row){
+			array_push($ids, $row["PERSON_ID"]);
+		}
+		return $rows;
     }
 	
 	public function searchByDiagnosis($keywords, $d1, $d2){
@@ -663,10 +664,8 @@ class Database {
 		$rows = $this->executeQuery($sqlStmt);
 		$rv = array();
 		
-		print("NUMBER OF ROWS:" . count($rows));
 
         foreach($rows as $row){
-					print(" PRESCDATE: " . $row['PRESCDATE']);
             $rv[] = 
                   new RadiologyRecord(
                       $row['RECORD_ID'],

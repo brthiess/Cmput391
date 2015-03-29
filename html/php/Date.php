@@ -173,8 +173,6 @@ class Date{
     }
 
     private function __construct1($a1){
-		print("construct1");
-		print($a1);
         $args = explode('-', $a1);
         $this->__construct3($args[0], $args[1], $args[2]);
     }

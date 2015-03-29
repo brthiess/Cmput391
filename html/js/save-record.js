@@ -1,5 +1,5 @@
 var spinner;
-
+var allDoctors;
 
 $(document).ready( function() {
 	
@@ -15,13 +15,22 @@ $(document).ready( function() {
 								$(".error-log").html(data);
 								var userInfo = JSON.parse(data);
 								console.log(userInfo);
-						}		
+								outputPersonInfo(userInfo[1]);
+								outputUserInfo(userInfo[0]);
+								outputDoctorInfo(userInfo[2]);
+								check_form();
+						}	
 			})		
 		}
     });
 	
+	allDoctors = getAllDoctors();
+	$("#family-doctor").autocomplete({
+		source: allDoctors
+	})
+	
 	$(".form-control").each(function() {
-		$(this).attr("class", "form-control input-wrong");
+		$(this).addClass("input-wrong");
 	});
 	
 	
@@ -34,50 +43,12 @@ $(document).ready( function() {
 		spinner = new Spinner(opts).spin(target);
 	});	
 	
-	var passwordArray = ["password", "password-again"];
+
 	
 	//Watches to make sure all fields in the form are filled out before allowing admin to add/edit a user
 	$(".form-control").change(function() {
-		//Check to see if every input has some input
-		//If so, then put check mark beside it (for now)
-		inputHasValue();
-		
-		//Give the input a checkmark if input is email
-		if(inputIsEmail('email')){
-			setInputsCorrect(['email'], true, false);
-		}
-		else {
-			setInputsCorrect(['email'], false, false);
-		}
-		
-		//Give the input a checkmark if the input is a phone number
-		if(inputIsPhone('phone')){
-			setInputsCorrect(['phone'], true, false);
-		}
-		else {
-			setInputsCorrect(['phone'], false, false);
-		}
-		
-				//Give the input a checkmark if the input is a phone number
-		if(inputIsType('type')){
-			setInputsCorrect(['type'], true, true);
-		}
-		else {
-			setInputsCorrect(['type'], false, true);
-		}
-		
-		if (inputsMatch(passwordArray)){
-			setInputsCorrect(passwordArray, true, false);
-		}
-		else {
-			setInputsCorrect(passwordArray, false, false);
-		}
-		if (allFieldsCorrect()) {
-			$(".save-record-container").html('<button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>');
-		}
-		else {
-			$(".save-record-container").html('<fieldset disabled><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset>');
-		}
+		check_form();
+	
 	});
 
 	//spinner stuff
@@ -118,20 +89,25 @@ function inputsMatch(inputArray){
 //Takes the div ID as input
 function setInputsCorrect(inputArray, correct, list){
 	var input = '';
+	var opposite = '';
 	if (correct == true){
 		input = 'input-correct';
+		opposite = 'input-wrong';
 	}
 	else {
 		input = 'input-wrong';
+		opposite = 'input-correct';
 	}
 	if (list) {  //If inputs are in list form (as opposed to normal text input)
 		for (var i = 0; i < inputArray.length; i++){
-			$("#" + inputArray[i]).parent().attr("class", "form-control " + input);
+			$("#" + inputArray[i]).parent().addClass(input);
+			$("#" + inputArray[i]).parent().removeClass(opposite);
 		}
 	}
 	else {
 		for (var i = 0; i < inputArray.length; i++){
-			$("#" + inputArray[i]).attr("class", "form-control " +  input);
+			$("#" + inputArray[i]).addClass(input);
+			$("#" + inputArray[i]).removeClass(opposite);
 		}
 	}
 }
@@ -173,6 +149,18 @@ function inputIsType(input){
 		return true;
 	}
 	else {
+		return false;
+	}
+}
+
+function inputIsDoctor(input){
+	print(allDoctors);
+	if (allDoctors.indexOf(input) > -1){
+		console.log("true");
+		return true;
+	}
+	else {
+		console.log("false");
 		return false;
 	}
 }
@@ -241,7 +229,7 @@ function allFieldsCorrect() {
 
 //Ajax call to DB to get all users
 function getAllUsers() {
-		var allUsers = [];
+	var allUsers = [];
 	$.ajax ({
 			url: '../php/get-all-users.php',
 			success:function(data){
@@ -249,19 +237,114 @@ function getAllUsers() {
 				console.log(allUsersJSON);
 				for (var i = 0; i < allUsersJSON.length; i++){
 					allUsers[i] = allUsersJSON[i].USER_NAME;
-				}
+				}				
 			}
 	});
 	
 	return allUsers;
 	
 }
+function getAllDoctors(){
+	allDoctors = [];
+	$.ajax({
+		url: '../php/get-all-doctor-ids.php',
+		success:function(data){
+			allDoctorsJSON = JSON.parse(data);
+			for (var i = 0; i < allDoctorsJSON.length; i++){
+					allDoctors[i] = allDoctorsJSON[i].PERSON_ID;
+			}
+		}
+	});
+	return allDoctors;
+}
 
+function outputUserInfo(userInfo){
+	$("#start-date").val(userInfo.dateRegistered);
+	$("#password").val(userInfo.password);
+	$("#password-again").val(userInfo.password);
+	
+	var type = $("#type");
+	if (userInfo.clss == 'p'){
+		type.html("Patient");
+	}
+	else if (userInfo.clss == 'd'){
+		type.html("Doctor");
+	}
+	else if (userInfo.clss == 'r'){
+		type.html("Radiologist");
+	}
+	else if (userInfo.clss == 'a'){
+		type.html("Administrator");
+	}
+}
+
+function outputPersonInfo(personInfo){
+	$("#first-name").val(personInfo.firstName);
+	$("#last-name").val(personInfo.lastName);
+	$("#email").val(personInfo.email);
+	$("#address").val(personInfo.address);
+	$("#phone").val(personInfo.phone);
+}
+
+function outputDoctorInfo(doctorInfo){
+	$("#family-doctor").val(doctorInfo);
+}
 
 //Returns true if the string is a number
 function isNumeric(num){
     return !isNaN(num);
 }
+
+function check_form() {
+	var passwordArray = ["password", "password-again"];
+		//Check to see if every input has some input
+		//If so, then put check mark beside it (for now)
+		inputHasValue();
+		
+		//Give the input a checkmark if input is email
+		if(inputIsEmail('email')){
+			setInputsCorrect(['email'], true, false);
+		}
+		else {
+			setInputsCorrect(['email'], false, false);
+		}
+		
+		//Give the input a checkmark if the input is a phone number
+		if(inputIsPhone('phone')){
+			setInputsCorrect(['phone'], true, false);
+		}
+		else {
+			setInputsCorrect(['phone'], false, false);
+		}
+		
+				//Give the input a checkmark if the input is a phone number
+		if(inputIsType('type')){
+			setInputsCorrect(['type'], true, true);
+		}
+		else {
+			setInputsCorrect(['type'], false, true);
+		}
+		
+		if (inputIsDoctor('family-doctor')){
+			setInputsCorrect(['family-doctor'], true, false);
+		}
+		else {
+			setInputsCorrect(['family-doctor'], false, false);
+		}
+		
+		if (inputsMatch(passwordArray)){
+			setInputsCorrect(passwordArray, true, false);
+		}
+		else {
+			setInputsCorrect(passwordArray, false, false);
+		}
+		if (allFieldsCorrect()) {
+			$(".save-record-container").html('<button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button>');
+		}
+		else {
+			$(".save-record-container").html('<fieldset disabled><button class="btn btn-info full-width-btn save-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset>');
+		}
+	}
 
 
 

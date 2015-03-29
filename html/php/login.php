@@ -49,7 +49,6 @@
 	
 	
 	function login($db, $username, $password, $clss) {
-		print("login called");
 		//Get actual username's password from DB
 		$user = $db->getUser($username);
 		if ($user != false){
