@@ -6,7 +6,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<h1 class="text-center">Welcome to the Radiology Clinic</h1>
+			<h1 class="text-center">Welcome to the Radiology Information System</h1>
 		</div>
 		<div class="row">
 			<div class="col-sm-4" id="patient-login-form"> 

@@ -35,7 +35,7 @@ a:hover {
 	padding-top: 10px;
 	padding-left: 5px;
 	height: 45px;
-	width: 205px;
+	width: 130px;
 	
 }
 
@@ -575,7 +575,7 @@ Learn More Section
 	opacity: 1;
 }
 
-@media (max-width:750px){
+@media (max-width:850px){
 	.sidebar {
 		opacity: 0;
 	}
