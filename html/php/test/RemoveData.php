@@ -15,7 +15,7 @@ $db = Database::instance();  // Acquire database instance.
 global $PEOPLE, $USERS, $FAMILY_DOCTORS, $RECORDS, $IMAGES;
 
 foreach ($IMAGES as $r){
-    $db->removeImage($r->imageID);
+    $db->deleteRadiologyImages($r[1]);
 }
         
 foreach ($RECORDS as $r){

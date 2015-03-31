@@ -225,7 +225,7 @@ class SearchTest extends PHPUnit_Framework_TestCase{
 
     public function testImageInsertDeleteRetrieval(){
         $db = Database::instance();  // Acquire database instance
-        //var_dump($db->getDataCube(2));
+        var_dump($db->getDataCube(2));
     }
 }
 
