@@ -386,11 +386,24 @@ select {
 	box-shadow: none;
 	border-style:none;
 	color: #666666;
+	margin-top: 20px;
 }
 
 select:focus, select:active {
 	border:0;
 	outline:0;
+}
+
+.data-sum {
+	margin-top: 2em;
+	font-size: 5em;
+
+}
+
+.data-sum p {
+	font-size: 1.5em;
+	font-weight: 800;
+	color: #e74c3c;
 }
 
 
@@ -493,4 +506,24 @@ Button Settings
 .gray-btn:hover {
 	background: #666666 !important;
 	border-color: #666666 !important;
+}
+
+.circle-btn {
+	margin-top: 5px;
+	width: 50px;
+	height: 50px;
+	border-radius: 25px;
+	padding-left: 0;
+	padding-right: 0;
+	padding-top: 13px;
+}
+
+.circle-btn:focus, .circle-btn:active{
+	border:0 !important;
+	outline:0 !important;
+}
+
+.circle-btn p {
+	font-weight: 700;
+	width: 100%
 }

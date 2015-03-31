@@ -4,6 +4,7 @@
 
 		start_session();
 		if (check_login($db, 'a')){
-			echo json_encode($db->getDataCube(1));			
+			$interval = $_GET["interval"];
+			echo json_encode($db->getDataCube($interval));			
 		}
 ?>

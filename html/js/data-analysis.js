@@ -7,19 +7,12 @@ var patient_value = 'All';
 var test_type_value = 'All';
 var date_value = 'All';
 
+var interval = 2;
+
 $(document).ready(function() {
 	
-	$.ajax({
-		url:'../php/get-data-cube.php',
-		success:function(data){
-			data = JSON.parse(data);
-			data = removeNullData(data);
-			data_cube = data;
-			console.log(data_cube);
-			getDataCubeItems();
-			putItemsInSelect();
-		}
-	});
+	getDataCube();
+
 	
 	$("#patient-list").change(function() {
 		patient_value = $(this).val();	
@@ -32,6 +25,18 @@ $(document).ready(function() {
 	$("#date-list").change(function() {
 		date_value = $(this).val();
 		getSum();
+	});
+	$("body").on("click", "#yearly-btn", function() {
+		interval = 2;
+		getDataCube();
+	});
+	$("body").on("click", "#weekly-btn", function() {
+		interval = 1;
+		getDataCube();
+	});
+	$("body").on("click", "#daily-btn", function() {
+		interval = 0;
+		getDataCube();
 	});
 	
 
@@ -51,7 +56,33 @@ function getSum(){
 				numImages = data_cube[i].CNT;
 			}
 	}
-	$(".data-sum").html("<h1>" + numImages + " images</h1>");
+	$(".data-sum").html("<p>" + numImages + " </p>Images");
+}
+
+//Gets the data cube from the server
+function getDataCube(){
+	//Reset Variables
+	data_cube = '';
+	patient_items = [];
+	test_type_items = [];
+	date_items = [];
+	patient_value = 'All';
+	test_type_value = 'All';
+	date_value = 'All';
+	$("#patient-list").html('<option value="-1" selected>Choose a Patient</option>');
+	$("#test-type-list").html('<option value="-1" selected>Choose a Test Type</option>');
+	$("#date-list").html('<option value="-1" selected>Choose a Time Interval</option>');
+	
+		$.ajax({
+		url:'../php/get-data-cube.php?interval=' + interval,
+		success:function(data){
+			data = JSON.parse(data);
+			data = removeNullData(data);
+			data_cube = data;
+			getDataCubeItems();
+			putItemsInSelect();
+		}
+	});
 }
 
 //Gets all of the items that are in the data cube
@@ -84,7 +115,6 @@ function putItemsInSelect(){
 //Removes the null data from the data_cube.  Renames it to 'All'
 function removeNullData(data){
 	for (var i = 0; i < data.length; i++){
-		console.log(data[i].TEST_TYPE);
 		if (data[i].PATIENT_NAME == null){
 			data[i].PATIENT_NAME == "All";
 		}
