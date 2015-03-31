@@ -6,7 +6,7 @@
 <div class="col-lg-12 navigational-bar">
 	<div class="col-sm-4">
 		<div class="title">
-			<a href="index.php">The Radiology Clinic</a>
+			<a href="index.php">The RIS</a>
 		</div>
 	</div>
 	<?php if (check_login($db, 'all')) :?>

@@ -5,32 +5,34 @@
 <body>
 <?php include 'navbar.php';?>
 
-	<div class="sidebar">
-		<div class="sidebar-element sidebar-install">
-			<p>Installation</p>
-		</div>
-		<div class="sidebar-element sidebar-login">
-			<p>Login</p>
-		</div>
-		<div class="sidebar-element sidebar-user-management">
-			<p>User-Management</p>
-		</div>
-		<div class="sidebar-element sidebar-report-generating">
-			<p>Generating Reports</p>
-		</div>
-		<div class="sidebar-element sidebar-uploading">
-			<p>Uploading Reports</p>
-		</div>
-		<div class="sidebar-search sidebar-element">
-			<p>Searching</p>
-		</div>
-		<div class="sidebar-data-analysis sidebar-element">
-			<p>Data Analysis</p>
-		</div>
-	</div>
-
+	
 	<div class="col-sm-12 learn-more-element learn-more text-center">
+		<img class="center-block" src="../images/radiology-logo.png">
 		<h1>We are the <div class="learn-more-title">Radiology Information System</div>, an award winning medical system based in Edmonton, Alberta</h1>
+		
+		<div class="sidebar">
+			<div class="sidebar-element sidebar-install">
+				<p>Installation</p>
+			</div>
+			<div class="sidebar-element sidebar-login">
+				<p>Login</p>
+			</div>
+			<div class="sidebar-element sidebar-user-management">
+				<p>User-Management</p>
+			</div>
+			<div class="sidebar-element sidebar-report-generating">
+				<p>Generating Reports</p>
+			</div>
+			<div class="sidebar-element sidebar-uploading">
+				<p>Uploading Reports</p>
+			</div>
+			<div class="sidebar-search sidebar-element">
+				<p>Searching</p>
+			</div>
+			<div class="sidebar-data-analysis sidebar-element">
+				<p>Data Analysis</p>
+			</div>
+		</div>
 	</div>
 	<div class="col-sm-12 learn-more-element how-to text-center">
 		<h1>How To Install</h1>

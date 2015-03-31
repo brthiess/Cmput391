@@ -1,4 +1,8 @@
 $(document).ready(function() {
+	
+	$(".sidebar").css("position", "absolute");
+	$(".sidebar").css("top", "550px");
+		
 	$(".sidebar-install").click(function() {
 		$('html, body').animate({
 			scrollTop: $(".how-to").offset().top
@@ -60,7 +64,14 @@ $(document).ready(function() {
     if ($(window).scrollTop() > $('.how-to').offset().top) {
         $(".sidebar-element").removeClass("selected");
 		$('.sidebar-install').addClass("selected");	
+		$(".sidebar").css("position", "fixed");
+		$(".sidebar").css("top", "10%");
+		
     }
+	else {
+		$(".sidebar").css("position", "absolute");
+		$(".sidebar").css("top", "550px");
+	}
 	
 	if ($(window).scrollTop() > $('.login-how-to').offset().top) {
         $(".sidebar-element").removeClass("selected");
