@@ -147,6 +147,10 @@ Login Page
 	margin-top: 1em;
 }
 
+.top-buffer-large {
+	margin-top: 5em;
+}
+
 .bottom-buffer {
 	margin-bottom: 1em;
 }
@@ -372,6 +376,23 @@ Create and Edit Persons Form
 	}
 }
 
+/*************
+Select Menu Settings
+******************/
+
+select {
+	width: 200px;
+	height: 40px;
+	box-shadow: none;
+	border-style:none;
+	color: #666666;
+}
+
+select:focus, select:active {
+	border:0;
+	outline:0;
+}
+
 
 /***************
 Button Settings
@@ -454,4 +475,22 @@ Button Settings
 .red-btn:hover {
 	background: #c0392b !important;
 	border-color: #c0392b !important;
+}
+
+.teal-btn:hover{
+	background: #16a085 !important;
+	border-color: #16a085 !important;
+}
+.teal-btn{
+	background: #1abc9c !important;
+	border-color: #1abc9c !important;
+}
+
+.gray-btn {
+	background: #7f8c8d !important;
+	border-color: #7f8c8d !important;
+}
+.gray-btn:hover {
+	background: #666666 !important;
+	border-color: #666666 !important;
 }

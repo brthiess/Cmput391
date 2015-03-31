@@ -807,5 +807,6 @@ class Database {
             throw new Exception("Interval type not recognized");
         }
     }
+
 }
 ?>

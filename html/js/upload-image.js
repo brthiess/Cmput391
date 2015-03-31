@@ -20,7 +20,7 @@ function addImage() {
 		ext[1] != 'png' 	&& 
 		ext[1] != 'bmp' 	&& 
 		ext[1] != 'dicom' 	){
-		alert("Not an image");
+		alert("Not an image or image is too large");
 		return;
 	}
       

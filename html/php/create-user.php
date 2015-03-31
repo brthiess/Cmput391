@@ -76,7 +76,7 @@
 			$user = new User($username, $password, $clss, $new_id, $start_date);
 			$db->addUser($user);
 			print("User Added");
-			$db->removeAllFamilyDoctorsAssociatedWithPatient($new_id);
+			$db->removeAllFamilyDoctorsFromPatient($new_id);
 			foreach($doctor_ids as $doctor_id){
 				$doctor = new FamilyDoctor($doctor_id, $new_id);
 				$db->addFamilyDoctor($doctor);

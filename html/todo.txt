@@ -3,7 +3,7 @@ In Edit/Create Person:
 	-Change Family Doctor to Family Doctor ID.  Make sure there is a foreign key reference created
 In Forms:
 In Search
-
+-Add Confirmation in create/upload record
 
 TEST TEST TEST
 	

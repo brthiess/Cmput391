@@ -553,7 +553,7 @@ CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t
        	    rr.test_type,
        	    to_char(rr.test_date, 'yyyy-ww') As week,
        	    COUNT(*) as cnt
-	    FROM radiology_record rr JOIN pacs_images pi ON rr.record_id = pi.record_id
+	    FROM radiology_record rr JOIN radiology_image pi ON rr.record_id = pi.record_id
 	    GROUP BY CUBE (rr.patient_id,
        	       	     	   rr.test_type,
 	       		   to_char(rr.test_date, 'yyyy-ww'))) a 
@@ -570,7 +570,7 @@ CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t
        	    rr.test_type,
        	    to_char(rr.test_date, 'yyyy-mm') As mnth,
        	    COUNT(*) as cnt
-	    FROM radiology_record rr JOIN pacs_images pi ON rr.record_id = pi.record_id
+	    FROM radiology_record rr JOIN radiology_image pi ON rr.record_id = pi.record_id
 	    GROUP BY CUBE (rr.patient_id,
        	       	     	   rr.test_type,
 	       		   to_char(rr.test_date, 'yyyy-mm'))) a
@@ -587,7 +587,7 @@ CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t
        	    rr.test_type,
        	    to_char(rr.test_date, 'yyyy') As yr,
        	    COUNT(*) as cnt
-	    FROM radiology_record rr JOIN pacs_images pi ON rr.record_id = pi.record_id
+	    FROM radiology_record rr JOIN radiology_image pi ON rr.record_id = pi.record_id
 	    GROUP BY CUBE (rr.patient_id,
        	       	     	   rr.test_type,
 	       		   to_char(rr.test_date, 'yyyy'))) a

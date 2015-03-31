@@ -34,6 +34,10 @@
 		<a href="admin-search-radiology.php"><button class="btn btn-info center-block red-btn large-btn"><span class="glyphicon glyphicon-search"  aria-hidden="true"></span> Search Records</button></a>
 	</div>
 	
+	<div class="col-md-12 top-buffer-large">
+		<a href="admin-data-analysis-view.php"><button class="btn btn-info center-block gray-btn large-btn"><span class="glyphicon glyphicon-stats"  aria-hidden="true"></span> Data Analysis</button></a>
+	</div>
+	
 		<?php else : include_once 'authorization-error.php';?>
 
         <?php endif; ?>
