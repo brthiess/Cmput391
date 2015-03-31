@@ -28,14 +28,23 @@ $(document).ready(function() {
 	});
 	$("body").on("click", "#yearly-btn", function() {
 		interval = 2;
+		$(this).addClass("selected");
+		$("#weekly-btn").removeClass("selected");
+		$("#daily-btn").removeClass("selected");
 		getDataCube();
 	});
 	$("body").on("click", "#weekly-btn", function() {
 		interval = 1;
+		$(this).addClass("selected");
+		$("#yearly-btn").removeClass("selected");
+		$("#daily-btn").removeClass("selected");
 		getDataCube();
 	});
 	$("body").on("click", "#daily-btn", function() {
 		interval = 0;
+		$(this).addClass("selected");
+		$("#weekly-btn").removeClass("selected");
+		$("#yearly-btn").removeClass("selected");
 		getDataCube();
 	});
 	

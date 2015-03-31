@@ -391,7 +391,7 @@ Select Menu Settings
 ******************/
 
 select {
-	width: 200px;
+	width: 250px;
 	height: 40px;
 	box-shadow: none;
 	border-style:none;
@@ -415,6 +415,12 @@ select:focus, select:active {
 	font-weight: 800;
 	color: #e74c3c;
 }
+
+.interval-btn .selected, .interval-btn .selected:focus, .interval-btn .selected:active {
+	border-style: solid;
+	border-color: white !important;
+}
+
 
 
 /***************
@@ -551,7 +557,7 @@ Button Settings
 }
 
 .circle-btn:focus, .circle-btn:active{
-	border:0 !important;
+	border:0;
 	outline:0 !important;
 }
 
