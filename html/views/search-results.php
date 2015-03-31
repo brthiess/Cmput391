@@ -50,30 +50,22 @@
 		$start_date = new Date($start_date_month, $start_date_day, $start_date_year);
 		$end_date = new Date($end_date_month, $end_date_day, $end_date_year);
 		
-		print($start_date);
-		print($end_date);
 		
 		if ($search_type == 'r') {  //Search radiology records
 			if ($sort_type == 'n'){  //If user indicates not to sort results by time
-					print("No Sort");
 					$search_results = $search->searchWithKPByRank($keywords, $start_date, $end_date);
 			}
 			else if ($sort_type == 'd') {  //If user indicates to sort results by time descending
-				print("desc");
 				$search_results = $search->searchWithKPByTime($keywords, $start_date, $end_date, true);
 			}
 			else if ($sort_type == 'a') { // If user indicates to sort results by time ascending
-				print("asc");
 				$search_results = $search->searchWithKPByTime($keywords, $start_date, $end_date, false);
 			}
 		}
 		
 		else if ($search_type == 'd') {  //Search by diagnosis
-			print("Search By Diagnosis");
 			$search_results = $search->searchByDiagnosis($keywords, $start_date, $end_date);	
 		}
-		
-		print_r($search_results);
 		
 		for($i = 0; $i < count($search_results); $i++) {
 		print_tile($db, $search_results[$i]->recordID);		

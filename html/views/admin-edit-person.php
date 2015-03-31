@@ -16,7 +16,6 @@
 		$title = "Edit Person";
 		$class = "username-edit";
 	include_once 'create-person-form.php';?>
-	<div class="col-sm-12 error-log"></div>
 		<?php else : include_once 'authorization-error.php';?>
 
         <?php endif; ?>

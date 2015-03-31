@@ -42,7 +42,6 @@
 				<div class="col-sm-10 col-sm-offset-1 bottom-buffer top-buffer save-password-container"><fieldset disabled><button class="btn btn-info full-width-btn save-password-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save New Password</strong></button></fieldset></div>
 		</div>
 		<div class="confirmation-container"><p>New Password Saved</p></div>
-		<div class="error-log"></div>
 	</div>
 	<div class="col-sm-3 col-sm-offset-3 general-form">
 		<div class="text-center col-md-12"><h2>Change Information</h2></div>

@@ -13,7 +13,6 @@ function print_tile($db, $record_id){
 	if (check_login($db, 'all')) {
 		//Get Person Information on Record
 		$rr = $db->getRadiologyRecordByRecordID($record_id);
-		print_r($rr);
 		$day = getTestDay($rr);
 		$year = getTestYear($rr);
 		$month = getTestMonth($rr);

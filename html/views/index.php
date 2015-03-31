@@ -59,6 +59,9 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-sm-12">
+			<a href="learn-more.php"><button class=" center-block btn extra-large-btn hollow-btn btn-info">Learn More</button></a>
+		</div>
 	</div>
 
 </body>

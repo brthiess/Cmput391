@@ -94,6 +94,16 @@ a:hover {
 		z-index:-99;
 	}
 }
+
+.code-text {
+	font-family: monospace;
+}
+
+em {
+	font-style: normal;
+	color: #16a085;
+	font-weight: 600;
+}
 /***************
 Form Styles
 ***************/
@@ -414,10 +424,32 @@ Button Settings
 	font-size: 2.1em;
 	font-weight: 700;
 }
+
+.extra-large-btn {
+	margin-top: 3em;
+	font-size: 3em;
+	font-weight: 300;
+}
+
 @media (max-width: 500px) {
 	.large-btn {
 		font-size: 1.8em;
 	}
+}
+
+.hollow-btn {
+	background: none;
+	border-style: solid;
+	border-color: white;
+	transition: background 0.5s, color 0.5s;
+	outline:0 !important;
+}
+
+.hollow-btn:hover {
+	background: white !important;
+	color: gray !important;
+	border-color: white !important;
+	outline:0 !important;
 }
 .full-width-btn {
 	width: 100%;
@@ -526,4 +558,127 @@ Button Settings
 .circle-btn p {
 	font-weight: 700;
 	width: 100%
+}
+
+/******************
+Learn More Section
+*******************/
+
+.sidebar {
+	position:fixed;
+	right: 2%;
+	top: 10%;
+	height: 500px;
+	width: 120px;
+	background: #666666;
+	z-index: 999;
+	opacity: 1;
+}
+
+@media (max-width:750px){
+	.sidebar {
+		opacity: 0;
+	}
+}
+
+.sidebar-element {
+	height: 14.3%;
+	width: 100%;
+	position:relative;
+	transition:background 0.5s;
+}
+
+.sidebar-element p {
+	position: absolute;
+	top:40%;
+	width: 100%;
+	font-weight: 600;
+	text-align: center;
+	
+}
+
+.sidebar-element:hover {
+	background: #16a085;
+	cursor: pointer;
+}
+
+.sidebar .selected {
+	background: #16a085;
+}
+
+.learn-more {
+	background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),  url(../images/background.jpg);
+	height: 500px;
+	background-attachment: fixed;
+	padding-top:200px;
+	padding-left: 20%;
+	padding-right: 20%;
+	font-family:"Trebuchet MS", Helvetica, sans-serif;
+
+}
+
+.learn-more-element {
+	margin-top: 0;
+	padding-top: 80px;
+	padding-bottom: 80px;
+	padding-left: 15%;
+	padding-right: 15%;
+	min-height: 400px;
+}
+
+.learn-more-element h1 {
+	margin-top: 0em;
+	font-size: 3em;
+	line-height: 58px;
+}
+
+.learn-more-element h2 {
+	font-size: 1.5em;
+	line-height: 30px;
+	font-weight: 100;	
+}
+
+.how-to {
+	background: white;
+	color: black;
+}
+
+.how-to h2{
+	color: #666666;
+}
+
+.learn-more-title {
+	display:inline;
+	color: #1abc9c;
+}
+
+.user-management-how-to {
+	background: #bdc3c7;
+	color: #666666;
+}
+
+.user-management-how-to h1 {
+	color: black
+}
+
+.report-generating-how-to {
+	background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(../images/report-background.jpg);
+	background-attachment:fixed;
+}
+
+.uploading-how-to {
+	background: #d35400;
+}
+
+.search-how-to {
+	background: white;
+	color: #666666;
+}
+
+.search-how-to h1 {
+	color: black;
+}
+
+.data-analysis-how-to {
+	background: #95a5a6;
 }

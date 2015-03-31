@@ -72,12 +72,14 @@ echo '<script src="../js/upload-record.js"></script>';
 		</form>			
 
 	</div>
+	<div class="confirmation-container">
+		<p>Record Added <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></p>
+	</div>	
 </div>
 	<div class="row top-buffer"></div>
 	<div class="col-sm-2 col-sm-offset-5 top-buffer upload-record-container">
 		<fieldset disabled><button class="btn btn-info upload-record-btn"><strong><span class="glyphicon glyphicon-floppy-save " aria-hidden="true"></span> Save Record</strong></button></fieldset>
 	</div>
-	<div class="error-log"></div>
 		<?php else : include_once 'authorization-error.php';?>
 
         <?php endif; ?>
