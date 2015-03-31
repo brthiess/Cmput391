@@ -54,11 +54,11 @@ $RECORDS = array(
 );
 
 $IMAGES = array(
-    new PacsImages(1, 1, "asdf", "asdf", "asdf"),
-    new PacsImages(1, 2, "asdf", "asdf", "asdf"),
-    new PacsImages(2, 3, "asdf", "asdf", "asdf"),
-    new PacsImages(2, 4, "asdf", "asdf", "asdf"),
-    new PacsImages(3, 5, "asdf", "asdf", "asdf"),
-    new PacsImages(3, 6, "asdf", "asdf", "asdf"),
+    array("asdf", 1),
+    array("asdf", 1),
+    array("asdf", 2),
+    array("asdf", 2),
+    array("asdf", 3),
+    array("asdf", 3),
 );
 ?>

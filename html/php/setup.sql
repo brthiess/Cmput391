@@ -537,7 +537,6 @@ CREATE TYPE ft01_t_t IS TABLE OF ft01_t;
 /**
  * @param ival 1 to return monthly image count. 2 to return annual image count.
  * @return table of ft01_t or (period_date, img_cnt).
- * @deprecated
  */
 CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t 
        IS
@@ -548,9 +547,9 @@ CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t
        	  --Weekly.
 	  FOR t in
        	   (SELECT (p.last_name||', '||p.first_name) AS nme, test_type, week, cnt
-	    FROM persons p JOIN
+	    FROM persons p RIGHT JOIN
 	    (SELECT rr.patient_id,
-       	    rr.test_type,
+	           	    rr.test_type,
        	    to_char(rr.test_date, 'yyyy-ww') As week,
        	    COUNT(*) as cnt
 	    FROM radiology_record rr JOIN radiology_image pi ON rr.record_id = pi.record_id
@@ -565,7 +564,7 @@ CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t
        	  --Monthly.
           FOR t in
 	   (SELECT (p.last_name||', '||p.first_name) AS nme, test_type, mnth, cnt
-	   FROM persons p JOIN
+	   FROM persons p RIGHT JOIN
        	   (SELECT rr.patient_id,
        	    rr.test_type,
        	    to_char(rr.test_date, 'yyyy-mm') As mnth,
@@ -582,7 +581,7 @@ CREATE FUNCTION getDataCube01(ival IN INTEGER) RETURN ft01_t_t
        	  --Annually.
        	  FOR t in
 	  (SELECT (p.last_name||', '||p.first_name) AS nme, test_type, yr, cnt
-	   FROM persons p JOIN
+	   FROM persons p RIGHT JOIN
        	   (SELECT rr.patient_id,
        	    rr.test_type,
        	    to_char(rr.test_date, 'yyyy') As yr,

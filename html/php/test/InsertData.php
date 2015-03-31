@@ -37,7 +37,7 @@ foreach ($RECORDS as $r){
 
 // Add images.
 foreach ($IMAGES as $r){
-    $db->insertImage($r);
+    $db->addRadiologyImage($r[0], $r[1]);
 }
 
 ?>

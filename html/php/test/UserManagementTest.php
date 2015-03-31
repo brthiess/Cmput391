@@ -24,7 +24,7 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
         // Only add Joe Shmoe.
         $db->addPerson($PEOPLE[0]);
 
-        // Only add the admin as user.        
+        // Only add the admin as user.
         $db->addUser($USERS[0]);
         
         $this->_um = new UserManagement("joeShmoe");
@@ -41,7 +41,7 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
         // Only remove the added admin user.
         $db->removeUser($USERS[0]->userName);
         
-
+        
         // Remove all the people.
         $db->removePerson($PEOPLE[0]->personID);
     }
@@ -182,7 +182,7 @@ class UserManagementTest extends PHPUnit_Framework_TestCase{
         $db->removePerson($person->personID);
         $this->assertEquals(true, $success);
     }
-
+    
     public function testRemovePerson(){
         global $PEOPLE;
         $db = Database::instance();  // Acquire database instance.

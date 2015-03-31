@@ -219,7 +219,7 @@ class Database {
                  Q($user->password).', '.
                  Q($user->clss).', '.
                  $user->personID.', '.
-                 $user->dateRegistered.')';
+                 $user->dateRegistered.')';        
         $this->executeQuery($sqlStmt);
     }
     
@@ -246,7 +246,7 @@ class Database {
      * @param userName of the user to remove.
      * @throws Exception if user with a userName does not exist.
      */
-    public function removeUser($userName){
+    public function removeUser($userName){        
         $sqlStmt = 'DELETE FROM users WHERE user_name='.Q($userName).'';
         $this->executeQuery($sqlStmt);
     }
