@@ -17,11 +17,23 @@ $(document).ready( function() {
 		showTileData();
 	});
 	
+	$('body').on('click', '.enlarge-image-button', function() {
+		console.log("ASDasdasdF");
+		$('.modal').css("width", "100vw");
+		$('.modal-dialog').css("width", "100vw");
+		$('.modal-content').css("width", "100%");
+		$('.modal img').css("width", "100%");
+	});
+	
 	
 	//Modal Image
 	$('body').on('click', '.thumbnail', function() {
 		var imageSrc = $(this).find('img').attr("src");
 		$('#modal-image').attr("src", imageSrc);
+		$('.modal').css("width", "80%");
+		$('.modal-dialog').css("width", "80%");
+		$('.modal-content').css("width", "100%");
+		$('.modal img').css("width", "100%");
 	});
 	
 });

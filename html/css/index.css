@@ -132,6 +132,11 @@ Form Styles
 .delete-image img:hover {
 	cursor:pointer;
 }
+.control-label p {
+	display:inline;
+	color: #c0392b;
+	text-align:right;
+}
 /************************
 Modal
 *************************/
@@ -263,6 +268,7 @@ Search Tile
 	border-color: #2980b9;
 	position: relative;
 	margin-top: 2em;
+	margin-bottom: 2em;
 }
 
 .search-tile:hover {
@@ -564,6 +570,10 @@ Button Settings
 .circle-btn p {
 	font-weight: 700;
 	width: 100%
+}
+
+.btn-inline {
+	display:inline;
 }
 
 /******************

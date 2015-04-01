@@ -241,6 +241,15 @@ function check_form() {
 			setInputsCorrect(['radiologist-id'], false, false);
 		}
 		
+		if (testDateIsValid('test-date', 'prescribing-date')){
+			setInputsCorrect(['test-date'], true, false);
+			setInputsCorrect(['prescribing-date'], true, false);
+		}
+		else {
+			setInputsCorrect(['test-date'], false, false);
+			setInputsCorrect(['prescribing-date'], false, false);
+		}
+		
 		if (allFieldsCorrect()) {
 			$(".upload-record-container").html('<button class="btn btn-info upload-record-btn"><strong><span class="glyphicon glyphicon-floppy-save " aria-hidden="true"></span> Save Record</strong></button>');
 		}
@@ -248,6 +257,20 @@ function check_form() {
 			$(".upload-record-container").html('<fieldset disabled><button class="btn btn-info upload-record-btn"><strong><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save Record</strong></button></fieldset>');
 		}
 	}
+	
+	
+//Makes sure that the test date is after the prescribing date
+function testDateIsValid(testDate, prescribingDate){
+	testDate = new Date($("#" + testDate ).val());
+	prescribingDate = new Date($("#" + prescribingDate ).val());
+	if (testDate >= prescribingDate){
+		return true;			
+	}
+	else {
+		return false;
+	}
+	
+}
 	
 function allFieldsCorrect() {
 	var correct = true;

@@ -11,11 +11,11 @@
 					<input type="password" class="form-control" id="password" name="password">
 			</div>
 			<div class="col-sm-12">
-					<label class="control-label" for="password">Confirm Password</label>
+					<label class="control-label password"  for="password">Confirm Password <p></p></label>
 					<input type="password" class="form-control" id="password-again" name="password-again">
 			</div>
 			<div class="col-sm-12">
-					<label class="control-label" for="type">Type</label>
+					<label class="control-label type" for="type">Type <p></p></label>
 					<div class="dropdown">
 						<button class="btn btn-default dropdown-btn dropdown-toggle form-control" type="button" name="clss" data-toggle="dropdown" aria-expanded="false">
 							<span id="type" data-bind="label">Type</span>
@@ -42,15 +42,15 @@
 				<input type="text" class="form-control" id="last-name" name="last-name">
 			</div>
 			<div class="col-sm-12">
-				<label class="control-label" for="address">Address</label>
+				<label class="control-label" for="address">Address <p></p></label>
 				<input type="text" class="form-control" id="address" name="address">
 			</div>
 			<div class="col-sm-12">
-				<label class="control-label" for="email">Email</label>
+				<label class="control-label email" for="email">Email <p></p></label>
 				<input type="text" class="form-control" id="email" name="email">
 			</div>
 			<div class="col-sm-12">
-				<label class="control-label" for="phone">Phone</label>
+				<label class="control-label phone" for="phone">Phone <p></p></label>
 				<input type="text" class="form-control" id="phone" name="phone">
 			</div>
 			<div class="col-sm-12 form-separator top-buffer bottom-buffer">

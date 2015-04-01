@@ -90,6 +90,7 @@ function getDataCube(){
 			data_cube = data;
 			getDataCubeItems();
 			putItemsInSelect();
+			console.log(data_cube);
 		}
 	});
 }

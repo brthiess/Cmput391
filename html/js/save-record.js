@@ -16,7 +16,6 @@ $(document).ready( function() {
 				success:function(data){
 								$(".error-log").html(data);
 								var userInfo = JSON.parse(data);
-								console.log(userInfo);
 								outputPersonInfo(userInfo[1]);
 								outputUserInfo(userInfo[0]);
 								outputDoctorInfo(userInfo[2]);
@@ -60,7 +59,7 @@ $(document).ready( function() {
 		event.preventDefault();
 		//Get div id
 		var id = $(this).parent().parent().attr("id").split('-')[1];
-		console.log("ID: " + id);
+
 		removeDoctorInput(id);
 	});	
 	
@@ -177,11 +176,11 @@ function inputIsDoctor(input){
 	var value = $("#" + input).val();
 	
 	if (allDoctors.indexOf(value) > -1){
-		console.log("true");
+
 		return true;
 	}
 	else {
-		console.log("false");
+
 		return false;
 	}
 }
@@ -204,7 +203,6 @@ function saveRecord() {
 		doctorArray.push($(this).val());
 	});
 	
-	console.log(doctorArray);
 	var jsonDoctorArray = JSON.stringify(doctorArray);
 
 	if (type == 'Patient') {
@@ -247,7 +245,6 @@ function allFieldsCorrect() {
 	var correct = true;
 	$('.form-control').each(function() {
 		if ($(this).attr("class").indexOf("input-correct") == -1){
-			console.log("FALSE");
 			correct = false;
 		}
 	});
@@ -262,7 +259,6 @@ function getAllUsers() {
 			url: '../php/get-all-users.php',
 			success:function(data){
 				allUsersJSON = JSON.parse(data);
-				console.log(allUsersJSON);
 				for (var i = 0; i < allUsersJSON.length; i++){
 					allUsers[i] = allUsersJSON[i].USER_NAME;
 				}				
@@ -342,29 +338,34 @@ function check_form() {
 		//Give the input a checkmark if input is email
 		if(inputIsEmail('email')){
 			setInputsCorrect(['email'], true, false);
+			removeWarning('email');
 		}
 		else {
+			addWarning('email', 'Must be a valid email address');
 			setInputsCorrect(['email'], false, false);
 		}
 		
 		//Give the input a checkmark if the input is a phone number
 		if(inputIsPhone('phone')){
 			setInputsCorrect(['phone'], true, false);
+			removeWarning('phone');
 		}
 		else {
+			addWarning('phone', 'Number must be 10 digits long');
 			setInputsCorrect(['phone'], false, false);
 		}
 		
 				//Give the input a checkmark if the input is a phone number
 		if(inputIsType('type')){
 			setInputsCorrect(['type'], true, true);
+			removeWarning('type');
 		}
 		else {
+			addWarning('type', 'Type must be one of 4 types');
 			setInputsCorrect(['type'], false, true);
 		}
 		
 		for(var i = 0; i <= id; i++){
-			console.log("ACTIVATING");
 			if (inputIsDoctor('family-doctor-' + i)){
 				setInputsCorrect(['family-doctor-' + i], true, false);
 			}
@@ -375,8 +376,10 @@ function check_form() {
 		
 		if (inputsMatch(passwordArray)){
 			setInputsCorrect(passwordArray, true, false);
+			removeWarning('password');
 		}
 		else {
+			addWarning('password', 'Passwords must match');
 			setInputsCorrect(passwordArray, false, false);
 		}
 		if (allFieldsCorrect()) {
@@ -401,6 +404,14 @@ function addDoctorInputWithValue(value){
 
 function removeDoctorInput(id){
 	$("#id-" + id).remove();
+}
+
+function addWarning(id, warningString){
+	$("." + id + " p").html(" " + warningString);
+}
+
+function removeWarning(id){
+	$("." + id + " p").html("");
 }
 
 

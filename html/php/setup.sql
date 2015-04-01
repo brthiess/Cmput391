@@ -120,16 +120,16 @@ CREATE TABLE pacs_images (
  INSERT INTO persons (person_id, first_name, last_name, address,  email, phone) 
  VALUES (
  10,
- 'Brad',
+ 'Administrator',
  'Thiessen',
- '753 Revell Cr.',
- 'brthiess@ualberta.ca',
+ 'Admin Street',
+ 'admin@ris.ca',
  '7809224343' 
  );
  
  INSERT INTO users VALUES (
-   'brtlrt',
-   'jikipol',
+   'admin',
+   'password',
    'a',
    10,
    TO_DATE('JAN-05-15', 'mm/dd/yy')

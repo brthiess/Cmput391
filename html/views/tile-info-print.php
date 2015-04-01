@@ -78,7 +78,7 @@ function set_modal(){
 					<div class="modal-content">
 					  <div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-						<h4 class="modal-title">Radiology Image</h4>		
+						<h4 class="modal-title">Radiology Image</h4>		<button class="btn-inline enlarge-image-button btn btn-info btn-default">View Larger Image</button>
 					  </div>
 					  <div class="modal-body">
 						<img class="img-responsive" id="modal-image" src="images/gallery/1.jpg">

@@ -3,6 +3,7 @@
 <?php 	include_once 'header.php';
 		include_once '../php/login.php';
 		include_once '../php/connect.php';
+		echo '<script src="../js/radiology.js"></script>';
 		
 
 		start_session();
