@@ -29,14 +29,14 @@
 		<select class="center-block" id="date-list">
 			<option value="-1" selected>Choose a Date</option>
 		</select>
-		<div class="col-sm-2 col-sm-offset-3 interval-btn">
+		<div class="col-sm-3 col-sm-offset-1 interval-btn">
 			<button id="yearly-btn" class="center-block circle-btn btn btn-info green-btn selected"><p>Yearly</p></button>
 		</div>
-		<div class="interval-btn col-sm-2">
-			<button id="weekly-btn" class="center-block circle-btn btn btn-info purple-btn"><p>Weekly</p></button>
+		<div class="interval-btn col-sm-3">
+			<button id="weekly-btn" class="center-block circle-btn btn btn-info purple-btn"><p>Monthly</p></button>
 		</div>
-		<div class="col-sm-2 interval-btn">
-			<button id="daily-btn" class="center-block circle-btn btn btn-info orange-btn"><p>Daily</p></button>
+		<div class="col-sm-3 interval-btn">
+			<button id="daily-btn" class="center-block circle-btn btn btn-info orange-btn"><p>Weekly</p></button>
 		</div>
 	</div>
 	

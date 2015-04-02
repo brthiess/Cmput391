@@ -58,7 +58,7 @@ function getSum(){
 	numImages = 0;
 	for(var i = 0; i < data_cube.length; i++){
 		
-		if (data_cube[i].PATIENT_NAME == patient_value &&
+		if (data_cube[i].PATIENT_ID == patient_value &&
 			data_cube[i].TEST_TYPE == test_type_value &&
 			data_cube[i].DATSTR == date_value) {
 				found = true;
@@ -85,12 +85,14 @@ function getDataCube(){
 		$.ajax({
 		url:'../php/get-data-cube.php?interval=' + interval,
 		success:function(data){
-			data = JSON.parse(data);
-			data = removeNullData(data);
-			data_cube = data;
+			console.log(interval);
+			var data1 = JSON.parse(data);
+			var data2 = removeNullData(data1);
+			console.log(data2);
+			data_cube = data2;
 			getDataCubeItems();
 			putItemsInSelect();
-			console.log(data_cube);
+			//console.log(data_cube);
 		}
 	});
 }
@@ -98,8 +100,8 @@ function getDataCube(){
 //Gets all of the items that are in the data cube
 function getDataCubeItems(){
 	for(var i = 0; i < data_cube.length; i++){
-		if (patient_items.indexOf(data_cube[i].PATIENT_NAME) < 0) { //If the patients name has not been added yet to the select, then add it
-			patient_items.push(data_cube[i].PATIENT_NAME);
+		if (patient_items.indexOf(data_cube[i].PATIENT_ID) < 0) { //If the patients name has not been added yet to the select, then add it
+			patient_items.push(data_cube[i].PATIENT_ID);
 		}
 		if (test_type_items.indexOf(data_cube[i].TEST_TYPE) < 0) { //If the test_type has not been added yet to the select, then add it
 			test_type_items.push(data_cube[i].TEST_TYPE);
@@ -125,8 +127,8 @@ function putItemsInSelect(){
 //Removes the null data from the data_cube.  Renames it to 'All'
 function removeNullData(data){
 	for (var i = 0; i < data.length; i++){
-		if (data[i].PATIENT_NAME == null){
-			data[i].PATIENT_NAME == "All";
+		if (data[i].PATIENT_ID == null){
+			data[i].PATIENT_ID = "All";
 		}
 		if (data[i].TEST_TYPE == null){
 			data[i].TEST_TYPE = "All";

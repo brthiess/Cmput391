@@ -793,30 +793,36 @@ class Database {
      * @return Data cube wrt to the interval.
      */
     public function getDataCube($interval){        
-        switch($interval){
+      	$dateString = "yyyy-mm";
+		switch($interval){
         case 0:
+			$dateString = 'yyyy-ww';
+			break;
             // Weekly.            
         case 1:
+			$dateString = 'yyyy-mm';
+			break;
             // Monthly.
         case 2:
+			$dateString = 'yyyy';
+			break;
+		}
             // Yearly.
-            $sqlStmt = "SELECT * FROM TABLE(getDataCube01(".$interval."))";
-            $tempResultArray =  $this->executeQuery($sqlStmt);
+        $sqlStmt = "SELECT rr.patient_id,
+	           	    rr.test_type,
+					to_char(rr.test_date, '" . $dateString . "') As datstr,
+					COUNT(*) as cnt
+					FROM radiology_record rr JOIN radiology_image pi ON rr.record_id = pi.record_id
+					GROUP BY CUBE (rr.patient_id,
+       	       	    rr.test_type,
+	       		    to_char(rr.test_date, '" . $dateString . "'))";
+        
+		$tempResultArray =  $this->executeQuery($sqlStmt);
 
-            // As a bug in SQL code, the nulled PATIENT_NAME columns have the
-            // following entry instead: ", ". Thus detect those and switch them
-            // to null.
-            foreach($tempResultArray as &$entry){
-                if($entry["PATIENT_NAME"] == ", "){
-                    $entry["PATIENT_NAME"] = null;
-                }
-            }
-            return $tempResultArray;
-        default:
-            // Unknown interval.
-            throw new Exception("Interval type not recognized");
-        }
+        return $tempResultArray;
     }
+	
+
 
 }
 ?>
