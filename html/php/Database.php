@@ -801,7 +801,17 @@ class Database {
         case 2:
             // Yearly.
             $sqlStmt = "SELECT * FROM TABLE(getDataCube01(".$interval."))";
-            return $this->executeQuery($sqlStmt);
+            $tempResultArray =  $this->executeQuery($sqlStmt);
+
+            // As a bug in SQL code, the nulled PATIENT_NAME columns have the
+            // following entry instead: ", ". Thus detect those and switch them
+            // to null.
+            foreach($tempResultArray as &$entry){
+                if($entry["PATIENT_NAME"] == ", "){
+                    $entry["PATIENT_NAME"] = null;
+                }
+            }
+            return $tempResultArray;
         default:
             // Unknown interval.
             throw new Exception("Interval type not recognized");
