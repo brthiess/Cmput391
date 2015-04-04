@@ -30,7 +30,7 @@ const CONNECTION_STRING = "";
  * Note that this assumes that the schemas are already created.
  */
 class Database {
-    private $_username = NULL; // Oracle Username.
+    private $_userName = NULL; // Oracle Username.
     private $_connectionString = NULL;  // e.g. "localhost:49161/xe"
     private $_connection = NULL;  // Variable representing database connection.
         
@@ -239,10 +239,10 @@ class Database {
     }
 	
 	 /**
-     * @param username and password.  Changes user password
+     * @param userName and password.  Changes user password
      */
-	public function updateUserPassword($username, $password){
-		$sqlStmt = "UPDATE users SET password='" . $password . "' WHERE user_name='" . $username ."'";
+	public function updateUserPassword($userName, $password){
+		$sqlStmt = "UPDATE users SET password='" . $password . "' WHERE user_name='" . $userName ."'";
 		$this->executeQuery($sqlStmt);
 	}
     
@@ -270,7 +270,7 @@ class Database {
         if($row == null){
             return false;
         }     
-		$user = $row[0];
+	$user = $row[0];
         return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
                         $user['PERSON_ID'], new Date($user['REGDATE']));
     }
@@ -303,7 +303,7 @@ class Database {
 	
 	
 	/**
-	* @param Username of the user we want to find out exists
+	* @param UserName of the user we want to find out exists
 	* @return Returns true if the user exists.  False otherwise
 	*/
 	public function userExists($userName) {
