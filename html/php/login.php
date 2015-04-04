@@ -60,7 +60,7 @@
 				$_SESSION["person_id"] = $user->personID;
 				$_SESSION["clss"] = $user->clss;
 				//Log in successful
-				return true;		
+				return true;	
 			}
 			else {
 				//Log in failed

@@ -9,7 +9,7 @@
 		
 		if($_SERVER['REQUEST_METHOD'] == "POST") {
 			login($db, $_POST["username"], $_POST["password"], $_POST["clss"]);
-			header('Location: user-home.php');	
+			header('Location: user-home.php');
 			exit;
 		}
 ?>
@@ -17,7 +17,7 @@
 <?php include_once 'navbar.php';?>
 	
 	
-	<?php if (check_login($db, 'p')) : ?>
+	<?php if (check_login($db, 'p') || check_login($db, 'd')) : ?>
 
 
 		<div class="col-sm-12 behind">
