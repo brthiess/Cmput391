@@ -4,14 +4,14 @@ var spinner;
 
 $(document).ready( function() {
 	//Saves a record when admin clicks on save record
-	$('body').on('click','.save-password-btn',function(){	
+	$('body').on('click','.save-password-btn',function(event){	
 		event.preventDefault();
 		savePassword();
 		var target = document.getElementById('form');
 		spinner = new Spinner(opts).spin(target);
 	});	
 	
-		$('body').on('click','.save-information-btn',function(){	
+		$('body').on('click','.save-information-btn',function(event){	
 		event.preventDefault();
 		saveInformation();
 		var target = document.getElementById('form');

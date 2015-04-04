@@ -219,7 +219,7 @@ class Database {
      */
     public function addUser(User $user){
         $sqlStmt = 'INSERT INTO users VALUES('.
-                 Q($user->username).', '.
+                 Q($user->userName).', '.
                  Q($user->password).', '.
                  Q($user->clss).', '.
                  $user->personID.', '.
