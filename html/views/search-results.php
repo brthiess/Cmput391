@@ -27,9 +27,10 @@
 			$start_date_day = "15";
 		}
 		else {	//Separate inputted date into its month year and day counterparts
-			$start_date_month = explode("/", $_POST["start_date"])[0];
-			$start_date_day = explode("/", $_POST["start_date"])[1];
-			$start_date_year = explode("/", $_POST["start_date"])[2];
+		        $explode = explode("/", $_POST["start_date"]);
+			$start_date_month = $explode[0];
+			$start_date_day = $explode[1];
+			$start_date_year = $explode[2];
 		}
 		if (strlen($end_date) == 0) {
 			$end_date_month = "01";
@@ -37,9 +38,10 @@
 			$end_date_day= "15";
 		}
 		else {
-			$end_date_month = explode("/", $_POST["end_date"])[0];
-			$end_date_day = explode("/", $_POST["end_date"])[1];
-			$end_date_year = explode("/", $_POST["end_date"])[2];
+			$explode = explode("/", $_POST["end_date"]);
+			$end_date_month = $explode[0];
+			$end_date_day = $explode[1];
+			$end_date_year = $explode[2];
 		}
 		if (strlen($keywords) == 0) {
 			$keywords = "null";

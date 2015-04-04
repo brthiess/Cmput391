@@ -40,7 +40,7 @@ $(document).ready( function() {
 	
 
 	//Saves a record when admin clicks on save record
-	$('body').on('click','.save-record-btn',function(){	
+	$('body').on('click','.save-record-btn',function(event){	
 		event.preventDefault();
 		saveRecord();
 		var target = document.getElementById('form');
@@ -48,14 +48,14 @@ $(document).ready( function() {
 	});	
 	
 	//Saves a record when admin clicks on save record
-	$('body').on('click','.add-doctor-btn',function(){	
+	$('body').on('click','.add-doctor-btn',function(event){	
 		event.preventDefault();
 		addDoctorInput();
 		check_form()
 	});	
 	
 	//Saves a record when admin clicks on save record
-	$('body').on('click','.delete-image-btn',function(){	
+	$('body').on('click','.delete-image-btn',function(event){	
 		event.preventDefault();
 		//Get div id
 		var id = $(this).parent().parent().attr("id").split('-')[1];

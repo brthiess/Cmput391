@@ -248,10 +248,11 @@ CREATE TYPE persons_rt AS OBJECT(
 CREATE FUNCTION insertPerson(person IN persons_rt, autoID IN VARCHAR2) return INTEGER
        IS
        primaryKey INTEGER := -1;
-       BEGIN
-       
+       BEGIN      
+
        IF UPPER(autoID)='TRUE' THEN
-       	    primaryKey := persons_seq.nextVal;
+       	    SELECT persons_seq.nextVal INTO primaryKey
+       	    FROM dual;	    
        ELSE
           primaryKey := person.person_id;
        END IF;

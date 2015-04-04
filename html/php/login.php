@@ -6,8 +6,8 @@
 		Use this function at the top of every page which requires authentication
 	*/
 	function start_session() {
-		
-		if (session_status() == PHP_SESSION_NONE) {
+				
+		if(!isset($_SESSION)){
 			session_start();
 		} 		
 	}
@@ -23,7 +23,7 @@
 			$password = $_SESSION['password'];
 			$username = $_SESSION['username'];	
 			$clss= $_SESSION['clss'];
-					
+			
 			$user = $db->getUser($username);
 			if ($user != null) {	//Check to see if user exists in db
 				if ($password == $user->password  && ($clss == $clss_user || $clss_user == 'all')){

@@ -5,7 +5,7 @@ var allRadiologists;
 
 $(document).ready( function() {	
 	//Set the upload record button to listen for clicks
-	$("body").on("click", ".upload-record-btn", function() {
+	$("body").on("click", ".upload-record-btn", function(event) {
 		event.preventDefault();
 		uploadRecord();
 		var target = document.getElementById('radiology-form');

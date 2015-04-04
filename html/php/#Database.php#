@@ -270,7 +270,7 @@ class Database {
         if($row == null){
             return false;
         }     
-		$user = $row[0];
+	$user = $row[0];
         return new User($user['USER_NAME'], $user['PASSWORD'], $user['CLASS'], 
                         $user['PERSON_ID'], new Date($user['REGDATE']));
     }

@@ -24,13 +24,15 @@ function upload_record($db) {
 	
 	
 	
-	$test_date_month = explode("/", $_POST["test_date"])[0];
-	$test_date_day = explode("/", $_POST["test_date"])[1];
-	$test_date_year = explode("/", $_POST["test_date"])[2];
+	$explode = explode("/", $_POST["test_date"]);
+	$test_date_month = $explode[0];
+	$test_date_day = $explode[1];
+	$test_date_year = $explode[2];
 	
-	$prescribing_date_month = explode("/", $_POST["prescribing_date"])[0];
-	$prescribing_date_day = explode("/", $_POST["prescribing_date"])[1];
-	$prescribing_date_year = explode("/", $_POST["prescribing_date"])[2];
+	$explode = explode("/", $_POST["prescribing_date"]);
+	$prescribing_date_month = $explode[0];
+	$prescribing_date_day = $explode[1];
+	$prescribing_date_year = $explode[2];
 	
 	$test_date = new Date($test_date_month, $test_date_day, $test_date_year);
 	$prescribing_date = new Date($prescribing_date_month, $prescribing_date_day, $prescribing_date_year);

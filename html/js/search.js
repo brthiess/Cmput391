@@ -5,12 +5,12 @@ var tileID=0;
 
 $(document).ready( function() {
 	
-	$('body').on('click','.search-btn',function(){	
+	$('body').on('click','.search-btn',function(event){	
 		event.preventDefault();
 		getInput();
 	});
 	
-	$('body').on('click','.search-tile',function(){	
+	$('body').on('click','.search-tile',function(event){	
 		event.preventDefault();
 		tileID = $(this).attr("id");
 		console.log(tileID); 

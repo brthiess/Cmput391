@@ -1,4 +1,4 @@
-<?php 
+	<?php 
 
 
 
@@ -16,7 +16,8 @@ function expand_tile($record_id, $db){
 		set_modal();
 
 		//Get Person Information on Record
-		$record_id = explode("-", $record_id)[1];
+		$explode = explode("-", $record_id);
+		$record_id = $explode[1];
 		$rr = $db->getRadiologyRecordByRecordID($record_id);
 		//Gather all relevant data
 		$testDate = getTestDate($rr);

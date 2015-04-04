@@ -27,8 +27,8 @@ class User{
     public $dateRegistered = NULL;
 
     public function __construct(
-        $username, $password, $clss, $personID, Date $dateRegistered){
-        $this->username = $username;
+        $userName, $password, $clss, $personID, Date $dateRegistered){
+        $this->userName = $userName;
         $this->password = $password;
         $this->clss = $clss;
         $this->personID = $personID;
